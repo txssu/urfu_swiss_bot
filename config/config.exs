@@ -12,4 +12,6 @@ config :urfu_swiss_bot, UrFUSwissBot.Cache,
 
 config :elixir, :time_zone_database, Tzdata.TimeZoneDatabase
 
+config :urfu_swiss_bot, UrFUSwissBot.Repo, database_folder: System.get_env("DATABASE_FOLDER", ".db")
+
 import_config "#{config_env()}.exs"

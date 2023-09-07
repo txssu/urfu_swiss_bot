@@ -34,6 +34,7 @@ RUN mix local.hex --force && \
 
 # set build ENV
 ENV MIX_ENV="prod"
+ENV DATABASE_FOLDER="/app/db"
 
 # install mix dependencies
 COPY mix.exs mix.lock ./
@@ -76,7 +77,6 @@ RUN chown nobody /app
 
 # set database folder
 RUN mkdir db
-ENV DATABASE_FOLDER="/app/db"
 RUN chown nobody /app/db
 
 # set runner ENV
