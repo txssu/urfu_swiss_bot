@@ -10,7 +10,8 @@ defmodule UrFUSwissBot.Bot.Schedule do
   require ExGram.Dsl.Keyboard
 
   @start_text """
-  Нажмите кнопку, отправьте дату или день недели.
+  Вы можете нажать кнопку, отправить день недели или дату.
+  Вместо 25.09.2023 вы также можете написать 25.09 или просто 25
   """
 
   @today_no_more_lessons """
