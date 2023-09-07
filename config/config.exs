@@ -11,3 +11,5 @@ config :urfu_swiss_bot, UrFUSwissBot.Cache,
   gc_cleanup_max_timeout: :timer.minutes(10)
 
 config :elixir, :time_zone_database, Tzdata.TimeZoneDatabase
+
+import_config "#{config_env()}.exs"

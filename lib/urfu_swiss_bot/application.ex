@@ -7,10 +7,11 @@ defmodule UrFUSwissBot.Application do
 
   @impl true
   def start(_type, _args) do
+    data_dir = Application.get_env(:urfu_swiss_bot, UrFUSwissBot.Repo)[:database_folder]
     telegram_token = Application.get_env(:urfu_swiss_bot, UrFUSwissBot.Bot)[:token]
 
     children = [
-      {CubDB, [data_dir: "priv/database", name: UrFUSwissBot.Repo]},
+      {CubDB, [data_dir: data_dir, name: UrFUSwissBot.Repo]},
       UrFUSwissBot.Cache,
       ExGram,
       {UrFUSwissBot.Bot, [method: :polling, token: telegram_token]}

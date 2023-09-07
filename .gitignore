@@ -25,10 +25,8 @@ urfu_swiss_bot-*.tar
 # Temporary files, for example, from tests.
 /tmp/
 
-# Database files
-priv/database/*
+# Database folder
+.db
 
 # Environment variables
 .env
-
-# 
