@@ -109,7 +109,14 @@ defmodule UrFUSwissBot.Utils do
   end
 
   defp date_from_list([year, month, day]) do
-    case Date.from_erl({year, month, day}) do
+    corrected_year =
+      if year < 100 do
+        year + 2000
+      else
+        year
+      end
+
+    case Date.from_erl({corrected_year, month, day}) do
       {:ok, date} -> DateTime.new(date, ~T[00:00:00])
       _err -> :error
     end
