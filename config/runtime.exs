@@ -1,3 +1,4 @@
 import Config
+import SecretVault, only: [runtime_secret!: 2]
 
-config :urfu_swiss_bot, UrFUSwissBot.Bot, token: System.get_env("TELEGRAM_TOKEN")
+config :urfu_swiss_bot, UrFUSwissBot.Bot, token: runtime_secret!(:urfu_swiss_bot, "telegram_token")
