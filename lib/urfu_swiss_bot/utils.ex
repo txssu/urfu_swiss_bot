@@ -63,7 +63,7 @@ defmodule UrFUSwissBot.Utils do
 
   def parse_date_from_word(number_or_weekday) do
     case Integer.parse(number_or_weekday) do
-      {day, _} ->
+      {day, ""} ->
         datetime_in_future(day)
 
       _ ->
@@ -94,7 +94,7 @@ defmodule UrFUSwissBot.Utils do
     {:ok, result}
   end
 
-  defp unpack_integers([{n, _} | rest], result) do
+  defp unpack_integers([{n, ""} | rest], result) do
     unpack_integers(rest, [n | result])
   end
 
