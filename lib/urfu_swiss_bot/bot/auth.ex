@@ -26,11 +26,12 @@ defmodule UrFUSwissBot.Bot.Auth do
     case String.split(text) do
       [username, password] ->
         case Modeus.Auth.register_user(user, username, password) do
-          {:ok, _} ->
-            user
-            |> User.set_credentials(username, password)
+          {:ok, authed_user} ->
+            authed_user
             |> User.nil_state()
             |> User.save()
+
+            context = put_in(context.extra.user, authed_user)
 
             context
             |> accepted(message, username)
