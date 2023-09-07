@@ -31,12 +31,10 @@ defmodule UrFUSwissBot.Bot.Auth do
             |> User.nil_state()
             |> User.save()
 
-            context = put_in(context.extra.user, authed_user)
-
             context
             |> accepted(message, username)
             |> answer(@auth_success)
-            |> Menu.redirect()
+            |> Menu.menu_by_message()
 
           _error ->
             context

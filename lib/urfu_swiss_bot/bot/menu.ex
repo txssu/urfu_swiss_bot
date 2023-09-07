@@ -1,5 +1,4 @@
 defmodule UrFUSwissBot.Bot.Menu do
-  alias UrFUSwissBot.Repo.User
   import ExGram.Dsl
   require ExGram.Dsl
 
@@ -16,21 +15,15 @@ defmodule UrFUSwissBot.Bot.Menu do
                end
              end)
 
-  def handle(event, context) do
-    f =
-      case elem(event, 0) do
-        :callback_query -> &edit(&1, :inline, &2, &3)
-        type when type in [nil, :command] -> &answer/3
-      end
+  def handle({:callback_query, _}, context), do: menu_by_editing(context)
 
-    context.extra.user
-    |> User.nil_state()
-    |> User.save()
+  def handle(_, context), do: menu_by_message(context)
 
-    f.(context, @text, reply_markup: @keyboard)
+  def menu_by_editing(context) do
+    edit(context, :inline, @text, reply_markup: @keyboard)
   end
 
-  def redirect(context) do
-    handle({nil}, context)
+  def menu_by_message(context) do
+    answer(context, @text, reply_markup: @keyboard)
   end
 end
