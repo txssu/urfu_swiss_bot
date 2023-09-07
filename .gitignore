@@ -30,3 +30,6 @@ urfu_swiss_bot-*.tar
 
 # Environment variables
 .env
+
+# Nix venv
+.nix-*
