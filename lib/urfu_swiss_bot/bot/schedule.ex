@@ -67,8 +67,7 @@ defmodule UrFUSwissBot.Bot.Schedule do
   end
 
   def handle({:callback_query, %{data: "schedule-today"} = callback_query}, context) do
-    # today = DateTime.now!("Asia/Yekaterinburg")
-    {:ok, today, _offset} = DateTime.from_iso8601("2023-04-28 10:30:00+05:00")
+    today = DateTime.now!("Asia/Yekaterinburg")
 
     reply_callback(context, callback_query, today, @today_no_more_lessons)
   end
