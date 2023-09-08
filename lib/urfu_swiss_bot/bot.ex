@@ -1,4 +1,6 @@
 defmodule UrFUSwissBot.Bot do
+  alias UrFUSwissBot.Repo.User
+  alias ExGram.Cnt
   alias UrFUSwissBot.Bot
 
   @bot :urfu_swiss_bot
@@ -16,6 +18,15 @@ defmodule UrFUSwissBot.Bot do
   def bot, do: @bot
 
   def handle({:command, :start, _message} = event, context) do
+    Bot.StartCommand.handle(event, context)
+  end
+
+  def handle(event, %Cnt{extra: %{user: nil}} = context) do
+    Bot.StartCommand.handle(event, context)
+  end
+
+  def handle(event, %Cnt{extra: %{user: %User{username: nil, password: nil}}} = context)
+      when elem(event, 0) in [:command, :callback_query] do
     Bot.StartCommand.handle(event, context)
   end
 
