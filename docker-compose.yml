@@ -2,10 +2,12 @@ services:
   app:
     build:
       context: .
+      args:
+        SECRET_VAULT_PASSWORD: ${SECRET_VAULT_PASSWORD}
     volumes:
       - database:/app/db
     environment:
-      TELEGRAM_TOKEN: ${TELEGRAM_TOKEN}
+      SECRET_VAULT_PASSWORD: ${SECRET_VAULT_PASSWORD}
     restart: unless-stopped
 
 volumes:

@@ -35,6 +35,7 @@ RUN mix local.hex --force && \
 # set build ENV
 ENV MIX_ENV="prod"
 ENV DATABASE_FOLDER="/app/db"
+ARG SECRET_VAULT_PASSWORD
 
 # install mix dependencies
 COPY mix.exs mix.lock ./
@@ -46,6 +47,8 @@ RUN mkdir config
 # to be re-compiled.
 COPY config/config.exs config/${MIX_ENV}.exs config/
 RUN mix deps.compile
+
+COPY priv priv
 
 # Compile the release
 COPY lib lib
