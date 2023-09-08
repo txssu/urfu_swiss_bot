@@ -1,4 +1,5 @@
 defmodule UrFUSwissBot.Bot.Schedule do
+  alias UrFUSwissBot.Modeus.Models.Event
   alias UrFUSwissBot.Modeus
   alias UrFUSwissBot.Repo.User
   alias UrFUSwissBot.Utils
@@ -132,6 +133,7 @@ defmodule UrFUSwissBot.Bot.Schedule do
     with {:auth, {:ok, auth}} <- {:auth, Modeus.Auth.auth_user(user)},
          {:api, {:ok, response}} <- {:api, Modeus.Schedule.get_schedule_by_day(auth, date)} do
       response
+      |> Enum.map_join("\n\n", &Event.to_string/1)
     else
       {:auth, _} -> "Ошибка авторизации"
       {:api, _} -> "Не удалось получить расписание"

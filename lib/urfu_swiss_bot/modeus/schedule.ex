@@ -1,58 +1,51 @@
 defmodule UrFUSwissBot.Modeus.Schedule do
+  alias UrFUSwissBot.Modeus.AuthAPI
+  alias UrFUSwissBot.Modeus.Models.Event
   alias UrFUSwissBot.Modeus.ScheduleAPI
 
+  @spec get_schedule_by_day(AuthAPI.t(), DateTime.t()) :: {:ok, [Event.t()]} | {:error, any}
   def get_schedule_by_day(auth, datetime) do
     case ScheduleAPI.get_lessons_by_day(auth, datetime) do
-      {:ok, schedule} -> {:ok, format_events(schedule)}
+      {:ok, schedule} -> {:ok, to_events(schedule)}
       err -> err
     end
   end
 
-  @spec format_events(map) :: String.t()
-  def format_events(schedule) do
-    case Map.fetch(schedule, "events") do
-      :error ->
-        ""
-
-      {:ok, events} ->
-        events
-        |> Enum.sort_by(&get_event_start_time/1, DateTime)
-        |> Enum.map_join("\n\n", &__MODULE__.to_string(&1, schedule))
-    end
+  @spec to_events(map) :: [Event.t()]
+  def to_events(schedule) do
+    Map.get(schedule, "events", [])
+    |> Enum.sort_by(&get_event_start_time/1, DateTime)
+    |> Enum.map(&to_event(&1, schedule))
   end
 
-  @spec to_string(map, map) :: String.t()
-  def to_string(event, schedule) do
+  @spec to_event(map, map) :: Event.t()
+  def to_event(event, schedule) do
     name = get_name_from_event(event, schedule)
 
-    {color, type} = event["typeId"] |> event_type_id_to_type()
+    {color, type} = convert_type_id(event["typeId"])
 
     starts_at = get_event_start_time(event)
     ends_at = get_event_end_time(event)
-    time = "#{format_datetime(starts_at)} - #{format_datetime(ends_at)}"
-
     address = get_address_from_event(event, schedule)
 
-    [color <> name, type, time, address]
-    |> Enum.filter(fn
-      "" -> false
-      _ -> true
-    end)
-    |> Enum.join("\n")
+    %Event{
+      name: name,
+      color: color,
+      type: type,
+      starts_at: starts_at,
+      ends_at: ends_at,
+      address: address
+    }
   end
 
-  defp event_type_id_to_type(typeID)
-  defp event_type_id_to_type("SEMI"), do: {"🔵", "Практика"}
-  defp event_type_id_to_type("SELF"), do: {"🔵", "Самостоятельная работа"}
-  defp event_type_id_to_type("LECT"), do: {"🟢", "Лекция"}
-  defp event_type_id_to_type("LAB"), do: {"🟠", "Лабораторная работа"}
-  defp event_type_id_to_type("CONS"), do: {"🟢", "Консультация"}
-  defp event_type_id_to_type("MID_CHECK"), do: {"🟣", "Экзамен"}
-  defp event_type_id_to_type(_another), do: {"", ""}
-
-  defp format_datetime(datetime) do
-    Calendar.strftime(datetime, "%H:%M")
-  end
+  defp convert_type_id(typeID)
+  defp convert_type_id("SEMI"), do: {"🔵", "Практика"}
+  defp convert_type_id("SELF"), do: {"🔵", "Самостоятельная работа"}
+  defp convert_type_id("LECT"), do: {"🟢", "Лекция"}
+  defp convert_type_id("LAB"), do: {"🟠", "Лабораторная работа"}
+  defp convert_type_id("CONS"), do: {"🟢", "Консультация"}
+  defp convert_type_id("MID_CHECK"), do: {"🟣", "Экзамен"}
+  defp convert_type_id(_another), do: {"", ""}
 
   @spec get_name_from_event(map, map) :: String.t()
   def get_name_from_event(event, schedule) do
