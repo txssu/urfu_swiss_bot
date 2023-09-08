@@ -39,6 +39,7 @@ defmodule UrFUSwissBot.MixProject do
       # Code quality
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.3", only: [:dev, :test], runtime: false},
+      {:gradient, github: "esl/gradient", only: [:dev, :test], runtime: false},
       # Secret
       {:secret_vault, "~> 1.0"}
     ]
