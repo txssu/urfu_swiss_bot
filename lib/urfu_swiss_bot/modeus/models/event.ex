@@ -23,6 +23,8 @@ defmodule UrFUSwissBot.Modeus.Models.Event do
   end
 
   defp format_datetime(datetime) do
-    Calendar.strftime(datetime, "%H:%M")
+    datetime
+    |> DateTime.shift_zone!("Asia/Yekaterinburg")
+    |> Calendar.strftime("%H:%M")
   end
 end

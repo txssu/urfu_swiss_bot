@@ -69,13 +69,13 @@ defmodule UrFUSwissBot.Bot.Schedule do
   end
 
   def handle({:callback_query, %{data: "schedule-today"} = callback_query}, context) do
-    today = DateTime.now!("Asia/Yekaterinburg")
+    today = DateTime.utc_now()
 
     reply_callback(context, callback_query, today, @today_no_more_lessons)
   end
 
   def handle({:callback_query, %{data: "schedule-tomorrow"} = callback_query}, context) do
-    tomorrow = DateTime.now!("Asia/Yekaterinburg") |> Utils.start_of_next_day()
+    tomorrow = DateTime.utc_now() |> Utils.start_of_next_day()
 
     reply_callback(context, callback_query, tomorrow, @tommorow_no_lessons)
   end
@@ -112,7 +112,9 @@ defmodule UrFUSwissBot.Bot.Schedule do
     user = context.extra.user
 
     formatted_date =
-      Calendar.strftime(datetime, "%A, %d %B",
+      datetime
+      |> DateTime.shift_zone!("Asia/Yekaterinburg")
+      |> Calendar.strftime("%A, %d %B",
         day_of_week_names: &Utils.weekday_to_russian/1,
         month_names: &Utils.month_to_russian/1
       )

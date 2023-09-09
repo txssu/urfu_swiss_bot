@@ -71,7 +71,7 @@ defmodule UrFUSwissBot.Modeus.Schedule do
   @spec get_event_start_time(map) :: DateTime.t()
   def get_event_start_time(event) do
     {:ok, starts_at, _} =
-      (event["startsAtLocal"] <> "Z")
+      (event["startsAt"] <> "Z")
       |> DateTime.from_iso8601()
 
     starts_at
@@ -80,7 +80,7 @@ defmodule UrFUSwissBot.Modeus.Schedule do
   @spec get_event_end_time(map) :: DateTime.t()
   def get_event_end_time(event) do
     {:ok, ends_at, _} =
-      (event["endsAtLocal"] <> "Z")
+      (event["endsAt"] <> "Z")
       |> DateTime.from_iso8601()
 
     ends_at

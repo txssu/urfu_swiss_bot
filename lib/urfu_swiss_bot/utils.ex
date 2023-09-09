@@ -1,12 +1,14 @@
 defmodule UrFUSwissBot.Utils do
   def start_of_next_day(datetime) do
     datetime
+    |> DateTime.shift_zone!("Asia/Yekaterinburg")
     |> DateTime.add(1, :day)
     |> truncate_time()
   end
 
   def start_of_previous_day(datetime) do
     datetime
+    |> DateTime.shift_zone!("Asia/Yekaterinburg")
     |> DateTime.add(-1, :day)
     |> truncate_time()
   end
