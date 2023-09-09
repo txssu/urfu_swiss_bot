@@ -98,14 +98,14 @@ defmodule UrFUSwissBot.Bot.Schedule do
 
     context
     |> answer_callback(callback_query)
-    |> edit(:inline, response, reply_markup: keyboard_next(datetime))
+    |> edit(:inline, response, parse_mode: "MarkdownV2", reply_markup: keyboard_next(datetime))
   end
 
   def reply_message(context, datetime) do
     response = reply_with(context, datetime, :auto)
 
     context
-    |> answer(response, reply_markup: keyboard_next(datetime))
+    |> answer(response, parse_mode: "MarkdownV2", reply_markup: keyboard_next(datetime))
   end
 
   defp reply_with(context, datetime, no_lessons_message) do
@@ -120,25 +120,49 @@ defmodule UrFUSwissBot.Bot.Schedule do
       )
 
     case get_response(user, datetime) do
-      "" ->
+      {:ok, []} ->
         case no_lessons_message do
           :auto -> "#{formatted_date}\n\n#{@no_lessons}"
           str -> str
         end
 
-      response ->
-        "#{formatted_date}\n\n#{response}"
+      {:ok, events} ->
+        "#{formatted_date}\n\n#{format_events(events, datetime)}"
+
+      {:error, reason} ->
+        "#{formatted_date}\n\n#{reason}"
     end
   end
 
   def get_response(user, date) do
     with {:auth, {:ok, auth}} <- {:auth, Modeus.Auth.auth_user(user)},
          {:api, {:ok, response}} <- {:api, Modeus.Schedule.get_schedule_by_day(auth, date)} do
-      response
-      |> Enum.map_join("\n\n", &Event.to_string/1)
+      {:ok, response}
     else
-      {:auth, _} -> "Ошибка авторизации"
-      {:api, _} -> "Не удалось получить расписание"
+      {:auth, _} -> {:error, "Ошибка авторизации"}
+      {:api, _} -> {:error, "Не удалось получить расписание"}
     end
+  end
+
+  @spec format_events([Event.t()], DateTime.t()) :: String.t()
+  def format_events(events, now)
+
+  def format_events([], _now), do: ""
+
+  def format_events([event | events], now) do
+    IO.inspect({event, now})
+    status =
+      cond do
+        Event.impending?(event, now) ->
+          "*Скоро начнётся:*\n"
+
+        Event.ongoing?(event, now) ->
+          "*Сейчас идёт:*\n"
+
+        true ->
+          ""
+      end
+
+    "#{status}#{Event.to_string(event)}\n\n#{format_events(events, now)}"
   end
 end
