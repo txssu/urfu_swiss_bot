@@ -38,8 +38,18 @@ defmodule UrFUSwissBot.Modeus.Schedule do
   @spec to_events(map) :: [Event.t()]
   def to_events(schedule) do
     Map.get(schedule, "events", [])
-    |> Enum.sort_by(&get_event_start_time/1, DateTime)
     |> Enum.map(&to_event(&1, schedule))
+    |> Enum.reject(&first_or_last_event_of_day?/1)
+    |> Enum.sort_by(&(&1.starts_at), DateTime)
+  end
+
+  @local_8_00 ~T[03:00:00]
+  @local_20_00 ~T[15:00:00]
+
+  defp first_or_last_event_of_day?(event) do
+    time = DateTime.to_time(event.starts_at)
+
+    Time.before?(time, @local_8_00) or Time.after?(time, @local_20_00)
   end
 
   @spec to_event(map, map) :: Event.t()
