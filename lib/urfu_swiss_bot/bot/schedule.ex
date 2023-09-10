@@ -1,6 +1,6 @@
 defmodule UrFUSwissBot.Bot.Schedule do
-  alias UrFUSwissBot.Modeus.Models.Event
   alias UrFUSwissBot.Modeus
+  alias UrFUSwissBot.Modeus.Models.Event
   alias UrFUSwissBot.Repo.User
   alias UrFUSwissBot.Utils
 
@@ -150,7 +150,6 @@ defmodule UrFUSwissBot.Bot.Schedule do
   def format_events([], _now), do: ""
 
   def format_events([event | events], now) do
-    IO.inspect({event, now})
     status =
       cond do
         Event.impending?(event, now) ->

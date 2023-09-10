@@ -1,6 +1,6 @@
 defmodule UrFUSwissBot.Bot.StartCommand do
-  alias UrFUSwissBot.Repo.User
   alias ExGram.Cnt
+  alias UrFUSwissBot.Repo.User
 
   import ExGram.Dsl
   require ExGram.Dsl

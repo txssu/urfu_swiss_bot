@@ -7,6 +7,7 @@ defmodule UrFUSwissBot.Modeus.Auth do
 
   def register_user(user, username, password) do
     authed_user = User.set_credentials(user, username, password)
+
     case auth_user(authed_user) do
       {:ok, _auth} ->
         {:ok, authed_user}
