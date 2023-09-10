@@ -3,18 +3,18 @@ defmodule UrFUSwissBot.Utils do
     datetime
     |> DateTime.shift_zone!("Asia/Yekaterinburg")
     |> DateTime.add(1, :day)
-    |> truncate_time()
+    |> start_of_day()
   end
 
   def start_of_previous_day(datetime) do
     datetime
     |> DateTime.shift_zone!("Asia/Yekaterinburg")
     |> DateTime.add(-1, :day)
-    |> truncate_time()
+    |> start_of_day()
   end
 
-  @spec truncate_time(DateTime.t()) :: DateTime.t()
-  def truncate_time(datetime) do
+  @spec start_of_day(DateTime.t()) :: DateTime.t()
+  def start_of_day(datetime) do
     %{datetime | hour: 0, minute: 0, second: 0}
   end
 
