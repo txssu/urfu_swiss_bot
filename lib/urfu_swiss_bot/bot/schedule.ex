@@ -16,7 +16,7 @@ defmodule UrFUSwissBot.Bot.Schedule do
   """
 
   @today_no_more_lessons """
-  На сегодня пар не осталось 😼
+  Пары закончились. Пора отдыхать 😼
   """
 
   @tommorow_no_lessons """
