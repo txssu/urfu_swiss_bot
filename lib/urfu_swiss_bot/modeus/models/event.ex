@@ -14,7 +14,7 @@ defmodule UrFUSwissBot.Modeus.Models.Event do
   def to_string(%__MODULE__{} = event) do
     time = "#{format_datetime(event.starts_at)} – #{format_datetime(event.ends_at)}"
 
-    [event.color <> event.name, event.type, time, event.address]
+    [time, event.color <> event.name, event.type, event.address]
     |> Enum.filter(fn
       "" -> false
       _ -> true
