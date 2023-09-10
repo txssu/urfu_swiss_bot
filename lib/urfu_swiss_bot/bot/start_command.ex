@@ -1,25 +1,47 @@
 defmodule UrFUSwissBot.Bot.StartCommand do
   alias UrFUSwissBot.Repo.User
+  alias ExGram.Cnt
 
   import ExGram.Dsl
   require ExGram.Dsl
 
-  @start_text """
-  Чтобы пользоваться ботом необходима авторизация. \
+  @instruction """
   Для этого отправьте логин и пароль от аккаунта УрФУ.
   Пример:
   ivan.ivanov@mail.ru
   123456qwerty
   """
 
+  @start_text """
+  Чтобы пользоваться ботом необходима авторизация.
+
+  #{@instruction}
+  """
+
+  @continue_text """
+  Сначала закончите авторизацию!
+
+  #{@instruction}
+  """
+
   @again_text """
   Похоже, что-то пошло не так! Чтобы продолжить пользоваться ботом \
-  вам необходимо повторно авторизироваться. \
-  Для этого отправьте логин и пароль от аккаунта УрФУ.
-  Пример:
-  ivan.ivanov@mail.ru
-  123456qwerty
+  вам необходимо повторно авторизироваться.
+
+  #{@instruction}
   """
+
+  def handle(event, %Cnt{extra: %{user: %User{} = user}} = context) do
+    case event do
+      {:command, _command, _message} ->
+        context
+
+      {:callback_query, callback_query} ->
+        context
+        |> answer_callback(callback_query)
+    end
+    |> start_auth(user.id, @continue_text)
+  end
 
   def handle({:command, :start, %{from: %{id: user_id}}}, context) do
     start_auth(context, user_id, @start_text)
