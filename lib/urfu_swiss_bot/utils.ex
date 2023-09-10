@@ -1,15 +1,16 @@
 defmodule UrFUSwissBot.Utils do
   def start_of_next_day(datetime) do
-    datetime
-    |> DateTime.shift_zone!("Asia/Yekaterinburg")
-    |> DateTime.add(1, :day)
-    |> start_of_day()
+    start_of_day_after(datetime, 1)
   end
 
   def start_of_previous_day(datetime) do
+    start_of_day_after(datetime, -1)
+  end
+
+  def start_of_day_after(datetime, days) do
     datetime
     |> DateTime.shift_zone!("Asia/Yekaterinburg")
-    |> DateTime.add(-1, :day)
+    |> DateTime.add(days, :day)
     |> start_of_day()
   end
 
@@ -151,5 +152,20 @@ defmodule UrFUSwissBot.Utils do
       Date.add(today, 7 + weekday - weekday_today)
     end
     |> DateTime.new(~T[00:00:00])
+  end
+
+  @chars_need_escape [?_, ?*, ?[, ?], ?(, ?), ?~, ?`, ?>, ?#, ?+, ?-, ?=, ?|, ?{, ?}, ?., ?!]
+
+  def escape_telegram_markdown(<<>>) do
+    <<>>
+  end
+
+  def escape_telegram_markdown(<<char::utf8, rest::binary>>)
+      when char in @chars_need_escape do
+    <<?\\ :: utf8, char :: utf8, escape_telegram_markdown(rest) :: binary>>
+  end
+
+  def escape_telegram_markdown(<<char::utf8, rest::binary>>) do
+    <<char :: utf8, escape_telegram_markdown(rest) :: binary>>
   end
 end

@@ -16,15 +16,15 @@ defmodule UrFUSwissBot.Bot.Schedule do
   """
 
   @today_no_more_events """
-  Пары закончились. Пора отдыхать 😼
+  Пары закончились. Пора отдыхать 😼\
   """
 
   @tommorow_no_events """
-  Завтра нет пар. Можно отметить🥴
+  Завтра нет пар. Можно отметить🥴\
   """
 
   @no_events """
-  В этот день пар нет.
+  В этот день пар нет.\
   """
 
   @parse_error """
@@ -111,36 +111,53 @@ defmodule UrFUSwissBot.Bot.Schedule do
   defp reply_with(context, datetime, no_events_message) do
     user = context.extra.user
 
-    formatted_date =
-      datetime
-      |> DateTime.shift_zone!("Asia/Yekaterinburg")
-      |> Calendar.strftime("%A, %d %B",
-        day_of_week_names: &Utils.weekday_to_russian/1,
-        month_names: &Utils.month_to_russian/1
-      )
+    formatted_date = format_date(datetime)
+
+    no_events_message =
+      case no_events_message do
+        :auto -> @no_events
+        str -> str
+      end
+      |> Utils.escape_telegram_markdown()
 
     case get_response(user, datetime) do
-      {:ok, []} ->
-        case no_events_message do
-          :auto -> "#{formatted_date}\n\n#{@no_events}"
-          str -> str
-        end
+      {:ok, _type, []} ->
+        "*#{formatted_date}*\n\n#{no_events_message}"
 
-      {:ok, events} ->
-        "#{formatted_date}\n\n#{format_events(events, datetime)}"
+      {:ok, :date, events} ->
+        "*#{formatted_date}*\n\n#{format_events(events, datetime)}"
+
+      {:ok, date, events} ->
+        """
+        *#{formatted_date}*
+
+        #{no_events_message}
+
+        Вот расписание на ближайший день c парами:
+
+        *#{format_date(date)}*
+
+        #{format_events(events, datetime)}
+        """
 
       {:error, reason} ->
-        "#{formatted_date}\n\n#{reason}"
+        reason = Utils.escape_telegram_markdown(reason)
+        "*#{formatted_date}*\n\n#{reason}"
     end
   end
 
   def get_response(user, date) do
     with {:auth, {:ok, auth}} <- {:auth, Modeus.Auth.auth_user(user)},
-         {:api, {:ok, response}} <- {:api, Modeus.Schedule.get_schedule_by_day(auth, date)} do
-      {:ok, response}
+         {:api, {:ok, events}} <- {:api, Modeus.Schedule.get_schedule_by_day(auth, date)},
+         {:not_empty, []} <- {:not_empty, events},
+         {:api, {:ok, upcoming_date, events}} <-
+           {:api, Modeus.Schedule.get_upcoming_events(auth, date)},
+         {:not_empty, events} <- {:not_empty, events} do
+      {:ok, upcoming_date, events}
     else
       {:auth, _} -> {:error, "Ошибка авторизации"}
       {:api, _} -> {:error, "Не удалось получить расписание"}
+      {:not_empty, events} -> {:ok, :date, events}
     end
   end
 
@@ -163,5 +180,18 @@ defmodule UrFUSwissBot.Bot.Schedule do
       end
 
     "#{status}#{Event.to_string(event)}\n\n#{format_events(events, now)}"
+    |> Utils.escape_telegram_markdown()
+  end
+
+  defp format_date(date) do
+    case date do
+      %Date{} -> date
+      %DateTime{} -> DateTime.shift_zone!(date, "Asia/Yekaterinburg")
+    end
+    |> Calendar.strftime("%A, %d %B",
+      day_of_week_names: &Utils.weekday_to_russian/1,
+      month_names: &Utils.month_to_russian/1
+    )
+    |> Utils.escape_telegram_markdown()
   end
 end

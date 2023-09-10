@@ -16,10 +16,18 @@ defmodule UrFUSwissBot.Modeus.ScheduleAPI do
               match: &match_events/1
             )
   def get_events_by_day(auth, datetime) do
+    get_events(auth, datetime, Utils.start_of_next_day(datetime))
+  end
+
+  def get_events_for_week(auth, datetime) do
+    get_events(auth, datetime, Utils.start_of_day_after(datetime, 7))
+  end
+
+  def get_events(auth, time_min, time_max) do
     body = %{
       attendeePersonId: [auth.person_id],
-      timeMin: DateTime.to_iso8601(datetime),
-      timeMax: datetime |> Utils.start_of_next_day() |> DateTime.to_iso8601()
+      timeMin: DateTime.to_iso8601(time_min),
+      timeMax: DateTime.to_iso8601(time_max)
     }
 
     case post("calendar/events/search", body, auth_header(auth.access_token)) do

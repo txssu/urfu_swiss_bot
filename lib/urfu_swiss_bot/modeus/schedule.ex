@@ -11,6 +11,30 @@ defmodule UrFUSwissBot.Modeus.Schedule do
     end
   end
 
+  def get_schedule_for_week(auth, datetime) do
+    case ScheduleAPI.get_events_for_week(auth, datetime) do
+      {:ok, schedule} -> {:ok, to_events(schedule)}
+      err -> err
+    end
+  end
+
+  def get_upcoming_events(auth, datetime) do
+    case get_schedule_for_week(auth, datetime) do
+      {:ok, []} ->
+        {:ok, datetime, []}
+
+      {:ok, events} ->
+        events_by_days = Enum.group_by(events, fn event -> DateTime.to_date(event.starts_at) end)
+        days = Map.keys(events_by_days)
+        first_day = Enum.min(days, Date)
+
+        {:ok, first_day, Map.fetch!(events_by_days, first_day)}
+
+      err ->
+        err
+    end
+  end
+
   @spec to_events(map) :: [Event.t()]
   def to_events(schedule) do
     Map.get(schedule, "events", [])
