@@ -179,8 +179,12 @@ defmodule UrFUSwissBot.Bot.Schedule do
           ""
       end
 
-    "#{status}#{Event.to_string(event)}\n\n#{format_events(events, now)}"
-    |> Utils.escape_telegram_markdown()
+    formatted_event =
+      event
+      |> Event.to_string()
+      |> Utils.escape_telegram_markdown()
+
+    "#{status}#{formatted_event}\n\n#{format_events(events, now)}"
   end
 
   defp format_date(date) do
