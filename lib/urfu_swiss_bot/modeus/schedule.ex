@@ -92,12 +92,14 @@ defmodule UrFUSwissBot.Modeus.Schedule do
   @spec get_address_from_event(map, map) :: String.t()
   def get_address_from_event(event, schedule) do
     with {:ok, location} <- get(event, schedule, "location"),
+         {:not_nil, {:ok, nil}} <- {:not_nil, get(location, schedule, "customLocation")},
          {:ok, event_rooms} <- get(location, schedule, "event-rooms"),
          {:ok, room} <- get(event_rooms, schedule, "room"),
          {:ok, room_number} <- get(room, schedule, "nameShort"),
          {:ok, address} <- get(room["building"], schedule, "address") do
       "#{room_number}, #{address}"
     else
+      {:not_nil, {:ok, custom_location}} -> custom_location
       :error -> ""
     end
   end
@@ -120,7 +122,7 @@ defmodule UrFUSwissBot.Modeus.Schedule do
     ends_at
   end
 
-  @spec get(map, map, String.t()) :: :error | {:ok, map | list | String.t()}
+  @spec get(map, map, String.t()) :: :error | {:ok, map | list | String.t() | nil}
   def get(obj, schedule, field) do
     case Map.fetch(obj, field) do
       {:ok, value} -> {:ok, value}
