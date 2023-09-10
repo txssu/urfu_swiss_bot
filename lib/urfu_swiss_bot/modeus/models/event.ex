@@ -5,8 +5,8 @@ defmodule UrFUSwissBot.Modeus.Models.Event do
           name: String.t(),
           color: String.t(),
           type: String.t(),
-          starts_at: Datetime.t(),
-          ends_at: Datetime.t(),
+          starts_at: DateTime.t(),
+          ends_at: DateTime.t(),
           address: String.t()
         }
 
