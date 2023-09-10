@@ -18,12 +18,16 @@ defmodule UrFUSwissBot.Repo.User do
   @spec load(integer) :: t | nil
   def load(id), do: Repo.get(id)
 
-  @spec new(integer, state) :: t
-  def new(id, state), do: %__MODULE__{id: id, state: state}
+  @spec new(integer) :: t
+  def new(id), do: %__MODULE__{id: id}
 
   @spec set_credentials(t, String.t(), String.t()) :: t
   def set_credentials(%__MODULE__{} = user, username, password),
     do: %{user | username: username, password: password}
+
+  @spec delete_credentials(t) :: t
+  def delete_credentials(%__MODULE__{} = user),
+    do: %{user | username: nil, password: nil}
 
   @spec set_state(t, state) :: t
   def set_state(user, state), do: %{user | state: state}

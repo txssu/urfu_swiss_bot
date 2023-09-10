@@ -1,7 +1,7 @@
 defmodule UrFUSwissBot.Bot do
+  alias UrFUSwissBot.Repo.User
   alias ExGram.Cnt
   alias UrFUSwissBot.Bot
-  alias UrFUSwissBot.Repo.User
 
   @bot :urfu_swiss_bot
 
@@ -17,6 +17,23 @@ defmodule UrFUSwissBot.Bot do
 
   def bot, do: @bot
 
+  ###############################################
+  # Handle state
+  ###############################################
+
+  def handle({:text, _text, _message} = event, %Cnt{extra: %{user: user}} = context)
+      when not is_nil(user) do
+    user = context.extra.user
+
+    {module, state} = user.state
+
+    module.handle(state, event, context)
+  end
+
+  ###############################################
+  # Auth
+  ###############################################
+
   def handle({:command, :start, _message} = event, context) do
     Bot.StartCommand.handle(event, context)
   end
@@ -25,21 +42,24 @@ defmodule UrFUSwissBot.Bot do
     Bot.StartCommand.handle(event, context)
   end
 
-  def handle(event, %Cnt{extra: %{user: %User{username: nil, password: nil}}} = context)
-      when elem(event, 0) in [:command, :callback_query] do
+  def handle(event, %Cnt{extra: %{user: %User{username: nil, password: nil}}} = context) do
     Bot.StartCommand.handle(event, context)
   end
+
+  ###############################################
+  # Commands
+  ###############################################
 
   def handle({:command, :menu, _message} = event, context) do
     Bot.Menu.handle(event, context)
   end
 
-  def handle({:text, _text, _message} = event, context) do
-    user = context.extra.user
+  ###############################################
+  # Callbacks
+  ###############################################
 
-    {module, state} = user.state
-
-    module.handle(state, event, context)
+  def handle({:callback_query, %{data: "start" <> _}} = event, context) do
+    Bot.StartCommand.handle(event, context)
   end
 
   def handle({:callback_query, %{data: "menu" <> _}} = event, context) do
@@ -48,5 +68,9 @@ defmodule UrFUSwissBot.Bot do
 
   def handle({:callback_query, %{data: "schedule" <> _}} = event, context) do
     Bot.Schedule.handle(event, context)
+  end
+
+  def handle({:callback_query, %{data: "settings" <> _}} = event, context) do
+    Bot.Settings.handle(event, context)
   end
 end
