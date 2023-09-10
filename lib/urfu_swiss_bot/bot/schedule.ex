@@ -15,15 +15,15 @@ defmodule UrFUSwissBot.Bot.Schedule do
   Вместо 25.09.2023 вы также можете написать 25.09 или просто 25
   """
 
-  @today_no_more_lessons """
+  @today_no_more_events """
   Пары закончились. Пора отдыхать 😼
   """
 
-  @tommorow_no_lessons """
+  @tommorow_no_events """
   Завтра нет пар. Можно отметить🥴
   """
 
-  @no_lessons """
+  @no_events """
   В этот день пар нет.
   """
 
@@ -71,13 +71,13 @@ defmodule UrFUSwissBot.Bot.Schedule do
   def handle({:callback_query, %{data: "schedule-today"} = callback_query}, context) do
     today = DateTime.utc_now()
 
-    reply_callback(context, callback_query, today, @today_no_more_lessons)
+    reply_callback(context, callback_query, today, @today_no_more_events)
   end
 
   def handle({:callback_query, %{data: "schedule-tomorrow"} = callback_query}, context) do
     tomorrow = DateTime.utc_now() |> Utils.start_of_next_day()
 
-    reply_callback(context, callback_query, tomorrow, @tommorow_no_lessons)
+    reply_callback(context, callback_query, tomorrow, @tommorow_no_events)
   end
 
   def handle({:callback_query, %{data: "schedule-date-" <> date} = callback_query}, context) do
@@ -93,8 +93,8 @@ defmodule UrFUSwissBot.Bot.Schedule do
     end
   end
 
-  def reply_callback(context, callback_query, datetime, no_lessons_message \\ :auto) do
-    response = reply_with(context, datetime, no_lessons_message)
+  def reply_callback(context, callback_query, datetime, no_events_message \\ :auto) do
+    response = reply_with(context, datetime, no_events_message)
 
     context
     |> answer_callback(callback_query)
@@ -108,7 +108,7 @@ defmodule UrFUSwissBot.Bot.Schedule do
     |> answer(response, parse_mode: "MarkdownV2", reply_markup: keyboard_next(datetime))
   end
 
-  defp reply_with(context, datetime, no_lessons_message) do
+  defp reply_with(context, datetime, no_events_message) do
     user = context.extra.user
 
     formatted_date =
@@ -121,8 +121,8 @@ defmodule UrFUSwissBot.Bot.Schedule do
 
     case get_response(user, datetime) do
       {:ok, []} ->
-        case no_lessons_message do
-          :auto -> "#{formatted_date}\n\n#{@no_lessons}"
+        case no_events_message do
+          :auto -> "#{formatted_date}\n\n#{@no_events}"
           str -> str
         end
 

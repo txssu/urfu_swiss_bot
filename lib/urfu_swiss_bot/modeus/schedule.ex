@@ -5,7 +5,7 @@ defmodule UrFUSwissBot.Modeus.Schedule do
 
   @spec get_schedule_by_day(AuthAPI.t(), DateTime.t()) :: {:ok, [Event.t()]} | {:error, any}
   def get_schedule_by_day(auth, datetime) do
-    case ScheduleAPI.get_lessons_by_day(auth, datetime) do
+    case ScheduleAPI.get_events_by_day(auth, datetime) do
       {:ok, schedule} -> {:ok, to_events(schedule)}
       err -> err
     end

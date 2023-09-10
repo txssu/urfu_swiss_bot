@@ -13,9 +13,9 @@ defmodule UrFUSwissBot.Modeus.ScheduleAPI do
               cache: Cache,
               key: {auth.person_id, DateTime.to_unix(datetime)},
               ttl: :timer.hours(8),
-              match: &match_lessons/1
+              match: &match_events/1
             )
-  def get_lessons_by_day(auth, datetime) do
+  def get_events_by_day(auth, datetime) do
     body = %{
       attendeePersonId: [auth.person_id],
       timeMin: DateTime.to_iso8601(datetime),
@@ -28,8 +28,8 @@ defmodule UrFUSwissBot.Modeus.ScheduleAPI do
     end
   end
 
-  def match_lessons({:ok, _} = result), do: {true, result}
-  def match_lessons({:error, _}), do: false
+  def match_events({:ok, _} = result), do: {true, result}
+  def match_events({:error, _}), do: false
 
   defp auth_header(token) do
     [headers: [{"Authorization", "Bearer #{token}"}]]
