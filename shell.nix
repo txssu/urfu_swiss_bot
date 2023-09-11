@@ -5,6 +5,7 @@ let
   otp = beam.packages.erlangR26;
   basePackages = [
     otp.elixir_1_15
+    pkgs.cmake
   ];
   # Hot reloading stuff
   inputs = basePackages ++ lib.optionals stdenv.isLinux [ inotify-tools ]

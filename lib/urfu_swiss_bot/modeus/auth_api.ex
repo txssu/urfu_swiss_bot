@@ -108,12 +108,10 @@ defmodule UrFUSwissBot.Modeus.AuthAPI do
   end
 
   @spec parse_saml_response(String.t()) :: String.t()
-  def parse_saml_response("value=\"" <> token) do
-    parse_until(token, ?")
-  end
-
-  def parse_saml_response(<<_::utf8, rest::binary>>) do
-    parse_saml_response(rest)
+  def parse_saml_response(html) do
+    Floki.parse_document!(html)
+    |> Floki.attribute("input[name=SAMLResponse]", "value")
+    |> List.first()
   end
 
   @spec parse_auth_data(String.t()) :: map
@@ -124,11 +122,5 @@ defmodule UrFUSwissBot.Modeus.AuthAPI do
 
   def parse_auth_data(<<_::utf8, rest::binary>>) do
     parse_auth_data(rest)
-  end
-
-  defp parse_until(<<char::utf8, rest::binary>>, until_char, token \\ "") do
-    if char == until_char,
-      do: token,
-      else: parse_until(rest, until_char, <<token::binary, char::utf8>>)
   end
 end

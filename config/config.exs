@@ -18,4 +18,6 @@ config :urfu_swiss_bot, UrFUSwissBot.Repo,
 config :urfu_swiss_bot, :secret_vault,
   default: [password: System.fetch_env!("SECRET_VAULT_PASSWORD")]
 
+config :floki, :html_parser, Floki.HTMLParser.FastHtml
+
 import_config "#{config_env()}.exs"
