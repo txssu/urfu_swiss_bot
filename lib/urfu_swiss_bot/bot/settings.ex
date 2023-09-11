@@ -1,4 +1,6 @@
 defmodule UrFUSwissBot.Bot.Settings do
+  alias UrFUSwissBot.Repo.User
+
   import ExGram.Dsl
   require ExGram.Dsl
 
@@ -12,6 +14,10 @@ defmodule UrFUSwissBot.Bot.Settings do
   @keyboard (keyboard(:inline) do
                row do
                  button("Обновить данные авторизации", callback_data: "settings-confirm-reauth")
+               end
+
+               row do
+                 button("Удалить аккаунт", callback_data: "settings-confirm-delete")
                end
 
                row do
@@ -37,6 +43,25 @@ defmodule UrFUSwissBot.Bot.Settings do
   def handle({:callback_query, %{data: "settings-confirm-reauth"} = callback_query}, context) do
     context
     |> answer_callback(callback_query)
-    |> edit(:inline, "Точно?", reply_markup: confirmation_keyboard("start-reauth"))
+    |> edit(:inline, "Вы точно хотите повторно пройти авторизацию?",
+      reply_markup: confirmation_keyboard("start-reauth")
+    )
+  end
+
+  def handle({:callback_query, %{data: "settings-confirm-delete"} = callback_query}, context) do
+    context
+    |> answer_callback(callback_query)
+    |> edit(:inline, "Вы точно хотите удалить аккаунт?",
+      reply_markup: confirmation_keyboard("settings-delete")
+    )
+  end
+
+  def handle({:callback_query, %{data: "settings-delete"} = callback_query}, context) do
+    context.extra.user
+    |> User.delete()
+
+    context
+    |> answer_callback(callback_query)
+    |> edit(:inline, "Ваш аккаунт успешно удалён.")
   end
 end

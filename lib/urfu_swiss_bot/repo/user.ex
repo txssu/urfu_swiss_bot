@@ -18,6 +18,9 @@ defmodule UrFUSwissBot.Repo.User do
   @spec load(integer) :: t | nil
   def load(id), do: Repo.get(id)
 
+  @spec delete(t) :: :ok
+  def delete(user), do: Repo.delete(user.id)
+
   @spec new(integer) :: t
   def new(id), do: %__MODULE__{id: id}
 
