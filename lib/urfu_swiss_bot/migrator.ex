@@ -32,6 +32,19 @@ defmodule UrFUSwissBot.Migrator do
     end)
   end
 
+  # Add `is_admin` field
+  def to_version_2(tx) do
+    Tx.select(tx)
+    |> Enum.reduce(tx, fn
+      {{:users, _id} = key, user}, tx_acc ->
+        updated_user = Map.put_new(user, :is_admin, false)
+        Tx.put(tx_acc, key, updated_user)
+
+      _, tx_acc ->
+        tx_acc
+    end)
+  end
+
   def current_version do
     Repo.get(:version, 0)
   end

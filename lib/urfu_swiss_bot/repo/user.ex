@@ -1,7 +1,11 @@
 defmodule UrFUSwissBot.Repo.User do
   alias UrFUSwissBot.Repo
 
-  defstruct ~w[id username password state]a
+  defstruct id: 0,
+            username: nil,
+            password: nil,
+            state: nil,
+            is_admin: false
 
   @table :users
 
@@ -11,7 +15,8 @@ defmodule UrFUSwissBot.Repo.User do
           id: integer,
           username: String.t() | nil,
           password: String.t() | nil,
-          state: state | nil
+          state: state | nil,
+          is_admin: boolean
         }
 
   @spec save(t) :: :ok
