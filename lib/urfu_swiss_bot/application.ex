@@ -1,25 +1,36 @@
 defmodule UrFUSwissBot.Application do
-  # See https://hexdocs.pm/elixir/Application.html
-  # for more information on OTP Applications
   @moduledoc false
-
   use Application
+
+  @app :urfu_swiss_bot
+  @supervisor_opts [strategy: :one_for_one, name: UrFUSwissBot.Supervisor]
 
   @impl true
   def start(_type, _args) do
-    data_dir = Application.get_env(:urfu_swiss_bot, UrFUSwissBot.Repo)[:database_folder]
-    telegram_token = Application.get_env(:urfu_swiss_bot, UrFUSwissBot.Bot)[:token]
+    migrate()
+
+    telegram_token = Application.get_env(@app, UrFUSwissBot.Bot)[:token]
 
     children = [
-      {CubDB, [data_dir: data_dir, name: UrFUSwissBot.Repo]},
+      database_spec(),
       UrFUSwissBot.Cache,
       ExGram,
       {UrFUSwissBot.Bot, [method: :polling, token: telegram_token]}
     ]
 
-    # See https://hexdocs.pm/elixir/Supervisor.html
-    # for other strategies and supported options
-    opts = [strategy: :one_for_one, name: UrFUSwissBot.Supervisor]
-    Supervisor.start_link(children, opts)
+    Supervisor.start_link(children, @supervisor_opts)
+  end
+
+  defp migrate do
+    {:ok, pid} = Supervisor.start_link([database_spec()], @supervisor_opts)
+
+    UrFUSwissBot.Migrator.migrate()
+
+    Process.exit(pid, :normal)
+  end
+
+  defp database_spec do
+    data_dir = Application.get_env(@app, UrFUSwissBot.Repo)[:database_folder]
+    {CubDB, [data_dir: data_dir, name: UrFUSwissBot.Repo]}
   end
 end
