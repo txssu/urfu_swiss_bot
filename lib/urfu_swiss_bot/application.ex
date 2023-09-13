@@ -26,7 +26,7 @@ defmodule UrFUSwissBot.Application do
 
     UrFUSwissBot.Migrator.migrate()
 
-    Process.exit(pid, :normal)
+    :ok = Supervisor.stop(pid)
   end
 
   defp database_spec do
