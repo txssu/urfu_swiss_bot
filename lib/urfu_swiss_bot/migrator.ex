@@ -22,6 +22,16 @@ defmodule UrFUSwissBot.Migrator do
     end
   end
 
+  # Move users to separate table
+  def to_version_1(tx) do
+    Tx.select(tx)
+    |> Enum.reduce(tx, fn {id, user}, tx_acc ->
+      tx_acc
+      |> Tx.delete(id)
+      |> Tx.put({:users, id}, user)
+    end)
+  end
+
   def current_version do
     Repo.get(:version, 0)
   end

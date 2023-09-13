@@ -3,6 +3,8 @@ defmodule UrFUSwissBot.Repo.User do
 
   defstruct ~w[id username password state]a
 
+  @table :users
+
   @type state :: {module, atom}
 
   @type t :: %__MODULE__{
@@ -13,13 +15,13 @@ defmodule UrFUSwissBot.Repo.User do
         }
 
   @spec save(t) :: :ok
-  def save(%__MODULE__{id: id} = user), do: Repo.put(id, user)
+  def save(%__MODULE__{id: id} = user), do: Repo.put({@table, id}, user)
 
   @spec load(integer) :: t | nil
-  def load(id), do: Repo.get(id)
+  def load(id), do: Repo.get({@table, id})
 
   @spec delete(t) :: :ok
-  def delete(user), do: Repo.delete(user.id)
+  def delete(%__MODULE__{id: id}), do: Repo.delete({@table, id})
 
   @spec new(integer) :: t
   def new(id), do: %__MODULE__{id: id}
