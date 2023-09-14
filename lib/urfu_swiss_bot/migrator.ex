@@ -1,8 +1,8 @@
 defmodule UrFUSwissBot.Migrator do
-  alias UrFUSwissBot.Repo
   alias CubDB.Tx
+  alias UrFUSwissBot.Repo
 
-  def migrate() do
+  def migrate do
     version = current_version()
 
     case to_migration(version + 1) do
@@ -54,11 +54,9 @@ defmodule UrFUSwissBot.Migrator do
   end
 
   defp to_migration(version) do
-    try do
-      {:ok, String.to_existing_atom("to_version_#{version}")}
-    rescue
-      ArgumentError -> :error
-    end
+    {:ok, String.to_existing_atom("to_version_#{version}")}
+  rescue
+    ArgumentError -> :error
   end
 
   defp increase_version(tx) do

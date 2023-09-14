@@ -1,7 +1,7 @@
 defmodule UrFUSwissBot.Bot do
-  alias UrFUSwissBot.Repo.User
   alias ExGram.Cnt
   alias UrFUSwissBot.Bot
+  alias UrFUSwissBot.Repo.User
 
   @bot :urfu_swiss_bot
 

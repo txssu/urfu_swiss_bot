@@ -162,10 +162,10 @@ defmodule UrFUSwissBot.Utils do
 
   def escape_telegram_markdown(<<char::utf8, rest::binary>>)
       when char in @chars_need_escape do
-    <<?\\ :: utf8, char :: utf8, escape_telegram_markdown(rest) :: binary>>
+    <<?\\::utf8, char::utf8, escape_telegram_markdown(rest)::binary>>
   end
 
   def escape_telegram_markdown(<<char::utf8, rest::binary>>) do
-    <<char :: utf8, escape_telegram_markdown(rest) :: binary>>
+    <<char::utf8, escape_telegram_markdown(rest)::binary>>
   end
 end

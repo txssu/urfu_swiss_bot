@@ -40,7 +40,7 @@ defmodule UrFUSwissBot.Modeus.Schedule do
     Map.get(schedule, "events", [])
     |> Enum.map(&to_event(&1, schedule))
     |> Enum.reject(&first_or_last_event_of_day?/1)
-    |> Enum.sort_by(&(&1.starts_at), DateTime)
+    |> Enum.sort_by(& &1.starts_at, DateTime)
   end
 
   @local_8_00 ~T[03:00:00]

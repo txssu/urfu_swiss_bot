@@ -19,8 +19,8 @@ defmodule UrFUSwissBot.Bot.Menu do
                end
 
                row do
-                button("Обратная связь ✉️", callback_data: "feedback")
-              end
+                 button("Обратная связь ✉️", callback_data: "feedback")
+               end
              end)
 
   def handle({:callback_query, _}, context), do: menu_by_editing(context)

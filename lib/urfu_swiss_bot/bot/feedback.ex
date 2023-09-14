@@ -1,5 +1,7 @@
 defmodule UrFUSwissBot.Bot.Feedback do
+  alias UrFUSwissBot.Bot.Menu
   alias UrFUSwissBot.Repo.User
+
   import ExGram.Dsl
   require ExGram.Dsl
 
@@ -35,6 +37,6 @@ defmodule UrFUSwissBot.Bot.Feedback do
 
     context
     |> answer("Ваше сообщение было доставлено!")
-    |> UrFUSwissBot.Bot.Menu.menu_by_message()
+    |> Menu.menu_by_message()
   end
 end

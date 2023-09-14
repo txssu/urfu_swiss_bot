@@ -28,7 +28,7 @@ defmodule UrFUSwissBot.Modeus.ScheduleAPI do
       attendeePersonId: [auth.person_id],
       timeMin: DateTime.to_iso8601(time_min),
       timeMax: DateTime.to_iso8601(time_max),
-      size: 500,
+      size: 500
     }
 
     case post("calendar/events/search", body, auth_header(auth.access_token)) do
