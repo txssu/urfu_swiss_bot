@@ -22,13 +22,7 @@ defmodule UrFUSwissBot.Bot.StartCommand do
   вам необходимо повторно авторизироваться.
   """
 
-  @instruction """
-
-  Для этого отправьте логин и пароль от аккаунта УрФУ.
-  Пример:
-  ivan.ivanov@mail.ru
-  123456qwerty
-  """
+  @host "http://localhost:4000"
 
   # Start auth for new user
   def handle({:command, :start, %{from: %{id: user_id}}}, context) do
@@ -68,24 +62,24 @@ defmodule UrFUSwissBot.Bot.StartCommand do
   def start_auth_new_user(context, user_id) do
     context
     |> set_auth_state(User.new(user_id))
-    |> answer_message_auth(@start_text)
+    |> answer_message_auth(@start_text, user_id)
   end
 
   def again_auth(context, user_id) do
     context
     |> set_auth_state(User.new(user_id))
-    |> answer_message_auth(@again_text)
+    |> answer_message_auth(@again_text, user_id)
   end
 
   def continue_auth(context) do
     context
-    |> answer_message_auth(@continue_text)
+    |> answer_message_auth(@continue_text, context.extra.user.id)
   end
 
   def reauth(context, user, callback) do
     context
     |> set_auth_state(user)
-    |> answer_callback_auth(callback, @reauth_text)
+    |> answer_callback_auth(callback, @reauth_text, user.id)
   end
 
   defp set_auth_state(context, user) do
@@ -97,11 +91,26 @@ defmodule UrFUSwissBot.Bot.StartCommand do
     context
   end
 
-  defp answer_message_auth(context, text), do: answer(context, text <> @instruction)
+  defp answer_message_auth(context, text, user_id) do
+    answer(context, text <> instruction(user_id))
+  end
 
-  defp answer_callback_auth(context, callback, text) do
+  defp answer_callback_auth(context, callback, text, user_id) do
     context
     |> answer_callback(callback)
-    |> edit(:inline, text <> @instruction)
+    |> edit(:inline, text <> instruction(user_id))
+  end
+
+  defp instruction(id) do
+    """
+
+    Чтобы это сделать вы можете отправить сюда сообщение с логином и паролем от личного \
+    кабинету УрФУ:
+    Ivan.Ivanov@mail.ru
+    mysecretpassword123
+
+    Или авторизоваться через ссылку:
+    #{@host}/?telegram_id=#{id}
+    """
   end
 end

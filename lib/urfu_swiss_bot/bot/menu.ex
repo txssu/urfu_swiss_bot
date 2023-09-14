@@ -34,4 +34,8 @@ defmodule UrFUSwissBot.Bot.Menu do
   def menu_by_message(context) do
     answer(context, @text, reply_markup: @keyboard)
   end
+
+  def send_menu(chat_id) do
+    ExGram.send_message!(chat_id, @text, reply_markup: @keyboard, bot: UrFUSwissBot.Bot.bot())
+  end
 end

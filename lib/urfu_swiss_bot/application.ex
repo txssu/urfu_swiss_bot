@@ -15,7 +15,12 @@ defmodule UrFUSwissBot.Application do
       database_spec(),
       UrFUSwissBot.Cache,
       ExGram,
-      {UrFUSwissBot.Bot, [method: :polling, token: telegram_token]}
+      {UrFUSwissBot.Bot, [method: :polling, token: telegram_token]},
+      Plug.Cowboy.child_spec(
+        scheme: :http,
+        plug: AuthServer.Endpoint,
+        options: [port: 4000]
+      )
     ]
 
     Supervisor.start_link(children, @supervisor_opts)
