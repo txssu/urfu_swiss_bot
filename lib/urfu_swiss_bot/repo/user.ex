@@ -44,4 +44,18 @@ defmodule UrFUSwissBot.Repo.User do
 
   @spec nil_state(t) :: t
   def nil_state(user), do: %{user | state: nil}
+
+  def select(options \\ []) do
+    Repo.select(options)
+    |> Stream.filter(fn
+      {{@table, _id}, _user} -> true
+      _other -> false
+    end)
+    |> Stream.map(fn {{:users, _id}, user} -> user end)
+  end
+
+  def select_admins(options \\ []) do
+    select(options)
+    |> Stream.filter(fn user -> user.is_admin end)
+  end
 end

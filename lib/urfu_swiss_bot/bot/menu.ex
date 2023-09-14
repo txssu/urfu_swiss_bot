@@ -13,8 +13,13 @@ defmodule UrFUSwissBot.Bot.Menu do
                row do
                  button("Расписание 🏫", callback_data: "schedule")
                end
+
                row do
-                button("Настройки 📝", callback_data: "settings")
+                 button("Настройки 📝", callback_data: "settings")
+               end
+
+               row do
+                button("Обратная связь ✉️", callback_data: "feedback")
               end
              end)
 
