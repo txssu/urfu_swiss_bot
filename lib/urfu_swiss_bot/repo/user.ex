@@ -51,7 +51,7 @@ defmodule UrFUSwissBot.Repo.User do
       {{@table, _id}, _user} -> true
       _other -> false
     end)
-    |> Stream.map(fn {{:users, _id}, user} -> user end)
+    |> Stream.map(fn {{@table, _id}, user} -> user end)
   end
 
   def select_admins(options \\ []) do
