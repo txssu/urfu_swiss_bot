@@ -11,6 +11,7 @@ defmodule UrFUSwissBot.Bot do
 
   command "start"
   command "menu", description: "Вызвать меню"
+  command "reply_feedback"
 
   middleware ExGram.Middleware.IgnoreUsername
   middleware UrFUSwissBot.Bot.Middleware.GetUser
@@ -52,6 +53,10 @@ defmodule UrFUSwissBot.Bot do
 
   def handle({:command, :menu, _message} = event, context) do
     Bot.Menu.handle(event, context)
+  end
+
+  def handle({:command, :reply_feedback, _message} = event, context) do
+    Bot.Feedback.handle(event, context)
   end
 
   ###############################################
