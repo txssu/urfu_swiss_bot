@@ -16,7 +16,7 @@ defmodule UrFUSwissBot.Bot.Menu do
                end
 
                row do
-                 button("Настройки 📝", callback_data: "settings")
+                 button("Настройки ⚙️", callback_data: "settings")
                end
 
                row do
