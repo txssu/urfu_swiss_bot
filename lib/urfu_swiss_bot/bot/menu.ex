@@ -12,6 +12,7 @@ defmodule UrFUSwissBot.Bot.Menu do
   @keyboard (keyboard(:inline) do
                row do
                  button("Расписание 🏫", callback_data: "schedule")
+                 button("БРС 🔰", callback_data: "brs")
                end
 
                row do

@@ -82,4 +82,8 @@ defmodule UrFUSwissBot.Bot do
   def handle({:callback_query, %{data: "feedback" <> _}} = event, context) do
     Bot.Feedback.handle(event, context)
   end
+
+  def handle({:callback_query, %{data: "brs" <> _}} = event, context) do
+    Bot.BRS.handle(event, context)
+  end
 end
