@@ -49,6 +49,7 @@ defmodule UrFUSwissBot.Bot.Schedule do
     keyboard :inline do
       row do
         button("⬅️", callback_data: "schedule-date-#{previous_day}")
+        button("Сегодня", callback_data: "schedule-today")
         button("➡️", callback_data: "schedule-date-#{next_day}")
       end
 
