@@ -1,11 +1,14 @@
 defmodule UrFUSwissBot.IStudent.BRS do
+  alias UrFUSwissBot.Cache
   alias UrFUSwissBot.IStudent.Models.Object
   alias UrFUSwissBot.IStudent.Models.ObjectScore
 
+  use Nebulex.Caching
   use Tesla
 
   plug Tesla.Middleware.BaseUrl, "https://istudent.urfu.ru/s/http-urfu-ru-ru-students-study-brs"
 
+  @decorate cacheable(cache: Cache, key: auth, ttl: :timer.hours(1))
   def get_objects(auth) do
     %{body: body} = get!("/", auth_to_headers(auth))
 
