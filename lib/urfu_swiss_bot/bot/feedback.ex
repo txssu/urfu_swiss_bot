@@ -1,6 +1,6 @@
 defmodule UrFUSwissBot.Bot.Feedback do
-  alias UrFUSwissBot.Repo.FeedbackMessage
   alias UrFUSwissBot.Bot.Menu
+  alias UrFUSwissBot.Repo.FeedbackMessage
   alias UrFUSwissBot.Repo.User
 
   import ExGram.Dsl

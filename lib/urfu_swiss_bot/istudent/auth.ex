@@ -9,7 +9,6 @@ defmodule UrFUSwissBot.IStudent.Auth do
 
   @decorate cacheable(cache: Cache, key: {username, password}, ttl: :timer.hours(1))
   def auth(username, password) do
-    IO.inspect("TEST")
     send_username_and_password(username, password)
     |> resend_with_cookie()
     |> send_result_to_istudent()

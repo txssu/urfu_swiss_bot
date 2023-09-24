@@ -1,6 +1,6 @@
 defmodule UrFUSwissBot.IStudent.Models.Object do
-  alias UrFUSwissBot.Utils
   alias UrFUSwissBot.IStudent.Models.ObjectScore
+  alias UrFUSwissBot.Utils
 
   defstruct ~w[id name score grade scores]a
 
