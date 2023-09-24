@@ -1,24 +1,11 @@
 defmodule UrFUSwissBot.IStudent.Auth do
   alias UrFUSwissBot.Cache
-  alias UrFUSwissBot.Repo.User
-
   use Tesla
   use Nebulex.Caching
 
   plug Tesla.Middleware.FormUrlencoded
 
   @url "https://sts.urfu.ru/adfs/OAuth2/authorize?resource=https%3A%2F%2Fistudent.urfu.ru&type=web_server&client_id=https%3A%2F%2Fistudent.urfu.ru&redirect_uri=https%3A%2F%2Fistudent.urfu.ru%3Fauth&response_type=code&scope="
-
-  def register_user(user, username, password) do
-    authed_user = User.set_credentials(user, username, password)
-
-    case auth(username, password) do
-      nil ->
-        {:error, "Wrong username or password"}
-      _auth ->
-        {:ok, authed_user}
-    end
-  end
 
   @decorate cacheable(cache: Cache, key: {username, password})
   def auth(username, password) do

@@ -1,6 +1,6 @@
 defmodule UrFUSwissBot.Bot.Auth do
-  alias UrFUSwissBot.IStudent
   alias UrFUSwissBot.Bot.Menu
+  alias UrFUSwissBot.Modeus
   alias UrFUSwissBot.Repo.User
 
   import ExGram.Dsl
@@ -25,7 +25,7 @@ defmodule UrFUSwissBot.Bot.Auth do
 
     case String.split(text) do
       [username, password] ->
-        case IStudent.Auth.register_user(user, username, password) do
+        case Modeus.Auth.register_user(user, username, password) do
           {:ok, authed_user} ->
             authed_user
             |> User.nil_state()

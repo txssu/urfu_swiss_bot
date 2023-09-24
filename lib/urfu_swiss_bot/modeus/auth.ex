@@ -5,6 +5,18 @@ defmodule UrFUSwissBot.Modeus.Auth do
 
   use Nebulex.Caching
 
+  def register_user(user, username, password) do
+    authed_user = User.set_credentials(user, username, password)
+
+    case auth_user(authed_user) do
+      {:ok, _auth} ->
+        {:ok, authed_user}
+
+      err ->
+        err
+    end
+  end
+
   @decorate cacheable(cache: Cache, key: user, match: &match_auth/1)
   def auth_user(user) do
     AuthAPI.auth(user.username, user.password)
