@@ -14,6 +14,7 @@ defmodule UrFUSwissBot.Application do
     children = [
       database_spec(),
       UrFUSwissBot.Cache,
+      UrFUSwissBot.Scheduler,
       ExGram,
       {UrFUSwissBot.Bot, [method: :polling, token: telegram_token]}
     ]

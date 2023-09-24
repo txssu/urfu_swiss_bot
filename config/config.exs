@@ -20,4 +20,9 @@ config :urfu_swiss_bot, :secret_vault,
 
 config :floki, :html_parser, Floki.HTMLParser.FastHtml
 
+config :urfu_swiss_bot, UrFUSwissBot.Scheduler,
+  jobs: [
+    {"*/15 8-22 * *", {UrFUSwissBot.Bot.BRS, :update_users_brs, []}}
+  ]
+
 import_config "#{config_env()}.exs"

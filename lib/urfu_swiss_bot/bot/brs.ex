@@ -27,4 +27,8 @@ defmodule UrFUSwissBot.Bot.BRS do
 
     Enum.map_join(objects, "\n\n", &Object.to_string/1)
   end
+
+  def update_users_brs do
+    # TODO
+  end
 end
