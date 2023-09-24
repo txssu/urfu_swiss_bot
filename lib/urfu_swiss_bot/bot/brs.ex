@@ -18,7 +18,7 @@ defmodule UrFUSwissBot.Bot.BRS do
     response = get_response(context.extra.user)
 
     context
-    |> answer(response, reply_markup: @keyboard, parse_mode: "MarkdownV2")
+    |> edit(:inline, response, reply_markup: @keyboard, parse_mode: "MarkdownV2")
   end
 
   def get_response(user) do
