@@ -7,7 +7,7 @@ defmodule UrFUSwissBot.IStudent.Auth do
 
   @url "https://sts.urfu.ru/adfs/OAuth2/authorize?resource=https%3A%2F%2Fistudent.urfu.ru&type=web_server&client_id=https%3A%2F%2Fistudent.urfu.ru&redirect_uri=https%3A%2F%2Fistudent.urfu.ru%3Fauth&response_type=code&scope="
 
-  @decorate cacheable(cache: Cache, key: {username, password})
+  @decorate cacheable(cache: Cache, key: {username, password}, ttl: :timer.hours(24))
   def auth(username, password) do
     send_username_and_password(username, password)
     |> resend_with_cookie()
