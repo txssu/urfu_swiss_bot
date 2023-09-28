@@ -39,6 +39,8 @@ defmodule UrFUSwissBot.MixProject do
       # HTML Parser
       {:floki, "~> 0.34.0"},
       {:fast_html, "~> 2.0"},
+      # UrFU API
+      {:urfu_api, github: "txssu/urfu_api"},
       # Code quality
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.3", only: [:dev, :test], runtime: false},

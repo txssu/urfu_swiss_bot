@@ -1,6 +1,10 @@
 defmodule UrFUSwissBot.Bot.BRS do
+  alias UrFUSwissBot.Repo.User
+  alias UrFUAPI.IStudent.BRS.Subject
+  alias UrFUAPI.IStudent.BRS.SubjectScore
+
   alias UrFUSwissBot.IStudent
-  alias UrFUSwissBot.IStudent.Models.Object
+  alias UrFUSwissBot.Utils
 
   import ExGram.Dsl
   require ExGram.Dsl
@@ -21,10 +25,35 @@ defmodule UrFUSwissBot.Bot.BRS do
     |> edit(:inline, response, reply_markup: @keyboard, parse_mode: "MarkdownV2")
   end
 
-  def get_response(user) do
-    auth = IStudent.Auth.auth(user.username, user.password)
-    objects = IStudent.BRS.get_objects(auth)
+  def get_response(%User{username: username, password: password}) do
+    {:ok, auth} = IStudent.auth(username, password)
 
-    Enum.map_join(objects, "\n\n", &Object.to_string/1)
+    objects =
+      IStudent.get_subjects(auth)
+      |> Enum.map(&IStudent.preload_subject_scores(auth, &1))
+
+    Enum.map_join(objects, "\n\n", &format_subjects/1)
+  end
+
+  defp format_subjects(%Subject{name: name, total: total, grade: grade, scores: scores}) do
+    name = Utils.escape_telegram_markdown(name)
+    score = total |> Float.to_string() |> Utils.escape_telegram_markdown()
+    grade = Utils.escape_telegram_markdown(grade)
+
+    """
+    *#{name}*
+    *Итог:* #{score} \\- #{grade}
+    """ <>
+      Enum.map_join(scores, "\n", &format_subject_scores/1)
+  end
+
+  defp format_subject_scores(%SubjectScore{
+         name: name,
+         raw: raw,
+         multiplier: multiplier,
+         total: total
+       }) do
+    "#{name} - #{raw} × #{multiplier} = #{total}"
+    |> Utils.escape_telegram_markdown()
   end
 end
