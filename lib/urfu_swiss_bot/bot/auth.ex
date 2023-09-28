@@ -25,7 +25,7 @@ defmodule UrFUSwissBot.Bot.Auth do
 
     case String.split(text) do
       [username, password] ->
-        case Modeus.Auth.register_user(user, username, password) do
+        case Modeus.register_user(user, username, password) do
           {:ok, authed_user} ->
             authed_user
             |> User.nil_state()

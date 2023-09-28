@@ -156,6 +156,10 @@ defmodule UrFUSwissBot.Utils do
 
   @chars_need_escape [?_, ?*, ?[, ?], ?(, ?), ?~, ?`, ?>, ?#, ?+, ?-, ?=, ?|, ?{, ?}, ?., ?!]
 
+  def escape_telegram_markdown({:unescape, binary}) do
+    binary
+  end
+
   def escape_telegram_markdown(<<>>) do
     <<>>
   end
