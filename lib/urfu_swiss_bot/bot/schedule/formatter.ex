@@ -1,5 +1,6 @@
 defmodule UrFUSwissBot.Bot.Schedule.Formatter do
   alias UrFUSwissBot.Utils
+  alias UrFUAPI.Modeus.Schedule
   alias UrFUAPI.Modeus.Schedule.ScheduleData
   alias UrFUAPI.Modeus.Schedule.ScheduleData.Event
 
@@ -36,7 +37,7 @@ defmodule UrFUSwissBot.Bot.Schedule.Formatter do
 
   defp get_name_from_event(event, schedule) do
     event
-    |> ScheduleData.fetch_by_link!("cycle_realization", schedule)
+    |> Schedule.fetch_by_link!("cycle_realization", schedule)
     |> Map.fetch!(:course_unit_realization_name_short)
   end
 
@@ -56,7 +57,7 @@ defmodule UrFUSwissBot.Bot.Schedule.Formatter do
 
   @spec get_address_from_event(Event.t(), ScheduleData.t()) :: String.t()
   def get_address_from_event(event, schedule) do
-    location = ScheduleData.fetch_by_link!(event, "location", schedule)
+    location = Schedule.fetch_by_link!(event, "location", schedule)
 
     case location.custom_location do
       nil ->
@@ -68,10 +69,10 @@ defmodule UrFUSwissBot.Bot.Schedule.Formatter do
   end
 
   defp format_address(location, schedule) do
-    case ScheduleData.fetch_by_link(location, "event_rooms", schedule) do
+    case Schedule.fetch_by_link(location, "event_rooms", schedule) do
       {:ok, event_rooms} ->
         %{name_short: room_number, building: %{"address" => address}} =
-          ScheduleData.fetch_by_link!(event_rooms, "room", schedule)
+          Schedule.fetch_by_link!(event_rooms, "room", schedule)
 
         "#{room_number}, #{address}"
 

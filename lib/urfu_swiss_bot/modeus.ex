@@ -24,7 +24,7 @@ defmodule UrFUSwissBot.Modeus do
 
   @decorate cacheable(cache: Cache, key: {username, password}, match: &match_auth/1)
   def auth_user(%User{username: username, password: password}) do
-    UrFUAPI.Modeus.Auth.API.sign_in(username, password)
+    UrFUAPI.Modeus.Auth.sign_in(username, password)
   end
 
   def match_auth({:ok, %Token{claims: %TokenClaims{exp: expires}}} = result) do
@@ -76,7 +76,7 @@ defmodule UrFUSwissBot.Modeus do
             )
   def get_schedule(auth, after_time, before_time) do
     %ScheduleData{events: all_events} =
-      schedule = UrFUAPI.Modeus.Schedule.API.get_schedule(auth, after_time, before_time)
+      schedule = UrFUAPI.Modeus.Schedule.get_schedule(auth, after_time, before_time)
 
     events =
       all_events
