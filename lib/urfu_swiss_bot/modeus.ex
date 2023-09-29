@@ -1,30 +1,21 @@
 defmodule UrFUSwissBot.Modeus do
-  alias UrFUAPI.Modeus.Schedule.ScheduleData
-  alias UrFUAPI.Modeus.Schedule.ScheduleData.Event
+  alias UrFUAPI.Modeus.Auth
   alias UrFUAPI.Modeus.Auth.Token
   alias UrFUAPI.Modeus.Auth.TokenClaims
+  alias UrFUAPI.Modeus.Schedule
+  alias UrFUAPI.Modeus.Schedule.ScheduleData
+  alias UrFUAPI.Modeus.Schedule.ScheduleData.Event
+
   alias UrFUSwissBot.Cache
   alias UrFUSwissBot.Utils
 
-  use Nebulex.Caching
-
   alias UrFUSwissBot.Repo.User
 
-  def register_user(user, username, password) do
-    authed_user = User.set_credentials(user, username, password)
-
-    case auth_user(authed_user) do
-      {:ok, _auth} ->
-        {:ok, authed_user}
-
-      err ->
-        err
-    end
-  end
+  use Nebulex.Caching
 
   @decorate cacheable(cache: Cache, key: {:modeus_auth, username, password}, match: &match_auth/1)
   def auth_user(%User{username: username, password: password}) do
-    UrFUAPI.Modeus.Auth.sign_in(username, password)
+    Auth.sign_in(username, password)
   end
 
   def match_auth({:ok, %Token{claims: %TokenClaims{exp: expires}}} = result) do
@@ -36,9 +27,6 @@ defmodule UrFUSwissBot.Modeus do
   def match_auth({:error, _}) do
     false
   end
-
-  alias UrFUAPI.Modeus.Auth.Token
-  alias UrFUAPI.Modeus.Auth.TokenClaims
 
   def get_schedule_by_day(auth, datetime) do
     before_time = Utils.start_of_next_day(datetime)
@@ -76,11 +64,10 @@ defmodule UrFUSwissBot.Modeus do
             )
   def get_schedule(auth, after_time, before_time) do
     %ScheduleData{events: all_events} =
-      schedule = UrFUAPI.Modeus.Schedule.get_schedule(auth, after_time, before_time)
+      schedule = Schedule.get_schedule(auth, after_time, before_time)
 
     events =
-      all_events
-      |> Enum.reject(&first_or_last_event_of_day?/1)
+      Enum.reject(all_events, &first_or_last_event_of_day?/1)
 
     %{schedule | events: events}
   end

@@ -3,11 +3,11 @@ defmodule UrFUAPI.Modeus.Schedule.ScheduleData.Event do
     use TypedStruct
 
     typedstruct enforce: true do
-      field :aud_modified_at, any()
-      field :aud_modified_by, any()
-      field :aud_modified_by_system, any()
-      field :id, String.t()
-      field :name, String.t()
+      field(:aud_modified_at, any())
+      field(:aud_modified_by, any())
+      field(:aud_modified_by_system, any())
+      field(:id, String.t())
+      field(:name, String.t())
     end
 
     use ExConstructor
@@ -16,27 +16,27 @@ defmodule UrFUAPI.Modeus.Schedule.ScheduleData.Event do
   use TypedStruct
 
   typedstruct enforce: true do
-    field :description, String.t() | nil
+    field(:description, String.t() | nil)
 
-    field :end, DateTime.t()
-    field :ends_at, DateTime.t()
-    field :ends_at_local, DateTime.t()
+    field(:end, DateTime.t())
+    field(:ends_at, DateTime.t())
+    field(:ends_at_local, DateTime.t())
 
-    field :format_id, String.t() | nil
-    field :holding_status, HoldingStatus.t()
-    field :id, String.t()
-    field :lesson_template_id, String.t()
-    field :name, String.t()
-    field :nameShort, String.t()
+    field(:format_id, String.t() | nil)
+    field(:holding_status, HoldingStatus.t())
+    field(:id, String.t())
+    field(:lesson_template_id, String.t())
+    field(:name, String.t())
+    field(:nameShort, String.t())
 
-    field :start, DateTime.t()
-    field :starts_at, DateTime.t()
-    field :starts_at_local, DateTime.t()
+    field(:start, DateTime.t())
+    field(:starts_at, DateTime.t())
+    field(:starts_at_local, DateTime.t())
 
-    field :type_id, String.t()
-    field :user_role_ids, [String.t()]
+    field(:type_id, String.t())
+    field(:user_role_ids, [String.t()])
 
-    field :links, map()
+    field(:links, map())
   end
 
   use ExConstructor, :do_new

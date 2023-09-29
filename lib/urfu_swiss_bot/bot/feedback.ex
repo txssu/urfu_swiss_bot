@@ -1,12 +1,12 @@
 defmodule UrFUSwissBot.Bot.Feedback do
+  import ExGram.Dsl
+  import ExGram.Dsl.Keyboard
+
   alias UrFUSwissBot.Bot.Menu
   alias UrFUSwissBot.Repo.FeedbackMessage
   alias UrFUSwissBot.Repo.User
 
-  import ExGram.Dsl
   require ExGram.Dsl
-
-  import ExGram.Dsl.Keyboard
   require ExGram.Dsl.Keyboard
 
   @text """
@@ -23,8 +23,7 @@ defmodule UrFUSwissBot.Bot.Feedback do
   def handle({:command, :reply_feedback, message}, context) do
     if context.extra.user.is_admin do
       reply_to =
-        message.reply_to_message.message_id
-        |> FeedbackMessage.load()
+        FeedbackMessage.load(message.reply_to_message.message_id)
 
       text = "Ответ администратора: " <> message.text
 
@@ -35,11 +34,9 @@ defmodule UrFUSwissBot.Bot.Feedback do
 
       FeedbackMessage.delete(reply_to)
 
-      context
-      |> answer("Готово")
+      answer(context, "Готово")
     else
-      context
-      |> answer("Эта команда доступна только администраторам")
+      answer(context, "Эта команда доступна только администраторам")
     end
   end
 
@@ -54,13 +51,14 @@ defmodule UrFUSwissBot.Bot.Feedback do
   end
 
   def handle(:send_feedback, {:text, _text, message}, context) do
-    User.select_admins()
-    |> Enum.each(fn admin ->
+    Enum.each(User.select_admins(), fn admin ->
       sended_message =
         ExGram.forward_message!(admin.id, message.chat.id, message.message_id, bot: context.name)
 
-      FeedbackMessage.new(sended_message.message_id, message.from.id, message.message_id)
-      |> FeedbackMessage.save()
+      feedback_message =
+        FeedbackMessage.new(sended_message.message_id, message.from.id, message.message_id)
+
+      FeedbackMessage.save(feedback_message)
     end)
 
     context

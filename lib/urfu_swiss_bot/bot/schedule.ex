@@ -1,4 +1,7 @@
 defmodule UrFUSwissBot.Bot.Schedule do
+  import ExGram.Dsl
+  import ExGram.Dsl.Keyboard
+
   alias UrFUAPI.Modeus.Schedule.ScheduleData
 
   alias UrFUSwissBot.Modeus
@@ -7,10 +10,7 @@ defmodule UrFUSwissBot.Bot.Schedule do
 
   alias UrFUSwissBot.Bot.Schedule.Formatter
 
-  import ExGram.Dsl
   require ExGram.Dsl
-
-  import ExGram.Dsl.Keyboard
   require ExGram.Dsl.Keyboard
 
   @start_text """
@@ -26,9 +26,9 @@ defmodule UrFUSwissBot.Bot.Schedule do
   Завтра нет пар. Можно отметить🥴\
   """
 
-  @no_events """
-  В этот день пар нет.\
-  """
+  @no_events Utils.escape_telegram_markdown("""
+             В этот день пар нет.\
+             """)
 
   @parse_error """
   Вы ввели дату в неверном формате
@@ -46,8 +46,15 @@ defmodule UrFUSwissBot.Bot.Schedule do
                    end)
 
   defp keyboard_next(datetime) do
-    previous_day = Utils.start_of_previous_day(datetime) |> DateTime.to_iso8601(:basic)
-    next_day = Utils.start_of_next_day(datetime) |> DateTime.to_iso8601(:basic)
+    previous_day =
+      datetime
+      |> Utils.start_of_previous_day()
+      |> DateTime.to_iso8601(:basic)
+
+    next_day =
+      datetime
+      |> Utils.start_of_next_day()
+      |> DateTime.to_iso8601(:basic)
 
     keyboard :inline do
       row do
@@ -79,7 +86,7 @@ defmodule UrFUSwissBot.Bot.Schedule do
   end
 
   def handle({:callback_query, %{data: "schedule-tomorrow"} = callback_query}, context) do
-    tomorrow = DateTime.utc_now() |> Utils.start_of_next_day()
+    tomorrow = Utils.start_of_next_day(DateTime.utc_now())
 
     reply_callback(context, callback_query, tomorrow, @tommorow_no_events)
   end
@@ -108,8 +115,7 @@ defmodule UrFUSwissBot.Bot.Schedule do
   def reply_message(context, datetime) do
     response = reply_with(context, datetime, :auto)
 
-    context
-    |> answer(response, parse_mode: "MarkdownV2", reply_markup: keyboard_next(datetime))
+    answer(context, response, parse_mode: "MarkdownV2", reply_markup: keyboard_next(datetime))
   end
 
   defp reply_with(context, datetime, no_events_message) do
@@ -118,17 +124,20 @@ defmodule UrFUSwissBot.Bot.Schedule do
     formatted_date = format_date(datetime)
 
     no_events_message =
-      case no_events_message do
-        :auto -> @no_events
-        str -> str
+      if no_events_message == :auto do
+        @no_events
+      else
+        Utils.escape_telegram_markdown(no_events_message)
       end
-      |> Utils.escape_telegram_markdown()
 
     case get_response(user, datetime) do
       {:ok, :empty} ->
         "*#{formatted_date}*\n\n#{no_events_message}"
 
-      {:ok, {date, schedule}} ->
+      {:ok, {next_date, schedule}} ->
+        formatted_next_date = format_date(next_date)
+        formatted_events = Formatter.format_events(schedule, datetime)
+
         """
         *#{formatted_date}*
 
@@ -136,13 +145,14 @@ defmodule UrFUSwissBot.Bot.Schedule do
 
         Вот расписание на ближайший день c парами:
 
-        *#{format_date(date)}*
+        *#{formatted_next_date}*
 
-        #{Formatter.format_events(schedule, datetime)}
+        #{formatted_events}
         """
 
       {:ok, schedule} ->
-        "*#{formatted_date}*\n\n#{Formatter.format_events(schedule, datetime)}"
+        formatted_events = Formatter.format_events(schedule, datetime)
+        "*#{formatted_date}*\n\n#{formatted_events}"
 
       {:error, reason} ->
         reason = Utils.escape_telegram_markdown(reason)
@@ -181,15 +191,18 @@ defmodule UrFUSwissBot.Bot.Schedule do
   defp get_upcoming_schedule(auth, datetime) do
     case Modeus.get_upcoming_schedule(auth, datetime) do
       :empty -> :empty
-      {%Date{}, %ScheduleData{}} = result -> result |> IO.inspect()
+      {%Date{}, %ScheduleData{}} = result -> result
     end
   end
 
   defp format_date(date) do
-    case date do
-      %Date{} -> date
-      %DateTime{} -> DateTime.shift_zone!(date, "Asia/Yekaterinburg")
-    end
+    date_with_timezone =
+      case date do
+        %Date{} -> date
+        %DateTime{} -> DateTime.shift_zone!(date, "Asia/Yekaterinburg")
+      end
+
+    date_with_timezone
     |> Calendar.strftime("%A, %d %B",
       day_of_week_names: &Utils.weekday_to_russian/1,
       month_names: &Utils.month_to_russian/1

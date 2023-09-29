@@ -1,12 +1,11 @@
 defmodule UrFUSwissBot.Bot.UBU do
-  alias UrFUSwissBot.Repo.User
+  import ExGram.Dsl
+  import ExGram.Dsl.Keyboard
 
+  alias UrFUSwissBot.Repo.User
   alias UrFUSwissBot.UBU
 
-  import ExGram.Dsl
   require ExGram.Dsl
-
-  import ExGram.Dsl.Keyboard
   require ExGram.Dsl.Keyboard
 
   @pay_urfu_ru_ad "\n\nОплатить коммунальные платежи вы всегда можете на портале «Платежи УрФУ»"
@@ -34,15 +33,13 @@ defmodule UrFUSwissBot.Bot.UBU do
   end
 
   def handle({:callback_query, %{data: "ubu"}}, context) do
-    context
-    |> edit(:inline, "Что вас интересует?", reply_markup: @keyboard)
+    edit(context, :inline, "Что вас интересует?", reply_markup: @keyboard)
   end
 
   def handle({:callback_query, %{data: "ubu-check-charges"}}, context) do
     {kbd, response} = get_response(context.extra.user)
 
-    context
-    |> edit(:inline, response, reply_markup: kbd)
+    edit(context, :inline, response, reply_markup: kbd)
   end
 
   def get_response(%User{username: username, password: password}) do

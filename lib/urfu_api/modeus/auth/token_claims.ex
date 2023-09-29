@@ -2,17 +2,17 @@ defmodule UrFUAPI.Modeus.Auth.TokenClaims do
   use TypedStruct
 
   typedstruct enforce: true do
-    field :external_person_id, String.t()
-    field :at_hash, String.t()
-    field :aud, [String.t()]
-    field :azp, String.t()
-    field :exp, DateTime.t()
-    field :iat, DateTime.t()
-    field :iss, String.t()
-    field :nonce, String.t()
-    field :person_id, String.t()
-    field :preferred_username, String.t()
-    field :sub, String.t()
+    field(:external_person_id, String.t())
+    field(:at_hash, String.t())
+    field(:aud, [String.t()])
+    field(:azp, String.t())
+    field(:exp, DateTime.t())
+    field(:iat, DateTime.t())
+    field(:iss, String.t())
+    field(:nonce, String.t())
+    field(:person_id, String.t())
+    field(:preferred_username, String.t())
+    field(:sub, String.t())
   end
 
   use ExConstructor, :do_new

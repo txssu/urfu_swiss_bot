@@ -27,7 +27,9 @@ defmodule UrFUSwissBot.Repo.FeedbackMessage do
     do: %__MODULE__{id: id, from_id: from_id, original_id: original_id}
 
   def select(options \\ []) do
-    Repo.select(options)
+    items = Repo.select(options)
+
+    items
     |> Stream.filter(fn
       {{@table, _id}, _message} -> true
       _other -> false

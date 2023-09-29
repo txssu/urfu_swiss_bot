@@ -22,8 +22,7 @@ defmodule UrFUSwissBot.Bot do
   # Handle state
   ###############################################
 
-  def handle({:text, _text, _message} = event, %Cnt{extra: %{user: user}} = context)
-      when not is_nil(user) do
+  def handle({:text, _text, _message} = event, %Cnt{extra: %{user: %User{}}} = context) do
     user = context.extra.user
 
     {module, state} = user.state

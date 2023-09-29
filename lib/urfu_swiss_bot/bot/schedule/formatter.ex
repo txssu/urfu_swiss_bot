@@ -1,8 +1,9 @@
 defmodule UrFUSwissBot.Bot.Schedule.Formatter do
-  alias UrFUSwissBot.Utils
   alias UrFUAPI.Modeus.Schedule
   alias UrFUAPI.Modeus.Schedule.ScheduleData
   alias UrFUAPI.Modeus.Schedule.ScheduleData.Event
+
+  alias UrFUSwissBot.Utils
 
   @spec format_events(ScheduleData.t(), DateTime.t()) :: String.t()
   def format_events(%ScheduleData{events: events} = schedule, datetime) do
@@ -21,7 +22,9 @@ defmodule UrFUSwissBot.Bot.Schedule.Formatter do
         datetime
       ) do
     name = get_name_from_event(event, schedule)
-    time = "#{format_datetime(starts_at)} – #{format_datetime(ends_at)}"
+    formatted_starts_at = format_datetime(starts_at)
+    formatted_ends_at = format_datetime(ends_at)
+    time = "#{formatted_starts_at} – #{formatted_ends_at}"
     {color, type} = convert_type_id(type_id)
     address = get_address_from_event(event, schedule)
     status = get_status(event, datetime)
@@ -30,7 +33,7 @@ defmodule UrFUSwissBot.Bot.Schedule.Formatter do
     |> Enum.map(&Utils.escape_telegram_markdown/1)
     |> Enum.filter(fn
       "" -> false
-      _ -> true
+      _not_empty -> true
     end)
     |> Enum.join("\n")
   end
@@ -42,8 +45,7 @@ defmodule UrFUSwissBot.Bot.Schedule.Formatter do
   end
 
   defp format_datetime(datetime) do
-    datetime
-    |> Calendar.strftime("%H:%M")
+    Calendar.strftime(datetime, "%H:%M")
   end
 
   defp convert_type_id(type_id)

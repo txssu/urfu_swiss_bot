@@ -5,7 +5,7 @@ defmodule UrFUSwissBot.Application do
   @app :urfu_swiss_bot
   @supervisor_opts [strategy: :one_for_one, name: UrFUSwissBot.Supervisor]
 
-  @impl true
+  @impl Application
   def start(_type, _args) do
     migrate()
 

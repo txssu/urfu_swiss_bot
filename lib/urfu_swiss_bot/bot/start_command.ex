@@ -1,8 +1,9 @@
 defmodule UrFUSwissBot.Bot.StartCommand do
+  import ExGram.Dsl
+
   alias ExGram.Cnt
   alias UrFUSwissBot.Repo.User
 
-  import ExGram.Dsl
   require ExGram.Dsl
 
   @start_text """
@@ -38,7 +39,7 @@ defmodule UrFUSwissBot.Bot.StartCommand do
   # If database is lost it need to handle others actions and start auth
   def handle(event, %Cnt{extra: %{user: nil}} = context) do
     case event do
-      {type, _, message} when type in [:text, :command] ->
+      {type, _body, message} when type in [:text, :command] ->
         again_auth(context, message.from.id)
 
       {:callback_query, callback_query} ->
@@ -55,14 +56,16 @@ defmodule UrFUSwissBot.Bot.StartCommand do
 
   # Prevent others actions throught auth
   def handle(event, context) do
-    case event do
-      {:command, _command, _message} ->
-        context
+    answered_context =
+      case event do
+        {:command, _command, _message} ->
+          context
 
-      {:callback_query, callback_query} ->
-        answer_callback(context, callback_query)
-    end
-    |> continue_auth()
+        {:callback_query, callback_query} ->
+          answer_callback(context, callback_query)
+      end
+
+    continue_auth(answered_context)
   end
 
   def start_auth_new_user(context, user_id) do
@@ -78,8 +81,7 @@ defmodule UrFUSwissBot.Bot.StartCommand do
   end
 
   def continue_auth(context) do
-    context
-    |> answer_message_auth(@continue_text)
+    answer_message_auth(context, @continue_text)
   end
 
   def reauth(context, user, callback) do

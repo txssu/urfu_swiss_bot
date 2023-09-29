@@ -1,12 +1,13 @@
 defmodule UrFUSwissBot.Bot.Auth do
+  import ExGram.Dsl
+
   alias UrFUSwissBot.Bot.Menu
   alias UrFUSwissBot.Modeus
   alias UrFUSwissBot.Repo.User
 
-  import ExGram.Dsl
   require ExGram.Dsl
 
-  @auth_success "🎉🎊Вы авторизованы🎉🎊"
+  @auth_success "🎉🎊Авторизация прошла успешно🎉🎊"
 
   @wrong_credentials "Неверный логин или пароль❌"
 
@@ -25,25 +26,31 @@ defmodule UrFUSwissBot.Bot.Auth do
 
     case String.split(text) do
       [username, password] ->
-        case Modeus.register_user(user, username, password) do
-          {:ok, authed_user} ->
-            authed_user
-            |> User.nil_state()
-            |> User.save()
-
-            context
-            |> accepted(message, username)
-            |> answer(@auth_success)
-            |> Menu.menu_by_message()
-
-          _error ->
-            context
-            |> accepted(message, username)
-            |> answer(@wrong_credentials)
-        end
+        user
+        |> User.set_credentials(username, password)
+        |> try_auth_user(message, context)
 
       _error ->
         answer(context, @parse_error)
+    end
+  end
+
+  defp try_auth_user(user, message, context) do
+    case Modeus.auth_user(user) do
+      {:ok, _autj} ->
+        user
+        |> User.nil_state()
+        |> User.save()
+
+        context
+        |> accepted(message, user.username)
+        |> answer(@auth_success)
+        |> Menu.menu_by_message()
+
+      _error ->
+        context
+        |> accepted(message, user.username)
+        |> answer(@wrong_credentials)
     end
   end
 
@@ -54,11 +61,12 @@ defmodule UrFUSwissBot.Bot.Auth do
   end
 
   defp message_deleted(username) do
+    email = hide_email(username)
+
     """
-    Ваши данные:
-    #{hide_email(username)}
+    Введённые данные:
+    #{email}
     ********
-    Приняты✅
 
     В целях безопасности ваще сообщение было удалено
     """
@@ -66,15 +74,15 @@ defmodule UrFUSwissBot.Bot.Auth do
 
   defp hide_email(email, result \\ "", visible_characters \\ 3)
 
-  defp hide_email("@" <> _ = domain, result, _) do
+  defp hide_email("@" <> _domain = domain, result, _visible_characters) do
     result <> domain
   end
 
-  defp hide_email("", result, _) do
+  defp hide_email("", result, _visible_characters) do
     result
   end
 
-  defp hide_email(<<_::utf8, rest::binary>>, result, 0) do
+  defp hide_email(<<_char::utf8, rest::binary>>, result, 0) do
     hide_email(rest, result <> "*", 0)
   end
 

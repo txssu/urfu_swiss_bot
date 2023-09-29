@@ -1,8 +1,8 @@
 defmodule UrFUSwissBot.Bot.Menu do
   import ExGram.Dsl
-  require ExGram.Dsl
-
   import ExGram.Dsl.Keyboard
+
+  require ExGram.Dsl
   require ExGram.Dsl.Keyboard
 
   @text """
@@ -30,7 +30,7 @@ defmodule UrFUSwissBot.Bot.Menu do
 
   def handle({:callback_query, _}, context), do: menu_by_editing(context)
 
-  def handle(_, context), do: menu_by_message(context)
+  def handle(_event, context), do: menu_by_message(context)
 
   def menu_by_editing(context) do
     edit(context, :inline, @text, reply_markup: @keyboard)

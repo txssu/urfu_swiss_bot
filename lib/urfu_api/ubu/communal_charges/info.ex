@@ -3,8 +3,8 @@ defmodule UrFUAPI.UBU.CommunalCharges.Info do
     use TypedStruct
 
     typedstruct enforce: true do
-      field :accrual, float()
-      field :payment, float()
+      field(:accrual, float())
+      field(:payment, float())
     end
 
     use ExConstructor
@@ -13,10 +13,10 @@ defmodule UrFUAPI.UBU.CommunalCharges.Info do
   use TypedStruct
 
   typedstruct enforce: true do
-    field :contract, String.t()
-    field :debt, integer()
-    field :deposit, integer()
-    field :charges, [%{integer => %{integer => Charge.t()}}]
+    field(:contract, String.t())
+    field(:debt, integer())
+    field(:deposit, integer())
+    field(:charges, [%{integer => %{integer => Charge.t()}}])
   end
 
   use ExConstructor, :do_new

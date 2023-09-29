@@ -52,7 +52,7 @@ defmodule UrFUSwissBot.Utils do
   def russian_to_weekday("пятница"), do: {:ok, 5}
   def russian_to_weekday("суббота"), do: {:ok, 6}
   def russian_to_weekday("воскресенье"), do: {:ok, 7}
-  def russian_to_weekday(_), do: :error
+  def russian_to_weekday(_others), do: :error
 
   def parse_russian_date(text) do
     case String.split(text, ".") do
@@ -69,11 +69,13 @@ defmodule UrFUSwissBot.Utils do
       {day, ""} ->
         datetime_in_future(day)
 
-      _ ->
-        number_or_weekday
-        |> String.downcase()
-        |> russian_to_weekday()
-        |> case do
+      _not_a_number ->
+        result =
+          number_or_weekday
+          |> String.downcase()
+          |> russian_to_weekday()
+
+        case result do
           {:ok, weekday} -> datetime_in_future_by_weekday(weekday)
           :error -> :error
         end
@@ -82,7 +84,8 @@ defmodule UrFUSwissBot.Utils do
 
   def parse_date_from_list(lst) do
     maybe_ints =
-      Enum.map(lst, &Integer.parse/1)
+      lst
+      |> Enum.map(&Integer.parse/1)
       |> unpack_integers()
 
     case maybe_ints do
@@ -125,7 +128,7 @@ defmodule UrFUSwissBot.Utils do
     end
   end
 
-  defp date_from_list(_) do
+  defp date_from_list(_not_date) do
     :error
   end
 
@@ -146,12 +149,14 @@ defmodule UrFUSwissBot.Utils do
     today = Date.utc_today()
     weekday_today = Date.day_of_week(today)
 
-    if weekday_today < weekday do
-      Date.add(today, weekday - weekday_today)
-    else
-      Date.add(today, 7 + weekday - weekday_today)
-    end
-    |> DateTime.new(~T[00:00:00])
+    future_date =
+      if weekday_today < weekday do
+        Date.add(today, weekday - weekday_today)
+      else
+        Date.add(today, 7 + weekday - weekday_today)
+      end
+
+    DateTime.new(future_date, ~T[00:00:00])
   end
 
   @chars_need_escape [?_, ?*, ?[, ?], ?(, ?), ?~, ?`, ?>, ?#, ?+, ?-, ?=, ?|, ?{, ?}, ?., ?!]

@@ -24,8 +24,9 @@ defmodule UrFUSwissBot.Migrator do
 
   # Move users to separate table
   def to_version_1(tx) do
-    Tx.select(tx)
-    |> Enum.reduce(tx, fn {id, user}, tx_acc ->
+    items = Tx.select(tx)
+
+    Enum.reduce(items, tx, fn {id, user}, tx_acc ->
       tx_acc
       |> Tx.delete(id)
       |> Tx.put({:users, id}, user)
@@ -34,13 +35,14 @@ defmodule UrFUSwissBot.Migrator do
 
   # Add `is_admin` field
   def to_version_2(tx) do
-    Tx.select(tx)
-    |> Enum.reduce(tx, fn
+    items = Tx.select(tx)
+
+    Enum.reduce(items, tx, fn
       {{:users, _id} = key, user}, tx_acc ->
         updated_user = Map.put_new(user, :is_admin, false)
         Tx.put(tx_acc, key, updated_user)
 
-      _, tx_acc ->
+      _others, tx_acc ->
         tx_acc
     end)
   end
@@ -65,5 +67,6 @@ defmodule UrFUSwissBot.Migrator do
     Tx.put(tx, :version, version + 1)
   end
 
+  # credo:disable-for-next-line
   def log(msg), do: IO.puts(msg)
 end

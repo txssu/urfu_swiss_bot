@@ -1,10 +1,10 @@
 defmodule UrFUSwissBot.Bot.Settings do
+  import ExGram.Dsl
+  import ExGram.Dsl.Keyboard
+
   alias UrFUSwissBot.Repo.User
 
-  import ExGram.Dsl
   require ExGram.Dsl
-
-  import ExGram.Dsl.Keyboard
   require ExGram.Dsl.Keyboard
 
   @settings_text """
@@ -57,8 +57,7 @@ defmodule UrFUSwissBot.Bot.Settings do
   end
 
   def handle({:callback_query, %{data: "settings-delete"} = callback_query}, context) do
-    context.extra.user
-    |> User.delete()
+    User.delete(context.extra.user)
 
     context
     |> answer_callback(callback_query)

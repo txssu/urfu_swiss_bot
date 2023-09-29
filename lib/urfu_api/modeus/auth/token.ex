@@ -4,13 +4,13 @@ defmodule UrFUAPI.Modeus.Auth.Token do
   use TypedStruct
 
   typedstruct enforce: true do
-    field :access_token, String.t()
-    field :expires_in, pos_integer()
-    field :id_token, String.t()
-    field :session_state, String.t()
-    field :state, String.t()
-    field :token_type, String.t()
-    field :claims, map()
+    field(:access_token, String.t())
+    field(:expires_in, pos_integer())
+    field(:id_token, String.t())
+    field(:session_state, String.t())
+    field(:state, String.t())
+    field(:token_type, String.t())
+    field(:claims, map())
   end
 
   use ExConstructor, :do_new
