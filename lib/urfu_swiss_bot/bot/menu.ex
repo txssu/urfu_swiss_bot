@@ -16,6 +16,10 @@ defmodule UrFUSwissBot.Bot.Menu do
                end
 
                row do
+                 button("Финансовые Сервисы 💸", callback_data: "ubu")
+               end
+
+               row do
                  button("Настройки ⚙️", callback_data: "settings")
                end
 
