@@ -40,7 +40,8 @@ defmodule UrFUSwissBot.MixProject do
       {:floki, "~> 0.34.0"},
       {:fast_html, "~> 2.0"},
       # UrFU API
-      {:urfu_api, github: "txssu/urfu_api"},
+      {:typed_struct, "~> 0.3.0"},
+      {:exconstructor, "~> 1.2.9"},
       # Code quality
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.3", only: [:dev, :test], runtime: false},
