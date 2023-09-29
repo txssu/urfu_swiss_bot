@@ -4,12 +4,12 @@ defmodule UrFUAPI.Modeus.Auth.API do
   alias UrFUAPI.Modeus.Auth.Token
 
   defmodule AuthProcess do
-    defstruct ~w[relay_url relay_state saml_token saml_response]a
+    defstruct ~w[relay_url relay_state saml_tokens saml_response]a
 
     @type t :: %__MODULE__{
             relay_url: String.t() | nil,
             relay_state: String.t() | nil,
-            saml_token: String.t() | nil,
+            saml_tokens: [String.t()] | nil,
             saml_response: String.t() | nil
           }
 
@@ -25,7 +25,7 @@ defmodule UrFUAPI.Modeus.Auth.API do
     process =
       AuthProcess.new()
       |> get_relay_data()
-      |> get_saml_token(username, password)
+      |> get_saml_tokens(username, password)
 
     case process do
       {:ok, process} ->
@@ -66,9 +66,9 @@ defmodule UrFUAPI.Modeus.Auth.API do
     |> Map.fetch!("RelayState")
   end
 
-  @spec get_saml_token(AuthProcess.t(), String.t(), String.t()) ::
+  @spec get_saml_tokens(AuthProcess.t(), String.t(), String.t()) ::
           {:ok, AuthProcess.t()} | {:error, any()}
-  def get_saml_token(%AuthProcess{relay_url: url} = process, username, password) do
+  def get_saml_tokens(%AuthProcess{relay_url: url} = process, username, password) do
     body = %{
       "UserName" => username,
       "Password" => password,
@@ -81,8 +81,8 @@ defmodule UrFUAPI.Modeus.Auth.API do
       {:ok, response} ->
         process =
           response
-          |> AuthHelpers.fetch_cookie!()
-          |> insert_saml_token(process)
+          |> AuthHelpers.fetch_cookies!()
+          |> insert_saml_tokens(process)
 
         {:ok, process}
 
@@ -91,14 +91,14 @@ defmodule UrFUAPI.Modeus.Auth.API do
     end
   end
 
-  @spec insert_saml_token(String.t(), AuthProcess.t()) :: AuthProcess.t()
-  defp insert_saml_token(saml_token, %AuthProcess{} = process) do
-    Map.put(process, :saml_token, saml_token)
+  @spec insert_saml_tokens([String.t()], AuthProcess.t()) :: AuthProcess.t()
+  defp insert_saml_tokens(saml_tokens, %AuthProcess{} = process) do
+    Map.put(process, :saml_tokens, saml_tokens)
   end
 
   @spec get_saml_response(AuthProcess.t()) :: AuthProcess.t()
-  def get_saml_response(%AuthProcess{relay_url: url, saml_token: token} = process) do
-    response = Client.get!(url, headers: [{"cookie", token}])
+  def get_saml_response(%AuthProcess{relay_url: url, saml_tokens: tokens} = process) do
+    response = Client.get!(url, headers: [{"cookie", Enum.join(tokens, ";")}])
 
     response
     |> parse_saml_response()
