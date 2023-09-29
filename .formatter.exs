@@ -1,6 +1,6 @@
 # Used by "mix format"
 [
-  import_deps: [:tesla],
+  import_deps: [:tesla, :typed_struct],
   inputs: ["{mix,.formatter}.exs", "{config,lib,test}/**/*.{ex,exs}"],
   locals_without_parens: [
     # import from ex_gram

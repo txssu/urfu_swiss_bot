@@ -2,8 +2,8 @@ defmodule UrFUAPI.Modeus.Schedule.ScheduleData.EventRoom do
   use TypedStruct
 
   typedstruct enforce: true do
-    field(:id, String.t())
-    field(:links, map())
+    field :id, String.t()
+    field :links, map()
   end
 
   use ExConstructor

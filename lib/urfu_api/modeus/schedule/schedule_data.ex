@@ -20,23 +20,23 @@ defmodule UrFUAPI.Modeus.Schedule.ScheduleData do
   use TypedStruct
 
   typedstruct enforce: true do
-    field(:buildings, [Building.t()])
-    field(:course_unit_realizations, [CourseUnitRealization.t()])
-    field(:cycle_realizations, [CycleRealization.t()])
-    field(:durations, [Duration.t()])
-    field(:educational_objects, [EducationalObject.t()])
-    field(:event_attendances, [EventAttendance.t()])
-    field(:event_attendees, [EventAttendee.t()])
-    field(:event_locations, [EventLocation.t()])
-    field(:event_organizers, [EventOrganizer.t()])
-    field(:event_rooms, [EventRoom.t()])
-    field(:events, [Event.t()])
-    field(:lesson_realization_teams, [LessonRealizationTeam.t()])
-    field(:lesson_realizations, [LessonRealization.t()])
-    field(:person_mid_check_results, [PersonMidCheckResult.t()])
-    field(:person_results, [PersonResult.t()])
-    field(:persons, [Person.t()])
-    field(:rooms, [Room.t()])
+    field :buildings, [Building.t()]
+    field :course_unit_realizations, [CourseUnitRealization.t()]
+    field :cycle_realizations, [CycleRealization.t()]
+    field :durations, [Duration.t()]
+    field :educational_objects, [EducationalObject.t()]
+    field :event_attendances, [EventAttendance.t()]
+    field :event_attendees, [EventAttendee.t()]
+    field :event_locations, [EventLocation.t()]
+    field :event_organizers, [EventOrganizer.t()]
+    field :event_rooms, [EventRoom.t()]
+    field :events, [Event.t()]
+    field :lesson_realization_teams, [LessonRealizationTeam.t()]
+    field :lesson_realizations, [LessonRealization.t()]
+    field :person_mid_check_results, [PersonMidCheckResult.t()]
+    field :person_results, [PersonResult.t()]
+    field :persons, [Person.t()]
+    field :rooms, [Room.t()]
   end
 
   use ExConstructor, :do_new

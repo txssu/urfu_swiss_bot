@@ -3,7 +3,7 @@ defmodule UrFUAPI.Modeus.Schedule.ScheduleData.PersonResult do
   use TypedStruct
 
   typedstruct enforce: true do
-    field(:links, map())
+    field :links, map()
   end
 
   use ExConstructor
