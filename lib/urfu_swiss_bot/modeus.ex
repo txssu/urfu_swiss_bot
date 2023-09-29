@@ -22,7 +22,7 @@ defmodule UrFUSwissBot.Modeus do
     end
   end
 
-  @decorate cacheable(cache: Cache, key: {username, password}, match: &match_auth/1)
+  @decorate cacheable(cache: Cache, key: {:modeus_auth, username, password}, match: &match_auth/1)
   def auth_user(%User{username: username, password: password}) do
     UrFUAPI.Modeus.Auth.sign_in(username, password)
   end
@@ -70,7 +70,7 @@ defmodule UrFUSwissBot.Modeus do
   @decorate cacheable(
               cache: Cache,
               key:
-                {extract_person_id(auth), DateTime.to_unix(after_time),
+                {:get_schedule, extract_person_id(auth), DateTime.to_unix(after_time),
                  DateTime.to_unix(before_time)},
               ttl: :timer.hours(8)
             )
