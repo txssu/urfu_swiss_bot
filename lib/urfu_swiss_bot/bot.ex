@@ -33,12 +33,15 @@ defmodule UrFUSwissBot.Bot do
           | {:command, atom(), Message.t()},
           Cnt.t()
         ) :: Cnt.t()
-  def handle({:text, _text, _message} = event, %Cnt{extra: %{user: %User{}}} = context) do
-    user = context.extra.user
-
-    {module, state} = user.state
-
+  def handle(
+        {:text, _text, _message} = event,
+        %Cnt{extra: %{user: %User{state: {module, state}}}} = context
+      ) do
     module.handle(state, event, context)
+  end
+
+  def handle({:text, _text, _message}, %Cnt{extra: %{user: %User{state: nil}}} = context) do
+    answer(context, "Команда не найдена")
   end
 
   ###############################################
@@ -71,6 +74,10 @@ defmodule UrFUSwissBot.Bot do
 
   def handle({:command, :stats, _message} = event, context) do
     Bot.Stats.handle(event, context)
+  end
+
+  def handle({:command, _unknow, _message}, context) do
+    answer(context, "Команда не найдена")
   end
 
   ###############################################
