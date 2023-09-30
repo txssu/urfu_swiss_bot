@@ -49,8 +49,8 @@ defmodule UrFUSwissBot.Bot.UBU do
   end
 
   @spec get_response(User.t()) :: {InlineKeyboardMarkup.t(), String.t()}
-  def get_response(%User{username: username, password: password}) do
-    {:ok, auth} = UBU.auth(username, password)
+  def get_response(user) do
+    {:ok, auth} = UBU.auth_user(user)
     %{debt: debt, contract: contract} = UBU.get_dates(auth)
 
     {pay_keyboard(contract), format_debt(debt) <> @pay_urfu_ru_ad}

@@ -5,7 +5,7 @@ defmodule UrFUSwissBot.Bot.Auth do
   alias ExGram.Model.Message
 
   alias UrFUSwissBot.Bot.Menu
-  alias UrFUSwissBot.Modeus
+  alias UrFUSwissBot.IStudent
   alias UrFUSwissBot.Repo.User
 
   require ExGram.Dsl
@@ -41,7 +41,7 @@ defmodule UrFUSwissBot.Bot.Auth do
 
   @spec try_auth_user(User.t(), Message.t(), Cnt.t()) :: Cnt.t()
   defp try_auth_user(user, message, context) do
-    case Modeus.auth_user(user) do
+    case IStudent.auth_user(user) do
       {:ok, _autj} ->
         user
         |> User.nil_state()

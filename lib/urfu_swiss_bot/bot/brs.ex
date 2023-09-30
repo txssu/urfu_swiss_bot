@@ -30,8 +30,8 @@ defmodule UrFUSwissBot.Bot.BRS do
   end
 
   @spec get_response(User.t()) :: String.t()
-  def get_response(%User{username: username, password: password}) do
-    {:ok, auth} = IStudent.auth(username, password)
+  def get_response(user) do
+    {:ok, auth} = IStudent.auth_user(user)
 
     subjects = IStudent.get_subjects(auth)
 
