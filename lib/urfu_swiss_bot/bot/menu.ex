@@ -6,6 +6,8 @@ defmodule UrFUSwissBot.Bot.Menu do
   alias ExGram.Model.CallbackQuery
   alias ExGram.Model.Message
 
+  alias UrFUSwissBot.Repo.User
+
   require ExGram.Dsl
   require ExGram.Dsl.Keyboard
 
@@ -44,11 +46,22 @@ defmodule UrFUSwissBot.Bot.Menu do
 
   @spec menu_by_editing(Cnt.t()) :: Cnt.t()
   def menu_by_editing(context) do
+    remove_state(context.extra.user)
+
     edit(context, :inline, @text, reply_markup: @keyboard)
   end
 
   @spec menu_by_message(Cnt.t()) :: Cnt.t()
   def menu_by_message(context) do
     answer(context, @text, reply_markup: @keyboard)
+  end
+
+  @spec remove_state(User.t()) :: :ok
+  defp remove_state(user) do
+    user
+    |> User.nil_state()
+    |> User.save()
+
+    :ok
   end
 end
