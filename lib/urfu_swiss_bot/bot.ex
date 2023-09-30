@@ -1,7 +1,8 @@
 defmodule UrFUSwissBot.Bot do
+  alias ExGram.Cnt
   alias ExGram.Model.CallbackQuery
   alias ExGram.Model.Message
-  alias ExGram.Cnt
+
   alias UrFUSwissBot.Bot
   alias UrFUSwissBot.Repo.User
 
