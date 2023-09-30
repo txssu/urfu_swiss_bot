@@ -26,13 +26,13 @@ defmodule UrFUSwissBot.Bot.Schedule do
   Вместо 25.09.2023 вы также можете написать 25.09 или просто 25
   """
 
-  @today_no_more_events """
-  Пары закончились. Пора отдыхать 😼\
-  """
+  @today_no_more_events Utils.escape_telegram_markdown("""
+                        Пары закончились. Пора отдыхать 😼\
+                        """)
 
-  @tommorow_no_events """
-  Завтра нет пар. Можно отметить🥴\
-  """
+  @tommorow_no_events Utils.escape_telegram_markdown("""
+                      Завтра нет пар. Можно отметить🥴\
+                      """)
 
   @no_events Utils.escape_telegram_markdown("""
              В этот день пар нет.\
@@ -107,7 +107,7 @@ defmodule UrFUSwissBot.Bot.Schedule do
   def handle({:callback_query, %{data: "schedule-date-" <> date} = callback_query}, context) do
     {:ok, datetime, _offset} = DateTime.from_iso8601(date, :basic)
 
-    reply_callback(context, callback_query, datetime)
+    reply_callback(context, callback_query, datetime, @no_events)
   end
 
   @spec handle(:date, {:text, String.t(), Message}, Cnt.t()) :: Cnt.t()
@@ -118,8 +118,8 @@ defmodule UrFUSwissBot.Bot.Schedule do
     end
   end
 
-  @spec reply_callback(Cnt.t(), CallbackQuery.t(), DateTime.t(), :auto | String.t()) :: Cnt.t()
-  def reply_callback(context, callback_query, datetime, no_events_message \\ :auto) do
+  @spec reply_callback(Cnt.t(), CallbackQuery.t(), DateTime.t(), String.t()) :: Cnt.t()
+  def reply_callback(context, callback_query, datetime, no_events_message) do
     response = reply_with(context, datetime, no_events_message)
 
     context
@@ -129,23 +129,16 @@ defmodule UrFUSwissBot.Bot.Schedule do
 
   @spec reply_message(Cnt.t(), DateTime.t()) :: Cnt.t()
   def reply_message(context, datetime) do
-    response = reply_with(context, datetime, :auto)
+    response = reply_with(context, datetime, @no_events)
 
     answer(context, response, parse_mode: "MarkdownV2", reply_markup: keyboard_next(datetime))
   end
 
-  @spec reply_with(Cnt.t(), DateTime.t(), :auto | String.t()) :: String.t()
+  @spec reply_with(Cnt.t(), DateTime.t(), String.t()) :: String.t()
   defp reply_with(context, datetime, no_events_message) do
     user = context.extra.user
 
     formatted_date = format_date(datetime)
-
-    no_events_message =
-      if no_events_message == :auto do
-        @no_events
-      else
-        Utils.escape_telegram_markdown(no_events_message)
-      end
 
     case get_response(user, datetime) do
       {:ok, :empty} ->
