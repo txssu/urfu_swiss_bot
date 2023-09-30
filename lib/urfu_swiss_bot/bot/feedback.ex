@@ -41,8 +41,6 @@ defmodule UrFUSwissBot.Bot.Feedback do
         reply_to_message_id: reply_to.original_id
       )
 
-      FeedbackMessage.delete(reply_to)
-
       answer(context, "Готово")
     else
       answer(context, "Эта команда доступна только администраторам")
