@@ -14,12 +14,12 @@ defmodule UrFUSwissBot.Modeus do
   use Nebulex.Caching
 
   @decorate cacheable(cache: Cache, key: {:modeus_auth, username, password}, match: &match_auth/1)
-  @spec auth_user(User.t()) :: {:ok, Token.t()} | {:error, any()}
+  @spec auth_user(User.t()) :: {:ok, Token.t()} | {:error, String.t()}
   def auth_user(%User{username: username, password: password}) do
     Auth.sign_in(username, password)
   end
 
-  @spec match_auth({:ok, Token.t()} | {:error, any}) ::
+  @spec match_auth({:ok, Token.t()} | {:error, String.t()}) ::
           false | {true, {:ok, Token.t()}, [{:ttl, integer}, ...]}
   def match_auth({:ok, %Token{claims: %TokenClaims{exp: expires}}} = result) do
     ttl = DateTime.to_unix(expires, :millisecond) - System.os_time(:millisecond)

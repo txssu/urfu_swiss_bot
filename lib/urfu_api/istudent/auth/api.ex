@@ -5,7 +5,7 @@ defmodule UrFUAPI.IStudent.Auth.API do
 
   @url "https://sso.urfu.ru/adfs/OAuth2/authorize?resource=https%3A%2F%2Fistudent.urfu.ru&type=web_server&client_id=https%3A%2F%2Fistudent.urfu.ru&redirect_uri=https%3A%2F%2Fistudent.urfu.ru%3Fauth&response_type=code&scope="
 
-  @spec sign_in(String.t(), String.t()) :: {:ok, Token.t()} | {:error, any()}
+  @spec sign_in(String.t(), String.t()) :: {:ok, Token.t()} | {:error, String.t()}
   def sign_in(username, password) do
     case get_auth_tokens(username, password) do
       {:ok, auth_tokens} ->

@@ -1,5 +1,5 @@
 defmodule UrFUAPI.AuthHelpers do
-  @spec ensure_redirect(any) :: {:ok, any} | :error
+  @spec ensure_redirect(Tesla.Env.t()) :: {:ok, Tesla.Env.t()} | :error
   def ensure_redirect(response)
 
   def ensure_redirect(%Tesla.Env{status: status} = response)

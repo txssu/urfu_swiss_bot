@@ -103,7 +103,7 @@ defmodule UrFUSwissBot.Utils do
     end
   end
 
-  @spec unpack_integers([{any(), integer()}], [integer()]) :: {:ok, [integer()]} | :error
+  @spec unpack_integers([{integer(), String.t()}], [integer()]) :: {:ok, [integer()]} | :error
   defp unpack_integers(list, result \\ [])
 
   defp unpack_integers([], result) do

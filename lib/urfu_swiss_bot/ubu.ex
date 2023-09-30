@@ -9,7 +9,7 @@ defmodule UrFUSwissBot.UBU do
   use Nebulex.Caching
 
   @decorate cacheable(cache: Cache, key: {:ubu_auth, username, password}, ttl: :timer.hours(24))
-  @spec auth(String.t(), String.t()) :: {:ok, Token.t()} | {:error, any()}
+  @spec auth(String.t(), String.t()) :: {:ok, Token.t()} | {:error, String.t()}
   def auth(username, password) do
     Auth.sign_in(username, password)
   end

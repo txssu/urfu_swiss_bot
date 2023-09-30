@@ -6,7 +6,7 @@ defmodule UrFUAPI.UBU.Auth.API do
   @url "https://sts.urfu.ru/adfs/OAuth2/authorize?client_id=https%3A%2F%2Fubu.urfu.ru%2Ffse&redirect_uri=https%3A%2F%2Fubu.urfu.ru%2Ffse&resource=https%3A%2F%2Fubu.urfu.ru%2Ffse&response_type=code&state=e30"
   @ubu_rpc "https://ubu.urfu.ru/fse/api/rpc"
 
-  @spec sign_in(String.t(), String.t()) :: {:ok, Token.t()} | {:error, any()}
+  @spec sign_in(String.t(), String.t()) :: {:ok, Token.t()} | {:error, String.t()}
   def sign_in(username, password) do
     case get_auth_tokens(username, password) do
       {:ok, auth_tokens} ->

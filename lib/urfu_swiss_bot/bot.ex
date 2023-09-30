@@ -1,4 +1,6 @@
 defmodule UrFUSwissBot.Bot do
+  alias ExGram.Model.CallbackQuery
+  alias ExGram.Model.Message
   alias ExGram.Cnt
   alias UrFUSwissBot.Bot
   alias UrFUSwissBot.Repo.User
@@ -23,7 +25,12 @@ defmodule UrFUSwissBot.Bot do
   # Handle state
   ###############################################
 
-  @spec handle(any(), Cnt.t()) :: Cnt.t()
+  @spec handle(
+          {:text, String.t(), Message.t()}
+          | {:callback_query, CallbackQuery.t()}
+          | {:command, atom(), Message.t()},
+          Cnt.t()
+        ) :: Cnt.t()
   def handle({:text, _text, _message} = event, %Cnt{extra: %{user: %User{}}} = context) do
     user = context.extra.user
 

@@ -4,6 +4,7 @@ defmodule UrFUSwissBot.Bot.Menu do
 
   alias ExGram.Cnt
   alias ExGram.Model.CallbackQuery
+  alias ExGram.Model.Message
 
   require ExGram.Dsl
   require ExGram.Dsl.Keyboard
@@ -31,7 +32,12 @@ defmodule UrFUSwissBot.Bot.Menu do
                end
              end)
 
-  @spec handle({:callback_query, CallbackQuery.t()} | any(), Cnt.t()) :: Cnt.t()
+  @spec handle(
+          {:callback_query, CallbackQuery.t()}
+          | {:text, String.t(), Message.t()}
+          | {:command, atom(), Message.t()},
+          Cnt.t()
+        ) :: Cnt.t()
   def handle({:callback_query, _}, context), do: menu_by_editing(context)
 
   def handle(_event, context), do: menu_by_message(context)

@@ -181,7 +181,7 @@ defmodule UrFUSwissBot.Bot.Schedule do
           {:ok, :empty}
           | {:ok, {Date.t(), ScheduleData.t()}}
           | {:ok, ScheduleData.t()}
-          | {:error, any}
+          | {:error, String.t()}
   defp get_response(user, datetime) do
     case Modeus.auth_user(user) do
       {:ok, auth} -> {:ok, get_schedule(auth, datetime)}

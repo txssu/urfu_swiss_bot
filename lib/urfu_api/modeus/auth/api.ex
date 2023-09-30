@@ -20,7 +20,7 @@ defmodule UrFUAPI.Modeus.Auth.API do
   @oauth2 "https://urfu-auth.modeus.org/oauth2/authorize?response_type=id_token%20token&client_id=3CuF3FsNyRLiFVj0Il2fIujftw0a&state=Ym1KVy5NWDBXeXhRaU9qUk5HVW1Wb0Z-MVFadmo0c2VNYm9aWlh1OFc2bkxr&redirect_uri=https%3A%2F%2Furfu.modeus.org%2Fschedule-calendar%2Fmy&scope=openid&nonce=0"
   @common_auth "https://urfu-auth.modeus.org/commonauth"
 
-  @spec sign_in(String.t(), String.t()) :: {:ok, Token.t()} | {:error, any()}
+  @spec sign_in(String.t(), String.t()) :: {:ok, Token.t()} | {:error, String.t()}
   def sign_in(username, password) do
     process =
       AuthProcess.new()
@@ -67,7 +67,7 @@ defmodule UrFUAPI.Modeus.Auth.API do
   end
 
   @spec get_saml_tokens(AuthProcess.t(), String.t(), String.t()) ::
-          {:ok, AuthProcess.t()} | {:error, any()}
+          {:ok, AuthProcess.t()} | {:error, String.t()}
   def get_saml_tokens(%AuthProcess{relay_url: url} = process, username, password) do
     body = %{
       "UserName" => username,

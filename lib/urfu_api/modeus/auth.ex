@@ -2,6 +2,6 @@ defmodule UrFUAPI.Modeus.Auth do
   alias UrFUAPI.Modeus.Auth.API
   alias UrFUAPI.Modeus.Auth.Token
 
-  @spec sign_in(String.t(), String.t()) :: {:ok, Token.t()} | {:error, any()}
+  @spec sign_in(String.t(), String.t()) :: {:ok, Token.t()} | {:error, String.t()}
   defdelegate sign_in(username, password), to: API
 end

@@ -7,9 +7,9 @@ defmodule UrFUAPI.Modeus.Schedule do
   @spec get_schedule(Token.t(), DateTime.t(), DateTime.t()) :: ScheduleData.t()
   defdelegate get_schedule(auth, after_time, before_time), to: API
 
-  @spec fetch_by_link(map, String.t(), ScheduleData.t()) :: {:ok, any()} | :error
+  @spec fetch_by_link(map, String.t(), ScheduleData.t()) :: {:ok, map()} | :error
   defdelegate fetch_by_link(item, link_name, database), to: ScheduleData
 
-  @spec fetch_by_link!(map, String.t(), ScheduleData.t()) :: any()
+  @spec fetch_by_link!(map, String.t(), ScheduleData.t()) :: map()
   defdelegate fetch_by_link!(item, link_name, database), to: ScheduleData
 end

@@ -13,6 +13,8 @@ defmodule UrFUSwissBot.Repo do
   @spec delete(CubDB.key()) :: :ok
   def delete(key), do: CubDB.delete(@repo, key)
 
-  @spec transaction(function) :: any
+  @spec transaction((CubDB.Tx.t() -> {:cancel, result} | {:commit, CubDB.Tx.t(), result})) ::
+          result
+        when result: any()
   def transaction(fun), do: CubDB.transaction(@repo, fun)
 end
