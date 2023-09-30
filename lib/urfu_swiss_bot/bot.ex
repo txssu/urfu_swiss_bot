@@ -16,12 +16,14 @@ defmodule UrFUSwissBot.Bot do
   middleware ExGram.Middleware.IgnoreUsername
   middleware UrFUSwissBot.Bot.Middleware.GetUser
 
+  @spec bot :: :urfu_swiss_bot
   def bot, do: @bot
 
   ###############################################
   # Handle state
   ###############################################
 
+  @spec handle(any(), Cnt.t()) :: Cnt.t()
   def handle({:text, _text, _message} = event, %Cnt{extra: %{user: %User{}}} = context) do
     user = context.extra.user
 

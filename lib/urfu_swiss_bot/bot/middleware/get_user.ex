@@ -4,6 +4,7 @@ defmodule UrFUSwissBot.Bot.Middleware.GetUser do
   alias ExGram.Cnt
   alias UrFUSwissBot.Repo.User
 
+  @spec call(Cnt.t(), keyword()) :: Cnt.t()
   def call(%Cnt{update: %{message: %{from: %{id: id}}}} = context, _opts) do
     add_extra(context, :user, User.load(id))
   end

@@ -1,6 +1,9 @@
 defmodule UrFUSwissBot.Bot.Auth do
   import ExGram.Dsl
 
+  alias ExGram.Cnt
+  alias ExGram.Model.Message
+
   alias UrFUSwissBot.Bot.Menu
   alias UrFUSwissBot.Modeus
   alias UrFUSwissBot.Repo.User
@@ -21,6 +24,7 @@ defmodule UrFUSwissBot.Bot.Auth do
   123456qwerty
   """
 
+  @spec handle(:auth, {:text, String.t(), Message.t()}, Cnt.t()) :: Cnt.t()
   def handle(:auth, {:text, text, message}, context) do
     user = context.extra.user
 
@@ -35,6 +39,7 @@ defmodule UrFUSwissBot.Bot.Auth do
     end
   end
 
+  @spec try_auth_user(User.t(), Message.t(), Cnt.t()) :: Cnt.t()
   defp try_auth_user(user, message, context) do
     case Modeus.auth_user(user) do
       {:ok, _autj} ->
@@ -54,12 +59,14 @@ defmodule UrFUSwissBot.Bot.Auth do
     end
   end
 
+  @spec accepted(Cnt.t(), Message.t(), String.t()) :: Cnt.t()
   defp accepted(context, message, username) do
     context
     |> delete(message)
     |> answer(message_deleted(username))
   end
 
+  @spec message_deleted(String.t()) :: String.t()
   defp message_deleted(username) do
     email = hide_email(username)
 
@@ -72,6 +79,7 @@ defmodule UrFUSwissBot.Bot.Auth do
     """
   end
 
+  @spec hide_email(String.t(), String.t(), non_neg_integer()) :: String.t()
   defp hide_email(email, result \\ "", visible_characters \\ 3)
 
   defp hide_email("@" <> _domain = domain, result, _visible_characters) do

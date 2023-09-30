@@ -1,12 +1,17 @@
 defmodule UrFUSwissBot.Utils do
+  @type weekday :: 1 | 2 | 3 | 4 | 5 | 6 | 7
+
+  @spec start_of_next_day(DateTime.t()) :: DateTime.t()
   def start_of_next_day(datetime) do
     start_of_day_after(datetime, 1)
   end
 
+  @spec start_of_previous_day(DateTime.t()) :: DateTime.t()
   def start_of_previous_day(datetime) do
     start_of_day_after(datetime, -1)
   end
 
+  @spec start_of_day_after(DateTime.t(), integer()) :: DateTime.t()
   def start_of_day_after(datetime, days) do
     datetime
     |> DateTime.shift_zone!("Asia/Yekaterinburg")
@@ -34,7 +39,7 @@ defmodule UrFUSwissBot.Utils do
   def month_to_russian(11), do: "Ноября"
   def month_to_russian(12), do: "Декабря"
 
-  @spec weekday_to_russian(1 | 2 | 3 | 4 | 5 | 6 | 7) :: String.t()
+  @spec weekday_to_russian(weekday()) :: String.t()
   def weekday_to_russian(weekday)
   def weekday_to_russian(1), do: "Понедельник"
   def weekday_to_russian(2), do: "Вторник"
@@ -44,6 +49,7 @@ defmodule UrFUSwissBot.Utils do
   def weekday_to_russian(6), do: "Суббота"
   def weekday_to_russian(7), do: "Воскресенье"
 
+  @spec russian_to_weekday(String.t()) :: :error | {:ok, weekday()}
   def russian_to_weekday(weekday)
   def russian_to_weekday("понедельник"), do: {:ok, 1}
   def russian_to_weekday("вторник"), do: {:ok, 2}
@@ -54,6 +60,7 @@ defmodule UrFUSwissBot.Utils do
   def russian_to_weekday("воскресенье"), do: {:ok, 7}
   def russian_to_weekday(_others), do: :error
 
+  @spec parse_russian_date(String.t()) :: {:ok, DateTime.t()} | :error
   def parse_russian_date(text) do
     case String.split(text, ".") do
       [number_or_weekday] ->
@@ -64,6 +71,7 @@ defmodule UrFUSwissBot.Utils do
     end
   end
 
+  @spec parse_date_from_word(String.t()) :: {:ok, DateTime.t()} | :error
   def parse_date_from_word(number_or_weekday) do
     case Integer.parse(number_or_weekday) do
       {day, ""} ->
@@ -82,6 +90,7 @@ defmodule UrFUSwissBot.Utils do
     end
   end
 
+  @spec parse_date_from_list([String.t()]) :: {:ok, DateTime.t()} | :error
   def parse_date_from_list(lst) do
     maybe_ints =
       lst
@@ -94,6 +103,7 @@ defmodule UrFUSwissBot.Utils do
     end
   end
 
+  @spec unpack_integers([{any(), integer()}], [integer()]) :: {:ok, [integer()]} | :error
   defp unpack_integers(list, result \\ [])
 
   defp unpack_integers([], result) do
@@ -108,6 +118,7 @@ defmodule UrFUSwissBot.Utils do
     :error
   end
 
+  @spec date_from_list([integer()]) :: {:ok, DateTime.t()} | :error
   defp date_from_list([month, day]) do
     year = Date.utc_today().year
 
@@ -132,6 +143,7 @@ defmodule UrFUSwissBot.Utils do
     :error
   end
 
+  @spec datetime_in_future(integer()) :: {:ok, DateTime.t()} | :error
   defp datetime_in_future(day) do
     today = Date.utc_today()
 
@@ -145,6 +157,7 @@ defmodule UrFUSwissBot.Utils do
     date_from_list([month, day])
   end
 
+  @spec datetime_in_future_by_weekday(weekday()) :: {:ok, DateTime.t()}
   defp datetime_in_future_by_weekday(weekday) do
     today = Date.utc_today()
     weekday_today = Date.day_of_week(today)
@@ -161,6 +174,7 @@ defmodule UrFUSwissBot.Utils do
 
   @chars_need_escape [?_, ?*, ?[, ?], ?(, ?), ?~, ?`, ?>, ?#, ?+, ?-, ?=, ?|, ?{, ?}, ?., ?!]
 
+  @spec escape_telegram_markdown(String.t() | {:unescape, String.t()}) :: String.t()
   def escape_telegram_markdown({:unescape, binary}) do
     binary
   end

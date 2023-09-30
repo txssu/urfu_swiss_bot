@@ -2,6 +2,9 @@ defmodule UrFUSwissBot.Bot.Settings do
   import ExGram.Dsl
   import ExGram.Dsl.Keyboard
 
+  alias ExGram.Cnt
+  alias ExGram.Model.CallbackQuery
+  alias ExGram.Model.InlineKeyboardMarkup
   alias UrFUSwissBot.Repo.User
 
   require ExGram.Dsl
@@ -25,6 +28,7 @@ defmodule UrFUSwissBot.Bot.Settings do
                end
              end)
 
+  @spec confirmation_keyboard(String.t()) :: InlineKeyboardMarkup.t()
   def confirmation_keyboard(action) do
     keyboard(:inline) do
       row do
@@ -34,6 +38,7 @@ defmodule UrFUSwissBot.Bot.Settings do
     end
   end
 
+  @spec handle({:callback_query, CallbackQuery.t()}, Cnt.t()) :: Cnt.t()
   def handle({:callback_query, %{data: "settings"} = callback_query}, context) do
     context
     |> answer_callback(callback_query)

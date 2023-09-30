@@ -26,6 +26,7 @@ defmodule UrFUSwissBot.Repo.FeedbackMessage do
   def new(id, from_id, original_id),
     do: %__MODULE__{id: id, from_id: from_id, original_id: original_id}
 
+  @spec select([CubDB.select_option()]) :: Enumerable.t()
   def select(options \\ []) do
     items = Repo.select(options)
 

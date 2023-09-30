@@ -2,6 +2,10 @@ defmodule UrFUSwissBot.Bot.Feedback do
   import ExGram.Dsl
   import ExGram.Dsl.Keyboard
 
+  alias ExGram.Cnt
+  alias ExGram.Model.CallbackQuery
+  alias ExGram.Model.Message
+
   alias UrFUSwissBot.Bot.Menu
   alias UrFUSwissBot.Repo.FeedbackMessage
   alias UrFUSwissBot.Repo.User
@@ -20,6 +24,11 @@ defmodule UrFUSwissBot.Bot.Feedback do
                end
              end)
 
+  @spec handle(
+          {:callback_query, CallbackQuery.t()}
+          | {:command, :reply_feedback, Message.t()},
+          Cnt.t()
+        ) :: Cnt.t()
   def handle({:command, :reply_feedback, message}, context) do
     if context.extra.user.is_admin do
       reply_to =
@@ -50,6 +59,7 @@ defmodule UrFUSwissBot.Bot.Feedback do
     |> edit(:inline, @text, reply_markup: @keyboard)
   end
 
+  @spec handle(:send_feedback, {:text, String.t(), Message.t()}, Cnt.t()) :: Cnt.t()
   def handle(:send_feedback, {:text, _text, message}, context) do
     Enum.each(User.select_admins(), fn admin ->
       sended_message =

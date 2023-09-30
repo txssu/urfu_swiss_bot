@@ -2,6 +2,9 @@ defmodule UrFUSwissBot.Bot.Menu do
   import ExGram.Dsl
   import ExGram.Dsl.Keyboard
 
+  alias ExGram.Cnt
+  alias ExGram.Model.CallbackQuery
+
   require ExGram.Dsl
   require ExGram.Dsl.Keyboard
 
@@ -28,14 +31,17 @@ defmodule UrFUSwissBot.Bot.Menu do
                end
              end)
 
+  @spec handle({:callback_query, CallbackQuery.t()} | any(), Cnt.t()) :: Cnt.t()
   def handle({:callback_query, _}, context), do: menu_by_editing(context)
 
   def handle(_event, context), do: menu_by_message(context)
 
+  @spec menu_by_editing(Cnt.t()) :: Cnt.t()
   def menu_by_editing(context) do
     edit(context, :inline, @text, reply_markup: @keyboard)
   end
 
+  @spec menu_by_message(Cnt.t()) :: Cnt.t()
   def menu_by_message(context) do
     answer(context, @text, reply_markup: @keyboard)
   end

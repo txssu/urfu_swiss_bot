@@ -2,6 +2,9 @@ defmodule UrFUSwissBot.Bot.StartCommand do
   import ExGram.Dsl
 
   alias ExGram.Cnt
+  alias ExGram.Model.CallbackQuery
+  alias ExGram.Model.Message
+
   alias UrFUSwissBot.Repo.User
 
   require ExGram.Dsl
@@ -32,6 +35,12 @@ defmodule UrFUSwissBot.Bot.StartCommand do
   """
 
   # Start auth for new user
+  @spec handle(
+          {:callback_query, CallbackQuery.t()}
+          | {:command, atom(), Message.t()}
+          | {:text, String.t(), Message.t()},
+          Cnt.t()
+        ) :: Cnt.t()
   def handle({:command, :start, %{from: %{id: user_id}}}, context) do
     start_auth_new_user(context, user_id)
   end
@@ -68,28 +77,33 @@ defmodule UrFUSwissBot.Bot.StartCommand do
     continue_auth(answered_context)
   end
 
+  @spec start_auth_new_user(Cnt.t(), integer()) :: Cnt.t()
   def start_auth_new_user(context, user_id) do
     context
     |> set_auth_state(User.new(user_id))
     |> answer_message_auth(@start_text)
   end
 
+  @spec again_auth(Cnt.t(), integer()) :: Cnt.t()
   def again_auth(context, user_id) do
     context
     |> set_auth_state(User.new(user_id))
     |> answer_message_auth(@again_text)
   end
 
+  @spec continue_auth(Cnt.t()) :: Cnt.t()
   def continue_auth(context) do
     answer_message_auth(context, @continue_text)
   end
 
+  @spec reauth(Cnt.t(), User.t(), CallbackQuery.t()) :: Cnt.t()
   def reauth(context, user, callback) do
     context
     |> set_auth_state(user)
     |> answer_callback_auth(callback, @reauth_text)
   end
 
+  @spec set_auth_state(Cnt.t(), User.t()) :: Cnt.t()
   defp set_auth_state(context, user) do
     user
     |> User.delete_credentials()
@@ -99,8 +113,10 @@ defmodule UrFUSwissBot.Bot.StartCommand do
     context
   end
 
+  @spec answer_message_auth(Cnt.t(), String.t()) :: Cnt.t()
   defp answer_message_auth(context, text), do: answer(context, text <> @instruction)
 
+  @spec answer_callback_auth(Cnt.t(), CallbackQuery.t(), String.t()) :: Cnt.t()
   defp answer_callback_auth(context, callback, text) do
     context
     |> answer_callback(callback)

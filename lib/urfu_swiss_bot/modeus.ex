@@ -14,10 +14,13 @@ defmodule UrFUSwissBot.Modeus do
   use Nebulex.Caching
 
   @decorate cacheable(cache: Cache, key: {:modeus_auth, username, password}, match: &match_auth/1)
+  @spec auth_user(User.t()) :: {:ok, Token.t()} | {:error, any()}
   def auth_user(%User{username: username, password: password}) do
     Auth.sign_in(username, password)
   end
 
+  @spec match_auth({:ok, Token.t()} | {:error, any}) ::
+          false | {true, {:ok, Token.t()}, [{:ttl, integer}, ...]}
   def match_auth({:ok, %Token{claims: %TokenClaims{exp: expires}}} = result) do
     ttl = DateTime.to_unix(expires, :millisecond) - System.os_time(:millisecond)
 
@@ -28,11 +31,13 @@ defmodule UrFUSwissBot.Modeus do
     false
   end
 
+  @spec get_schedule_by_day(Token.t(), DateTime.t()) :: ScheduleData.t()
   def get_schedule_by_day(auth, datetime) do
     before_time = Utils.start_of_next_day(datetime)
     get_schedule(auth, datetime, before_time)
   end
 
+  @spec get_schedule_for_week(Token.t(), DateTime.t()) :: ScheduleData.t()
   def get_schedule_for_week(auth, datetime) do
     before_time = Utils.start_of_day_after(datetime, 7)
     get_schedule(auth, datetime, before_time)
@@ -62,6 +67,7 @@ defmodule UrFUSwissBot.Modeus do
                  DateTime.to_unix(before_time)},
               ttl: :timer.hours(8)
             )
+  @spec get_schedule(Token.t(), DateTime.t(), DateTime.t()) :: ScheduleData.t()
   def get_schedule(auth, after_time, before_time) do
     %ScheduleData{events: all_events} =
       schedule = Schedule.get_schedule(auth, after_time, before_time)
@@ -72,11 +78,13 @@ defmodule UrFUSwissBot.Modeus do
     %{schedule | events: events}
   end
 
+  @spec first_or_last_event_of_day?(Event.t()) :: boolean()
   defp first_or_last_event_of_day?(%Event{starts_at_local: starts_at}) do
     time = DateTime.to_time(starts_at)
 
     Time.before?(time, ~T[08:00:00]) or Time.after?(time, ~T[20:00:00])
   end
 
+  @spec extract_person_id(Token.t()) :: integer()
   defp extract_person_id(%Token{claims: %TokenClaims{person_id: person_id}}), do: person_id
 end

@@ -6,6 +6,7 @@ defmodule UrFUSwissBot.Application do
   @supervisor_opts [strategy: :one_for_one, name: UrFUSwissBot.Supervisor]
 
   @impl Application
+  @spec start(any(), any()) :: {:ok, pid()} | {:error, any()}
   def start(_type, _args) do
     migrate()
 
@@ -21,6 +22,7 @@ defmodule UrFUSwissBot.Application do
     Supervisor.start_link(children, @supervisor_opts)
   end
 
+  @spec migrate() :: :ok
   defp migrate do
     {:ok, pid} = Supervisor.start_link([database_spec()], @supervisor_opts)
 
@@ -29,6 +31,7 @@ defmodule UrFUSwissBot.Application do
     :ok = Supervisor.stop(pid)
   end
 
+  @spec database_spec() :: {module(), term()}
   defp database_spec do
     data_dir = Application.get_env(@app, UrFUSwissBot.Repo)[:database_folder]
     {CubDB, [data_dir: data_dir, name: UrFUSwissBot.Repo]}

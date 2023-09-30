@@ -2,6 +2,10 @@ defmodule UrFUSwissBot.Bot.UBU do
   import ExGram.Dsl
   import ExGram.Dsl.Keyboard
 
+  alias ExGram.Cnt
+  alias ExGram.Model.CallbackQuery
+  alias ExGram.Model.InlineKeyboardMarkup
+
   alias UrFUSwissBot.Repo.User
   alias UrFUSwissBot.UBU
 
@@ -20,6 +24,7 @@ defmodule UrFUSwissBot.Bot.UBU do
                end
              end)
 
+  @spec pay_keyboard(String.t()) :: InlineKeyboardMarkup.t()
   defp pay_keyboard(contract) do
     keyboard(:inline) do
       row do
@@ -32,6 +37,7 @@ defmodule UrFUSwissBot.Bot.UBU do
     end
   end
 
+  @spec handle({:callback_query, CallbackQuery.t()}, Cnt.t()) :: Cnt.t()
   def handle({:callback_query, %{data: "ubu"}}, context) do
     edit(context, :inline, "Что вас интересует?", reply_markup: @keyboard)
   end
@@ -42,6 +48,7 @@ defmodule UrFUSwissBot.Bot.UBU do
     edit(context, :inline, response, reply_markup: kbd)
   end
 
+  @spec get_response(User.t()) :: {InlineKeyboardMarkup.t(), String.t()}
   def get_response(%User{username: username, password: password}) do
     {:ok, auth} = UBU.auth(username, password)
     %{debt: debt, contract: contract} = UBU.get_dates(auth)
@@ -49,6 +56,7 @@ defmodule UrFUSwissBot.Bot.UBU do
     {pay_keyboard(contract), format_debt(debt) <> @pay_urfu_ru_ad}
   end
 
+  @spec format_debt(integer) :: String.t()
   defp format_debt(debt)
 
   defp format_debt(0) do

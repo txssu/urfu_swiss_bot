@@ -45,6 +45,7 @@ defmodule UrFUSwissBot.Repo.User do
   @spec nil_state(t) :: t
   def nil_state(user), do: %{user | state: nil}
 
+  @spec select([CubDB.select_option()]) :: Enumerable.t()
   def select(options \\ []) do
     items = Repo.select(options)
 
@@ -56,6 +57,7 @@ defmodule UrFUSwissBot.Repo.User do
     |> Stream.map(fn {{@table, _id}, user} -> user end)
   end
 
+  @spec select_admins([CubDB.select_option()]) :: Enumerable.t()
   def select_admins(options \\ []) do
     items = select(options)
 
