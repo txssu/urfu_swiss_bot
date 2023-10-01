@@ -6,7 +6,9 @@ defmodule UrFUSwissBot.Bot.Auth do
 
   alias UrFUSwissBot.Bot.Menu
   alias UrFUSwissBot.IStudent
-  alias UrFUSwissBot.Repo.User
+
+  alias UrFUSwissKnife.Accounts
+  alias UrFUSwissKnife.Accounts.User
 
   require ExGram.Dsl
 
@@ -45,7 +47,7 @@ defmodule UrFUSwissBot.Bot.Auth do
       {:ok, _autj} ->
         user
         |> User.nil_state()
-        |> User.save()
+        |> Accounts.save_user()
 
         context
         |> accepted(message, user.username)

@@ -1,22 +1,21 @@
 defmodule UrFUSwissBot.Migrator do
   alias CubDB.Tx
-  alias UrFUSwissBot.Repo
 
-  @spec migrate() :: :ok
-  def migrate do
-    version = current_version()
+  @spec migrate(GenServer.server()) :: :ok
+  def migrate(db) do
+    version = CubDB.get(db, :version, 0)
 
     case to_migration(version + 1) do
       {:ok, migration} ->
         log("Migrate vsn#{version} -> vsn#{version + 1}")
 
-        Repo.transaction(fn tx ->
+        CubDB.transaction(db, fn tx ->
           tx = apply(__MODULE__, migration, [tx])
           tx = increase_version(tx)
           {:commit, tx, :ok}
         end)
 
-        migrate()
+        migrate(db)
 
       :error ->
         :ok
@@ -50,14 +49,18 @@ defmodule UrFUSwissBot.Migrator do
     end)
   end
 
-  @spec current_version() :: integer()
-  def current_version do
-    Repo.get(:version, 0)
-  end
+  # Convert structs to maps
+  @spec to_version_3(Tx.t()) :: Tx.t()
+  def to_version_3(tx) do
+    items = Tx.select(tx)
 
-  @spec current_version(Tx.t()) :: integer()
-  def current_version(tx) do
-    Tx.get(tx, :version, 0)
+    Enum.reduce(items, tx, fn
+      {{_key, _table} = key, struct}, tx_acc ->
+        Tx.put(tx_acc, key, Map.from_struct(struct))
+
+      _others, tx_acc ->
+        tx_acc
+    end)
   end
 
   @spec to_migration(integer()) :: {:ok, atom()} | :error
@@ -69,8 +72,7 @@ defmodule UrFUSwissBot.Migrator do
 
   @spec increase_version(Tx.t()) :: Tx.t()
   defp increase_version(tx) do
-    version = current_version(tx)
-
+    version = Tx.get(tx, :version, 0)
     Tx.put(tx, :version, version + 1)
   end
 

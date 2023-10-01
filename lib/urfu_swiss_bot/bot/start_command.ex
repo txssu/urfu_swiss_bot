@@ -5,7 +5,8 @@ defmodule UrFUSwissBot.Bot.StartCommand do
   alias ExGram.Model.CallbackQuery
   alias ExGram.Model.Message
 
-  alias UrFUSwissBot.Repo.User
+  alias UrFUSwissKnife.Accounts
+  alias UrFUSwissKnife.Accounts.User
 
   require ExGram.Dsl
 
@@ -108,7 +109,7 @@ defmodule UrFUSwissBot.Bot.StartCommand do
     user
     |> User.delete_credentials()
     |> User.set_state({UrFUSwissBot.Bot.Auth, :auth})
-    |> User.save()
+    |> Accounts.save_user()
 
     context
   end

@@ -4,7 +4,6 @@ defmodule UrFUSwissBot.Bot do
   alias ExGram.Model.Message
 
   alias UrFUSwissBot.Bot
-  alias UrFUSwissBot.Repo.User
 
   @bot :urfu_swiss_bot
 
@@ -35,12 +34,12 @@ defmodule UrFUSwissBot.Bot do
         ) :: Cnt.t()
   def handle(
         {:text, _text, _message} = event,
-        %Cnt{extra: %{user: %User{state: {module, state}}}} = context
+        %Cnt{extra: %{user: %{state: {module, state}}}} = context
       ) do
     module.handle(state, event, context)
   end
 
-  def handle({:text, _text, _message}, %Cnt{extra: %{user: %User{state: nil}}} = context) do
+  def handle({:text, _text, _message}, %Cnt{extra: %{user: %{state: nil}}} = context) do
     answer(context, "Команда не найдена")
   end
 
@@ -56,7 +55,7 @@ defmodule UrFUSwissBot.Bot do
     Bot.StartCommand.handle(event, context)
   end
 
-  def handle(event, %Cnt{extra: %{user: %User{username: nil, password: nil}}} = context) do
+  def handle(event, %Cnt{extra: %{user: %{username: nil, password: nil}}} = context) do
     Bot.StartCommand.handle(event, context)
   end
 

@@ -5,7 +5,8 @@ defmodule UrFUSwissBot.Bot.Settings do
   alias ExGram.Cnt
   alias ExGram.Model.CallbackQuery
   alias ExGram.Model.InlineKeyboardMarkup
-  alias UrFUSwissBot.Repo.User
+
+  alias UrFUSwissKnife.Accounts
 
   require ExGram.Dsl
   require ExGram.Dsl.Keyboard
@@ -62,7 +63,7 @@ defmodule UrFUSwissBot.Bot.Settings do
   end
 
   def handle({:callback_query, %{data: "settings-delete"} = callback_query}, context) do
-    User.delete(context.extra.user)
+    Accounts.delete_user(context.extra.user)
 
     context
     |> answer_callback(callback_query)

@@ -24,6 +24,7 @@ defmodule UrFUSwissBot.MixProject do
       {:tzdata, "~> 1.1"},
       # Database
       {:cubdb, "~> 2.0.2"},
+      {:cubrepo, github: "txssu/cubrepo"},
       # Telegram bot
       {:ex_gram, "~> 0.40.0"},
       {:tesla, "~> 1.4"},

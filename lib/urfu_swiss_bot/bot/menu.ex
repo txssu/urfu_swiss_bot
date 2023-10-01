@@ -6,7 +6,8 @@ defmodule UrFUSwissBot.Bot.Menu do
   alias ExGram.Model.CallbackQuery
   alias ExGram.Model.Message
 
-  alias UrFUSwissBot.Repo.User
+  alias UrFUSwissKnife.Accounts
+  alias UrFUSwissKnife.Accounts.User
 
   require ExGram.Dsl
   require ExGram.Dsl.Keyboard
@@ -60,7 +61,7 @@ defmodule UrFUSwissBot.Bot.Menu do
   defp remove_state(user) do
     user
     |> User.nil_state()
-    |> User.save()
+    |> Accounts.save_user()
 
     :ok
   end

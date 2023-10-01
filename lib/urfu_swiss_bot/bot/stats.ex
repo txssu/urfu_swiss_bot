@@ -4,7 +4,7 @@ defmodule UrFUSwissBot.Bot.Stats do
   alias ExGram.Cnt
   alias ExGram.Model.Message
 
-  alias UrFUSwissBot.Repo.User
+  alias UrFUSwissKnife.Accounts
 
   require ExGram.Dsl
   require ExGram.Dsl.Keyboard
@@ -16,7 +16,7 @@ defmodule UrFUSwissBot.Bot.Stats do
   def handle({:command, :stats, _message}, context) do
     if context.extra.user.is_admin do
       {inactive_users, active_users} =
-        Enum.split_with(User.select(), fn x -> is_nil(x.username) end)
+        Enum.split_with(Accounts.get_users(), fn x -> is_nil(x.username) end)
 
       active_users_count = Enum.count(active_users)
       active_users_stat = "Активных пользователей: #{active_users_count}"

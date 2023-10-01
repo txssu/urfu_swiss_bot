@@ -7,8 +7,9 @@ defmodule UrFUSwissBot.Bot.Feedback do
   alias ExGram.Model.Message
 
   alias UrFUSwissBot.Bot.Menu
-  alias UrFUSwissBot.Repo.FeedbackMessage
-  alias UrFUSwissBot.Repo.User
+
+  alias UrFUSwissKnife.Accounts
+  alias UrFUSwissKnife.Feedback
 
   require ExGram.Dsl
   require ExGram.Dsl.Keyboard
@@ -32,7 +33,7 @@ defmodule UrFUSwissBot.Bot.Feedback do
   def handle({:command, :reply_feedback, message}, context) do
     if context.extra.user.is_admin do
       reply_to =
-        FeedbackMessage.load(message.reply_to_message.message_id)
+        Feedback.get_message(message.reply_to_message.message_id)
 
       text = "Ответ администратора: " <> message.text
 
@@ -49,8 +50,8 @@ defmodule UrFUSwissBot.Bot.Feedback do
 
   def handle({:callback_query, %{data: "feedback"} = callback_query}, context) do
     context.extra.user
-    |> User.set_state({__MODULE__, :send_feedback})
-    |> User.save()
+    |> Accounts.User.set_state({__MODULE__, :send_feedback})
+    |> Accounts.save_user()
 
     context
     |> answer_callback(callback_query)
@@ -59,14 +60,14 @@ defmodule UrFUSwissBot.Bot.Feedback do
 
   @spec handle(:send_feedback, {:text, String.t(), Message.t()}, Cnt.t()) :: Cnt.t()
   def handle(:send_feedback, {:text, _text, message}, context) do
-    Enum.each(User.select_admins(), fn admin ->
+    Enum.each(Accounts.get_admins(), fn admin ->
       sended_message =
         ExGram.forward_message!(admin.id, message.chat.id, message.message_id, bot: context.name)
 
       feedback_message =
-        FeedbackMessage.new(sended_message.message_id, message.from.id, message.message_id)
+        Feedback.Message.new(sended_message.message_id, message.from.id, message.message_id)
 
-      FeedbackMessage.save(feedback_message)
+      Feedback.save_message(feedback_message)
     end)
 
     context

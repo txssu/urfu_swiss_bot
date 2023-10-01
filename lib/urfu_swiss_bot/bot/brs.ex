@@ -8,7 +8,7 @@ defmodule UrFUSwissBot.Bot.BRS do
   alias UrFUAPI.IStudent.BRS.Subject
   alias UrFUAPI.IStudent.BRS.SubjectScore
 
-  alias UrFUSwissBot.Repo.User
+  alias UrFUSwissKnife.Accounts.User
 
   alias UrFUSwissBot.IStudent
   alias UrFUSwissBot.Utils

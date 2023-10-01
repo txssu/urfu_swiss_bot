@@ -9,12 +9,13 @@ defmodule UrFUSwissBot.Bot.Schedule do
 
   alias UrFUAPI.Modeus
   alias UrFUAPI.Modeus.Auth.Token
-
   alias UrFUAPI.Modeus.Schedule.ScheduleData
 
   alias UrFUSwissBot.Modeus
-  alias UrFUSwissBot.Repo.User
   alias UrFUSwissBot.Utils
+
+  alias UrFUSwissKnife.Accounts
+  alias UrFUSwissKnife.Accounts.User
 
   alias UrFUSwissBot.Bot.Schedule.Formatter
 
@@ -85,7 +86,7 @@ defmodule UrFUSwissBot.Bot.Schedule do
   def handle({:callback_query, %{data: "schedule"} = callback_query}, context) do
     context.extra.user
     |> User.set_state({__MODULE__, :date})
-    |> User.save()
+    |> Accounts.save_user()
 
     context
     |> answer_callback(callback_query)

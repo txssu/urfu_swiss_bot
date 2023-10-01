@@ -4,13 +4,12 @@ defmodule UrFUSwissBot.IStudent do
   alias UrFUAPI.IStudent.BRS
   alias UrFUAPI.IStudent.BRS.Subject
   alias UrFUSwissBot.Cache
-  alias UrFUSwissBot.Repo.User
 
   use Nebulex.Caching
 
   @decorate cacheable(cache: Cache, key: {:istudent, username, password}, ttl: :timer.hours(24))
-  @spec auth_user(User.t()) :: {:ok, Token.t()} | {:error, String.t()}
-  def auth_user(%User{username: username, password: password}) do
+  @spec auth_user(map()) :: {:ok, Token.t()} | {:error, String.t()}
+  def auth_user(%{username: username, password: password}) do
     Auth.sign_in(username, password)
   end
 

@@ -9,13 +9,11 @@ defmodule UrFUSwissBot.Modeus do
   alias UrFUSwissBot.Cache
   alias UrFUSwissBot.Utils
 
-  alias UrFUSwissBot.Repo.User
-
   use Nebulex.Caching
 
   @decorate cacheable(cache: Cache, key: {:modeus_auth, username, password}, match: &match_auth/1)
-  @spec auth_user(User.t()) :: {:ok, Token.t()} | {:error, String.t()}
-  def auth_user(%User{username: username, password: password}) do
+  @spec auth_user(map()) :: {:ok, Token.t()} | {:error, String.t()}
+  def auth_user(%{username: username, password: password}) do
     Auth.sign_in(username, password)
   end
 
