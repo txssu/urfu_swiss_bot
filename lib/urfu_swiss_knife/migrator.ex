@@ -71,8 +71,28 @@ defmodule UrFUSwissBot.Migrator do
     Enum.reduce(items, tx, fn
       {{:feedback_message, id} = key, item}, tx_acc ->
         tx_acc
-        |>Tx.delete(key)
+        |> Tx.delete(key)
         |> Tx.put({:feedback_messages, id}, item)
+
+      _others, tx_acc ->
+        tx_acc
+    end)
+  end
+
+  # Change ids meaning
+  @spec to_version_5(Tx.t()) :: Tx.t()
+  def to_version_5(tx) do
+    items = Tx.select(tx)
+
+    Enum.reduce(items, tx, fn
+      {{:feedback_messages, _id} = key, item}, tx_acc ->
+        updated_item =
+          item
+          |> Map.put(:id, item.original_id)
+          |> Map.delete(:original_id)
+          |> Map.put(:forwared_ids, [item.id])
+
+        Tx.put(tx_acc, key, updated_item)
 
       _others, tx_acc ->
         tx_acc

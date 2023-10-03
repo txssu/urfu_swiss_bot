@@ -13,6 +13,13 @@ defmodule UrFUSwissKnife.Feedback do
     Repo.get(Message, id)
   end
 
+  @spec get_message_by_forwared_id(integer()) :: Message.t()
+  def get_message_by_forwared_id(forwared_id) do
+    Message
+    |> Repo.select(reverse: true)
+    |> Enum.find(& forwared_id in &1.forwared_ids)
+  end
+
   @spec save_message(Message.t()) :: Message.t()
   def save_message(message) do
     :ok = Repo.save(message)
