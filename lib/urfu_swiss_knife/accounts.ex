@@ -5,7 +5,7 @@ defmodule UrFUSwissKnife.Accounts do
 
   @spec create_user(integer()) :: User.t()
   def create_user(id) do
-    User.new(id)
+    User.new(id: id)
   end
 
   @spec get_user(integer()) :: User.t()

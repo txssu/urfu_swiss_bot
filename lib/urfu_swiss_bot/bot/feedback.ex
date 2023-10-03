@@ -65,7 +65,11 @@ defmodule UrFUSwissBot.Bot.Feedback do
         ExGram.forward_message!(admin.id, message.chat.id, message.message_id, bot: context.name)
 
       feedback_message =
-        Feedback.Message.new(sended_message.message_id, message.from.id, message.message_id)
+        Feedback.create_message(
+          id: sended_message.message_id,
+          from_id: message.from.id,
+          original_id: message.message_id
+        )
 
       Feedback.save_message(feedback_message)
     end)

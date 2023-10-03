@@ -7,8 +7,5 @@ defmodule UrFUSwissKnife.Feedback.Message do
     field :original_id, integer()
   end
 
-  @spec new(integer(), integer(), integer()) :: t()
-  def new(id, from_id, original_id) do
-    %__MODULE__{id: id, from_id: from_id, original_id: original_id}
-  end
+  use ExConstructor
 end

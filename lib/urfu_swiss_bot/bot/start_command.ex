@@ -81,14 +81,14 @@ defmodule UrFUSwissBot.Bot.StartCommand do
   @spec start_auth_new_user(Cnt.t(), integer()) :: Cnt.t()
   def start_auth_new_user(context, user_id) do
     context
-    |> set_auth_state(User.new(user_id))
+    |> set_auth_state(Accounts.create_user(user_id))
     |> answer_message_auth(@start_text)
   end
 
   @spec again_auth(Cnt.t(), integer()) :: Cnt.t()
   def again_auth(context, user_id) do
     context
-    |> set_auth_state(User.new(user_id))
+    |> set_auth_state(Accounts.create_user(user_id))
     |> answer_message_auth(@again_text)
   end
 

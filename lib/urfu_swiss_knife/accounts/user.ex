@@ -11,10 +11,7 @@ defmodule UrFUSwissKnife.Accounts.User do
     field :is_admin, boolean, default: false
   end
 
-  @spec new(integer) :: t
-  def new(id) do
-    %__MODULE__{id: id, username: nil, password: nil, state: nil}
-  end
+  use ExConstructor
 
   @spec set_credentials(t, String.t(), String.t()) :: t
   def set_credentials(%__MODULE__{} = user, username, password) do
