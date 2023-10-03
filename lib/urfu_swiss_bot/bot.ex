@@ -18,6 +18,7 @@ defmodule UrFUSwissBot.Bot do
 
   middleware ExGram.Middleware.IgnoreUsername
   middleware UrFUSwissBot.Bot.Middleware.GetUser
+  middleware UrFUSwissBot.Bot.Middleware.HitEvent
 
   @spec bot :: :urfu_swiss_bot
   def bot, do: @bot
