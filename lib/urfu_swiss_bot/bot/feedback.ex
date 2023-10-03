@@ -59,7 +59,7 @@ defmodule UrFUSwissBot.Bot.Feedback do
   end
 
   @spec handle(:send_feedback, {:text, String.t(), Message.t()}, Cnt.t()) :: Cnt.t()
-  def handle(:send_feedback, {:text, _text, message}, context) do
+  def handle(:send_feedback, {:text, text, message}, context) do
     forwared_ids =
       Accounts.get_admins()
       |> Stream.map(fn admin ->
@@ -71,7 +71,8 @@ defmodule UrFUSwissBot.Bot.Feedback do
       Feedback.create_message(
         id: message.message_id,
         from_id: message.from.id,
-        forwared_ids: forwared_ids
+        forwared_ids: forwared_ids,
+        text: text
       )
 
     Feedback.save_message(feedback_message)
