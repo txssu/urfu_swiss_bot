@@ -5,5 +5,5 @@ defmodule UrFUSwissKnife.Repo do
   alias UrFUSwissKnife.Feedback.Message
 
   deftable(:users, User)
-  deftable(:feedback_message, Message)
+  deftable(:feedback_messages, Message)
 end

@@ -63,6 +63,22 @@ defmodule UrFUSwissBot.Migrator do
     end)
   end
 
+  # Fix typo in table's name
+  @spec to_version_4(Tx.t()) :: Tx.t()
+  def to_version_4(tx) do
+    items = Tx.select(tx)
+
+    Enum.reduce(items, tx, fn
+      {{:feedback_message, id} = key, item}, tx_acc ->
+        tx_acc
+        |>Tx.delete(key)
+        |> Tx.put({:feedback_messages, id}, item)
+
+      _others, tx_acc ->
+        tx_acc
+    end)
+  end
+
   @spec to_migration(integer()) :: {:ok, atom()} | :error
   defp to_migration(version) do
     {:ok, String.to_existing_atom("to_version_#{version}")}
