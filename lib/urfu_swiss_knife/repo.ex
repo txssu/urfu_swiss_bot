@@ -7,5 +7,5 @@ defmodule UrFUSwissKnife.Repo do
 
   deftable(:users, User)
   deftable(:feedback_messages, Message)
-  deftable(:metric_events, CommandCall)
+  deftable(:metric_command_calls, CommandCall)
 end

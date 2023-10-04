@@ -117,6 +117,20 @@ defmodule UrFUSwissBot.Migrator do
     end)
   end
 
+  # Rename metric_events to metric_command_calls
+  @spec to_version_7(Tx.t()) :: Tx.t()
+  def to_version_7(tx) do
+    items = Tx.select(tx)
+
+    Enum.reduce(items, tx, fn
+      {{:metric_events, id}, item}, tx_acc ->
+        Tx.put(tx_acc, {:metric_command_calls, id}, item)
+
+      _others, tx_acc ->
+        tx_acc
+    end)
+  end
+
   @spec to_migration(integer()) :: {:ok, atom()} | :error
   defp to_migration(version) do
     {:ok, String.to_existing_atom("to_version_#{version}")}
