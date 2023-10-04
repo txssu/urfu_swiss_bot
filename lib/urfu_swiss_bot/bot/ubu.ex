@@ -70,6 +70,6 @@ defmodule UrFUSwissBot.Bot.UBU do
 
   defp format_debt(debt) do
     profit = -debt
-    "Переплата на текущий момент: *#{profit}₽*"
+    "Переплата на текущий момент: #{profit}₽"
   end
 end
