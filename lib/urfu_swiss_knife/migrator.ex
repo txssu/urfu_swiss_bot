@@ -99,6 +99,24 @@ defmodule UrFUSwissBot.Migrator do
     end)
   end
 
+  # Rename schedule-date-*some-date* to schedule-date-by-arrows
+  @spec to_version_6(Tx.t()) :: Tx.t()
+  def to_version_6(tx) do
+    items = Tx.select(tx)
+
+    Enum.reduce(items, tx, fn
+      {{:metric_events, _id} = key, %{command: "schedule-date-" <> _date} = item}, tx_acc ->
+        updated_item =
+          item
+          |> Map.put(:command, "schedule-date-by-arrows")
+
+        Tx.put(tx_acc, key, updated_item)
+
+      _others, tx_acc ->
+        tx_acc
+    end)
+  end
+
   @spec to_migration(integer()) :: {:ok, atom()} | :error
   defp to_migration(version) do
     {:ok, String.to_existing_atom("to_version_#{version}")}

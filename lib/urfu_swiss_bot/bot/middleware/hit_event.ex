@@ -25,6 +25,21 @@ defmodule UrFUSwissBot.Bot.Middleware.HitEvent do
   end
 
   def call(
+        %Cnt{update: %{update_id: id, callback_query: %{data: "schedule-date-" <> _date, from: %{id: by_user_id}}}} =
+          context,
+        _opts
+      ) do
+    Metrics.hit_command(
+      id: id,
+      command: "schedule-date-by-arrows",
+      by_user_id: by_user_id,
+      called_at: DateTime.utc_now()
+    )
+
+    context
+  end
+
+  def call(
         %Cnt{update: %{update_id: id, callback_query: %{data: command, from: %{id: by_user_id}}}} =
           context,
         _opts
