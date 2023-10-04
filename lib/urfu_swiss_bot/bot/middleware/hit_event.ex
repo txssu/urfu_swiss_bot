@@ -13,7 +13,7 @@ defmodule UrFUSwissBot.Bot.Middleware.HitEvent do
     if String.starts_with?(text, "/") do
       command = String.replace_prefix(text, "/", "")
 
-      Metrics.hit_event(
+      Metrics.hit_command(
         id: id,
         command: command,
         by_user_id: by_user_id,
@@ -29,7 +29,7 @@ defmodule UrFUSwissBot.Bot.Middleware.HitEvent do
           context,
         _opts
       ) do
-    Metrics.hit_event(
+    Metrics.hit_command(
       id: id,
       command: command,
       by_user_id: by_user_id,
