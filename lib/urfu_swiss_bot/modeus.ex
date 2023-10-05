@@ -11,7 +11,7 @@ defmodule UrFUSwissBot.Modeus do
 
   use Nebulex.Caching
 
-  @decorate cacheable(cache: Cache, key: {:modeus_auth, username, password}, match: &match_auth/1)
+  @decorate cacheable(cache: Cache, key: {:modeus_auth, username}, match: &match_auth/1)
   @spec auth_user(map()) :: {:ok, Token.t()} | {:error, String.t()}
   def auth_user(%{username: username, password: password}) do
     Auth.sign_in(username, password)
