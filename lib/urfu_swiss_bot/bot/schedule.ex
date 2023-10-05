@@ -95,7 +95,7 @@ defmodule UrFUSwissBot.Bot.Schedule do
   def handle({:callback_query, %{data: "schedule-today"}}, context) do
     now = DateTime.utc_now()
 
-    generic_answer(context, now, @today_no_more_events)
+    generic_answer(context, now, @today_no_more_events, true)
   end
 
   def handle({:callback_query, %{data: "schedule-tomorrow"}}, context) do
@@ -122,13 +122,24 @@ defmodule UrFUSwissBot.Bot.Schedule do
   end
 
   @spec generic_answer(Cnt.t(), DateTime.t(), String.t()) :: Cnt.t()
-  defp generic_answer(context, date, no_events_message) do
+  defp generic_answer(context, date, no_events_message, today? \\ false) do
     %{extra: %{user: user}} = context
 
     case Modeus.auth_user(user) do
       {:ok, auth} ->
+        schedule =
+          if today? do
+            today = Utils.start_of_day(date)
+
+            auth
+            |> Modeus.get_schedule_by_day(today)
+            |> reject_passed_events(date)
+          else
+            Modeus.get_schedule_by_day(auth, date)
+          end
+
         response =
-          case Modeus.get_schedule_by_day(auth, date) do
+          case schedule do
             %ScheduleData{events: []} -> Modeus.get_upcoming_schedule(auth, date)
             schedule -> schedule
           end
@@ -142,6 +153,16 @@ defmodule UrFUSwissBot.Bot.Schedule do
         |> Utils.escape_telegram_markdown()
         |> reply(date, context)
     end
+  end
+
+  @spec reject_passed_events(term(), DateTime.t()) :: term()
+  defp reject_passed_events(%ScheduleData{events: events} = schedule, now) do
+    future_events =
+      Enum.reject(events, fn %ScheduleData.Event{starts_at: starts_at} ->
+        DateTime.after?(now, starts_at)
+      end)
+
+    %{schedule | events: future_events}
   end
 
   @spec reply(String.t(), DateTime.t(), Cnt.t()) :: Cnt.t()
