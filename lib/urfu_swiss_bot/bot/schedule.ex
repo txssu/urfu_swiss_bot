@@ -93,82 +93,113 @@ defmodule UrFUSwissBot.Bot.Schedule do
     |> edit(:inline, @start_text, reply_markup: @start_keyboard)
   end
 
-  def handle({:callback_query, %{data: "schedule-today"} = callback_query}, context) do
-    today = DateTime.utc_now()
+  def handle({:callback_query, %{data: "schedule-today"}}, context) do
+    %{extra: %{user: user}} = context
 
-    reply_callback(context, callback_query, today, @today_no_more_events)
+    today = Utils.start_of_day(DateTime.utc_now())
+
+    user
+    |> get_response(today)
+    |> format_response(today, @today_no_more_events)
+    |> reply(today, context)
   end
 
-  def handle({:callback_query, %{data: "schedule-tomorrow"} = callback_query}, context) do
+  def handle({:callback_query, %{data: "schedule-tomorrow"}}, context) do
+    %{extra: %{user: user}} = context
+
     tomorrow = Utils.start_of_next_day(DateTime.utc_now())
 
-    reply_callback(context, callback_query, tomorrow, @tommorow_no_events)
+    user
+    |> get_response(tomorrow)
+    |> format_response(tomorrow, @tommorow_no_events)
+    |> reply(tomorrow, context)
   end
 
-  def handle({:callback_query, %{data: "schedule-date-" <> date} = callback_query}, context) do
-    {:ok, datetime, _offset} = DateTime.from_iso8601(date, :basic)
+  def handle({:callback_query, %{data: "schedule-date-" <> date}}, context) do
+    %{extra: %{user: user}} = context
 
-    reply_callback(context, callback_query, datetime, @no_events)
+    {:ok, date, _offset} = DateTime.from_iso8601(date, :basic)
+
+    user
+    |> get_response(date)
+    |> format_response(date, @tommorow_no_events)
+    |> reply(date, context)
   end
 
   @spec handle(:date, {:text, String.t(), Message}, Cnt.t()) :: Cnt.t()
   def handle(:date, {:text, text, _message}, context) do
     case Utils.parse_russian_date(text) do
-      {:ok, datetime} -> reply_message(context, datetime)
-      :error -> answer(context, @parse_error)
+      {:ok, date} ->
+        %{extra: %{user: user}} = context
+
+        user
+        |> get_response(date)
+        |> format_response(date, @no_events)
+        |> reply(date, context)
+
+      :error ->
+        answer(context, @parse_error)
     end
   end
 
-  @spec reply_callback(Cnt.t(), CallbackQuery.t(), DateTime.t(), String.t()) :: Cnt.t()
-  def reply_callback(context, callback_query, datetime, no_events_message) do
-    response = reply_with(context, datetime, no_events_message)
+  @spec reply(String.t(), DateTime.t(), Cnt.t()) :: Cnt.t()
+  def reply(text, datetime, context) do
+    %{update: update} = context
 
-    context
-    |> answer_callback(callback_query)
-    |> edit(:inline, response, parse_mode: "MarkdownV2", reply_markup: keyboard_next(datetime))
+    case update do
+      %{message: %{}} ->
+        answer(context, text,
+          parse_mode: "MarkdownV2",
+          reply_markup: keyboard_next(datetime)
+        )
+
+      %{callback_query: %{} = callback_query} ->
+        context
+        |> answer_callback(callback_query)
+        |> edit(:inline, text,
+          parse_mode: "MarkdownV2",
+          reply_markup: keyboard_next(datetime)
+        )
+    end
   end
 
-  @spec reply_message(Cnt.t(), DateTime.t()) :: Cnt.t()
-  def reply_message(context, datetime) do
-    response = reply_with(context, datetime, @no_events)
+  @spec format_response(tuple(), DateTime.t(), String.t()) :: String.t()
+  defp format_response(response, datetime, no_events_message)
 
-    answer(context, response, parse_mode: "MarkdownV2", reply_markup: keyboard_next(datetime))
-  end
-
-  @spec reply_with(Cnt.t(), DateTime.t(), String.t()) :: String.t()
-  defp reply_with(context, datetime, no_events_message) do
-    user = context.extra.user
-
+  defp format_response({:ok, :empty}, datetime, no_events_message) do
     formatted_date = format_date(datetime)
 
-    case get_response(user, datetime) do
-      {:ok, :empty} ->
-        "*#{formatted_date}*\n\n#{no_events_message}"
+    "*#{formatted_date}*\n\n#{no_events_message}"
+  end
 
-      {:ok, {next_date, schedule}} ->
-        formatted_next_date = format_date(next_date)
-        formatted_events = Formatter.format_events(schedule, datetime)
+  defp format_response({:ok, {next_date, schedule}}, datetime, no_events_message) do
+    formatted_date = format_date(datetime)
+    formatted_next_date = format_date(next_date)
 
-        """
-        *#{formatted_date}*
+    formatted_events = Formatter.format_events(schedule, datetime)
 
-        #{no_events_message}
+    """
+    *#{formatted_date}*
 
-        Вот расписание на ближайший день c парами:
+    #{no_events_message}
 
-        *#{formatted_next_date}*
+    Вот расписание на ближайший день c парами:
 
-        #{formatted_events}
-        """
+    *#{formatted_next_date}*
 
-      {:ok, schedule} ->
-        formatted_events = Formatter.format_events(schedule, datetime)
-        "*#{formatted_date}*\n\n#{formatted_events}"
+    #{formatted_events}
+    """
+  end
 
-      {:error, reason} ->
-        reason = Utils.escape_telegram_markdown(reason)
-        "*#{formatted_date}*\n\n#{reason}"
-    end
+  defp format_response({:ok, schedule}, datetime, _no_events_message) do
+    formatted_date = format_date(datetime)
+
+    formatted_events = Formatter.format_events(schedule, datetime)
+    "*#{formatted_date}*\n\n#{formatted_events}"
+  end
+
+  defp format_response({:error, reason}, _datetime, _no_events_message) do
+    Utils.escape_telegram_markdown(reason)
   end
 
   @spec get_response(User.t(), DateTime.t()) ::
