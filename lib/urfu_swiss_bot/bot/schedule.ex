@@ -8,7 +8,6 @@ defmodule UrFUSwissBot.Bot.Schedule do
   alias ExGram.Model.Message
 
   alias UrFUAPI.Modeus
-  alias UrFUAPI.Modeus.Auth.Token
   alias UrFUAPI.Modeus.Schedule.ScheduleData
 
   alias UrFUSwissBot.Modeus
@@ -55,7 +54,7 @@ defmodule UrFUSwissBot.Bot.Schedule do
                    end)
 
   @spec keyboard_next(DateTime.t()) :: InlineKeyboardMarkup.t()
-  def keyboard_next(datetime) do
+  defp keyboard_next(datetime) do
     previous_day =
       datetime
       |> Utils.start_of_previous_day()
@@ -94,56 +93,59 @@ defmodule UrFUSwissBot.Bot.Schedule do
   end
 
   def handle({:callback_query, %{data: "schedule-today"}}, context) do
-    %{extra: %{user: user}} = context
+    now = DateTime.utc_now()
 
-    today = Utils.start_of_day(DateTime.utc_now())
-
-    user
-    |> get_response(today)
-    |> format_response(today, @today_no_more_events)
-    |> reply(today, context)
+    generic_answer(context, now, @today_no_more_events)
   end
 
   def handle({:callback_query, %{data: "schedule-tomorrow"}}, context) do
-    %{extra: %{user: user}} = context
-
     tomorrow = Utils.start_of_next_day(DateTime.utc_now())
 
-    user
-    |> get_response(tomorrow)
-    |> format_response(tomorrow, @tommorow_no_events)
-    |> reply(tomorrow, context)
+    generic_answer(context, tomorrow, @tommorow_no_events)
   end
 
   def handle({:callback_query, %{data: "schedule-date-" <> date}}, context) do
-    %{extra: %{user: user}} = context
-
     {:ok, date, _offset} = DateTime.from_iso8601(date, :basic)
 
-    user
-    |> get_response(date)
-    |> format_response(date, @tommorow_no_events)
-    |> reply(date, context)
+    generic_answer(context, date, @no_events)
   end
 
   @spec handle(:date, {:text, String.t(), Message}, Cnt.t()) :: Cnt.t()
   def handle(:date, {:text, text, _message}, context) do
     case Utils.parse_russian_date(text) do
       {:ok, date} ->
-        %{extra: %{user: user}} = context
-
-        user
-        |> get_response(date)
-        |> format_response(date, @no_events)
-        |> reply(date, context)
+        generic_answer(context, date, @no_events)
 
       :error ->
         answer(context, @parse_error)
     end
   end
 
+  @spec generic_answer(Cnt.t(), DateTime.t(), String.t()) :: Cnt.t()
+  defp generic_answer(context, date, no_events_message) do
+    %{extra: %{user: user}} = context
+
+    case Modeus.auth_user(user) do
+      {:ok, auth} ->
+        response =
+          case Modeus.get_schedule_by_day(auth, date) do
+            %ScheduleData{events: []} -> Modeus.get_upcoming_schedule(auth, date)
+            schedule -> schedule
+          end
+
+        response
+        |> format_response(date, no_events_message)
+        |> reply(date, context)
+
+      {:error, reason} ->
+        reason
+        |> Utils.escape_telegram_markdown()
+        |> reply(date, context)
+    end
+  end
+
   @spec reply(String.t(), DateTime.t(), Cnt.t()) :: Cnt.t()
-  def reply(text, datetime, context) do
+  defp reply(text, datetime, context) do
     %{update: update} = context
 
     case update do
@@ -163,16 +165,16 @@ defmodule UrFUSwissBot.Bot.Schedule do
     end
   end
 
-  @spec format_response(tuple(), DateTime.t(), String.t()) :: String.t()
+  @spec format_response(term(), DateTime.t(), String.t()) :: String.t()
   defp format_response(response, datetime, no_events_message)
 
-  defp format_response({:ok, :empty}, datetime, no_events_message) do
+  defp format_response({_date, %ScheduleData{events: []}}, datetime, no_events_message) do
     formatted_date = format_date(datetime)
 
     "*#{formatted_date}*\n\n#{no_events_message}"
   end
 
-  defp format_response({:ok, {next_date, schedule}}, datetime, no_events_message) do
+  defp format_response({next_date, schedule}, datetime, no_events_message) do
     formatted_date = format_date(datetime)
     formatted_next_date = format_date(next_date)
 
@@ -191,54 +193,11 @@ defmodule UrFUSwissBot.Bot.Schedule do
     """
   end
 
-  defp format_response({:ok, schedule}, datetime, _no_events_message) do
+  defp format_response(schedule, datetime, _no_events_message) do
     formatted_date = format_date(datetime)
 
     formatted_events = Formatter.format_events(schedule, datetime)
     "*#{formatted_date}*\n\n#{formatted_events}"
-  end
-
-  defp format_response({:error, reason}, _datetime, _no_events_message) do
-    Utils.escape_telegram_markdown(reason)
-  end
-
-  @spec get_response(User.t(), DateTime.t()) ::
-          {:ok, :empty}
-          | {:ok, {Date.t(), ScheduleData.t()}}
-          | {:ok, ScheduleData.t()}
-          | {:error, String.t()}
-  defp get_response(user, datetime) do
-    case Modeus.auth_user(user) do
-      {:ok, auth} -> {:ok, get_schedule(auth, datetime)}
-      {:error, _reason} -> {:error, "Ошибка авторизации"}
-    end
-  end
-
-  @spec get_schedule(Token.t(), DateTime.t()) ::
-          ScheduleData.t() | {Date.t(), ScheduleData.t()} | :empty
-  defp get_schedule(auth, datetime) do
-    with :empty <- get_schedule_by_day(auth, datetime),
-         :empty <- get_upcoming_schedule(auth, datetime) do
-      :empty
-    else
-      schedule -> schedule
-    end
-  end
-
-  @spec get_schedule_by_day(Token.t(), DateTime.t()) :: ScheduleData.t() | :empty
-  defp get_schedule_by_day(auth, datetime) do
-    case Modeus.get_schedule_by_day(auth, datetime) do
-      %ScheduleData{events: []} -> :empty
-      %ScheduleData{} = schedule -> schedule
-    end
-  end
-
-  @spec get_upcoming_schedule(Token.t(), DateTime.t()) :: {Date.t(), ScheduleData.t()} | :empty
-  defp get_upcoming_schedule(auth, datetime) do
-    case Modeus.get_upcoming_schedule(auth, datetime) do
-      :empty -> :empty
-      {%Date{}, %ScheduleData{}} = result -> result
-    end
   end
 
   @spec format_date(Date.t() | DateTime.t()) :: String.t()

@@ -41,11 +41,11 @@ defmodule UrFUSwissBot.Modeus do
     get_schedule(auth, datetime, before_time)
   end
 
-  @spec get_upcoming_schedule(Token.t(), DateTime.t()) :: {Date.t(), ScheduleData.t()} | :empty
+  @spec get_upcoming_schedule(Token.t(), DateTime.t()) :: {Date.t() | nil, ScheduleData.t()}
   def get_upcoming_schedule(auth, datetime) do
     case get_schedule_for_week(auth, datetime) do
-      %ScheduleData{events: []} ->
-        :empty
+      %ScheduleData{events: []} = schedule ->
+        {nil, schedule}
 
       %ScheduleData{events: events} = schedule ->
         events_by_days = Enum.group_by(events, fn event -> DateTime.to_date(event.starts_at) end)
