@@ -107,8 +107,7 @@ defmodule UrFUSwissBot.Migrator do
     Enum.reduce(items, tx, fn
       {{:metric_events, _id} = key, %{command: "schedule-date-" <> _date} = item}, tx_acc ->
         updated_item =
-          item
-          |> Map.put(:command, "schedule-date-by-arrows")
+          Map.put(item, :command, "schedule-date-by-arrows")
 
         Tx.put(tx_acc, key, updated_item)
 

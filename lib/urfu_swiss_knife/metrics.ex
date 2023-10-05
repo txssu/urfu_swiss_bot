@@ -14,8 +14,7 @@ defmodule UrFUSwissKnife.Metrics do
   @spec commands_usage() :: %{integer() => String.t()}
   def commands_usage do
     admins =
-      Accounts.get_admins()
-      |> Enum.map(fn %{id: id} -> id end)
+      Enum.map(Accounts.get_admins(), fn %{id: id} -> id end)
 
     CommandCall
     |> Repo.select()

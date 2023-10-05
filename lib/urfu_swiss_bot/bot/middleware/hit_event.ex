@@ -25,7 +25,12 @@ defmodule UrFUSwissBot.Bot.Middleware.HitEvent do
   end
 
   def call(
-        %Cnt{update: %{update_id: id, callback_query: %{data: "schedule-date-" <> _date, from: %{id: by_user_id}}}} =
+        %Cnt{
+          update: %{
+            update_id: id,
+            callback_query: %{data: "schedule-date-" <> _date, from: %{id: by_user_id}}
+          }
+        } =
           context,
         _opts
       ) do

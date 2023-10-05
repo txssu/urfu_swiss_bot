@@ -17,7 +17,7 @@ defmodule UrFUSwissKnife.Feedback do
   def get_message_by_forwared_id(forwared_id) do
     Message
     |> Repo.select(reverse: true)
-    |> Enum.find(& forwared_id in &1.forwared_ids)
+    |> Enum.find(&(forwared_id in &1.forwared_ids))
   end
 
   @spec save_message(Message.t()) :: Message.t()

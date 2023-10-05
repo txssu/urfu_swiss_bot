@@ -2,6 +2,7 @@ defmodule UrFUSwissBot.Bot.Stats do
   import ExGram.Dsl
 
   alias UrFUSwissBot.Utils
+
   alias ExGram.Cnt
   alias ExGram.Model.Message
 
@@ -24,7 +25,8 @@ defmodule UrFUSwissBot.Bot.Stats do
     end
   end
 
-  defp users_stats do
+  @spec users_stats :: String.t()
+  def users_stats do
     {inactive_users, active_users} =
       Enum.split_with(Accounts.get_users(), fn x -> is_nil(x.username) end)
 
@@ -41,6 +43,7 @@ defmodule UrFUSwissBot.Bot.Stats do
     )
   end
 
+  @spec commands_usage_stats() :: String.t()
   defp commands_usage_stats do
     usage =
       Metrics.commands_usage()
