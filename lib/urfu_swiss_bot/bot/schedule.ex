@@ -57,11 +57,13 @@ defmodule UrFUSwissBot.Bot.Schedule do
   defp keyboard_next(datetime) do
     previous_day =
       datetime
+      |> Utils.to_yekaterinburg_zone()
       |> Utils.start_of_previous_day()
       |> DateTime.to_iso8601(:basic)
 
     next_day =
       datetime
+      |> Utils.to_yekaterinburg_zone()
       |> Utils.start_of_next_day()
       |> DateTime.to_iso8601(:basic)
 
@@ -93,13 +95,17 @@ defmodule UrFUSwissBot.Bot.Schedule do
   end
 
   def handle({:callback_query, %{data: "schedule-today"}}, context) do
-    now = DateTime.utc_now()
+    now = DateTime.utc_now(:second)
 
     generic_answer(context, now, @today_no_more_events, true)
   end
 
   def handle({:callback_query, %{data: "schedule-tomorrow"}}, context) do
-    tomorrow = Utils.start_of_next_day(DateTime.utc_now())
+    today = DateTime.utc_now(:second)
+
+    tomorrow = today
+    |> Utils.to_yekaterinburg_zone()
+    |> Utils.start_of_next_day()
 
     generic_answer(context, tomorrow, @tommorow_no_events)
   end
@@ -121,26 +127,28 @@ defmodule UrFUSwissBot.Bot.Schedule do
     end
   end
 
-  @spec generic_answer(Cnt.t(), DateTime.t(), String.t()) :: Cnt.t()
+  @spec generic_answer(Cnt.t(), DateTime.t(), String.t(), boolean()) :: Cnt.t()
   defp generic_answer(context, date, no_events_message, today? \\ false) do
     %{extra: %{user: user}} = context
 
     case Modeus.auth_user(user) do
       {:ok, auth} ->
+        local_time = Utils.to_yekaterinburg_zone(date)
+
         schedule =
           if today? do
-            today = Utils.start_of_day(date)
+            today = Utils.start_of_day(local_time)
 
             auth
             |> Modeus.get_schedule_by_day(today)
             |> reject_passed_events(date)
           else
-            Modeus.get_schedule_by_day(auth, date)
+            Modeus.get_schedule_by_day(auth, local_time)
           end
 
         response =
           case schedule do
-            %ScheduleData{events: []} -> Modeus.get_upcoming_schedule(auth, date)
+            %ScheduleData{events: []} -> Modeus.get_upcoming_schedule(auth, local_time)
             schedule -> schedule
           end
 
@@ -226,7 +234,7 @@ defmodule UrFUSwissBot.Bot.Schedule do
     date_with_timezone =
       case date do
         %Date{} -> date
-        %DateTime{} -> DateTime.shift_zone!(date, "Asia/Yekaterinburg")
+        %DateTime{} -> Utils.to_yekaterinburg_zone(date)
       end
 
     date_with_timezone

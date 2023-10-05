@@ -14,14 +14,20 @@ defmodule UrFUSwissBot.Utils do
   @spec start_of_day_after(DateTime.t(), integer()) :: DateTime.t()
   def start_of_day_after(datetime, days) do
     datetime
-    |> DateTime.shift_zone!("Asia/Yekaterinburg")
     |> DateTime.add(days, :day)
     |> start_of_day()
   end
 
   @spec start_of_day(DateTime.t()) :: DateTime.t()
   def start_of_day(datetime) do
-    %{datetime | hour: 0, minute: 0, second: 0}
+    datetime
+    |> DateTime.to_date()
+    |> DateTime.new!(~T[00:00:00])
+  end
+
+  @spec to_yekaterinburg_zone(DateTime.t()) :: DateTime.t()
+  def to_yekaterinburg_zone(datetime) do
+    DateTime.shift_zone!(datetime, "Asia/Yekaterinburg")
   end
 
   @spec month_to_russian(1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12) :: String.t()
