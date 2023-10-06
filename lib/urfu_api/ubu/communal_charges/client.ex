@@ -16,7 +16,7 @@ defmodule UrFUAPI.UBU.CommunalCharges.Client do
   end
 
   @spec headers(Token.t()) :: [{:headers, [{String.t(), String.t()}]}]
-  def headers(auth) do
-    [headers: [{"cookie", auth}]]
+  def headers(%{access_token: token}) do
+    [headers: [{"cookie", token}]]
   end
 end

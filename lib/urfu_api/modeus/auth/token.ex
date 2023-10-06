@@ -11,6 +11,8 @@ defmodule UrFUAPI.Modeus.Auth.Token do
     field :state, String.t()
     field :token_type, String.t()
     field :claims, map()
+
+    field :username, String.t()
   end
 
   use ExConstructor, :do_new

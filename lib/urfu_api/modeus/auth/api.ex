@@ -32,7 +32,7 @@ defmodule UrFUAPI.Modeus.Auth.API do
         token =
           process
           |> get_saml_response()
-          |> get_id_token()
+          |> get_id_token(username)
 
         {:ok, token}
 
@@ -118,11 +118,12 @@ defmodule UrFUAPI.Modeus.Auth.API do
     |> List.first()
   end
 
-  @spec get_id_token(AuthProcess.t()) :: map()
-  def get_id_token(process) do
+  @spec get_id_token(AuthProcess.t(), String.t()) :: map()
+  def get_id_token(process, username) do
     process
     |> get_auth_url()
     |> parse_auth_url()
+    |> Map.merge(%{username: username})
     |> Token.new()
   end
 

@@ -14,7 +14,7 @@ defmodule UrFUAPI.UBU.Auth.API do
           auth_tokens
           |> get_auth_url()
           |> get_ubu_login_code()
-          |> get_access_token()
+          |> get_access_token(username)
 
         {:ok, token}
 
@@ -66,8 +66,8 @@ defmodule UrFUAPI.UBU.Auth.API do
     |> Map.fetch!("code")
   end
 
-  @spec get_access_token(String.t()) :: Token.t()
-  defp get_access_token(login_code) do
+  @spec get_access_token(String.t(), String.t()) :: Token.t()
+  defp get_access_token(login_code, username) do
     body = %{
       method: "User.Login",
       params: %{
@@ -79,6 +79,6 @@ defmodule UrFUAPI.UBU.Auth.API do
 
     response
     |> AuthHelpers.fetch_cookie!()
-    |> Token.new()
+    |> Token.new(username)
   end
 end

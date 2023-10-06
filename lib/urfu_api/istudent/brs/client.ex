@@ -6,7 +6,7 @@ defmodule UrFUAPI.IStudent.BRS.Client do
   plug Tesla.Middleware.BaseUrl, "https://istudent.urfu.ru/s/http-urfu-ru-ru-students-study-brs"
 
   @spec headers(Token.t()) :: [{:headers, [{String.t(), String.t()}]}]
-  def headers(auth) do
-    [headers: [{"cookie", auth}]]
+  def headers(%{access_token: token}) do
+    [headers: [{"cookie", token}]]
   end
 end

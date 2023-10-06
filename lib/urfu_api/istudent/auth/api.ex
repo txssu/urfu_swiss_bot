@@ -12,7 +12,7 @@ defmodule UrFUAPI.IStudent.Auth.API do
         token =
           auth_tokens
           |> get_auth_url()
-          |> get_access_token()
+          |> get_access_token(username)
 
         {:ok, token}
 
@@ -46,12 +46,12 @@ defmodule UrFUAPI.IStudent.Auth.API do
     AuthHelpers.fetch_location!(response)
   end
 
-  @spec get_access_token(String.t()) :: Token.t()
-  defp get_access_token(url) do
+  @spec get_access_token(String.t(), String.t()) :: Token.t()
+  defp get_access_token(url, username) do
     response = Client.get!(url)
 
     response
     |> AuthHelpers.fetch_cookie!()
-    |> Token.new()
+    |> Token.new(username)
   end
 end
