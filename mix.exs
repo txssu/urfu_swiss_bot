@@ -43,6 +43,8 @@ defmodule UrFUSwissBot.MixProject do
       # UrFU API
       {:typed_struct, "~> 0.3.0"},
       {:exconstructor, "~> 1.2.9"},
+      # Cron
+      {:quantum, "~> 3.0"},
       # Code quality
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.3", only: [:dev, :test], runtime: false},

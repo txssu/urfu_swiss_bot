@@ -16,7 +16,8 @@ defmodule UrFUSwissBot.Application do
       {CubDB, [name: UrFUSwissKnife.Repo, data_dir: data_dir]},
       UrFUSwissBot.Cache,
       ExGram,
-      {UrFUSwissBot.Bot, [method: :polling, token: telegram_token]}
+      {UrFUSwissBot.Bot, [method: :polling, token: telegram_token]},
+      UrFUSwissKnife.Scheduler
     ]
 
     migrate(data_dir)

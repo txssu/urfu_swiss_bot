@@ -10,6 +10,17 @@ config :urfu_swiss_bot, UrFUSwissBot.Cache,
   gc_cleanup_min_timeout: :timer.seconds(10),
   gc_cleanup_max_timeout: :timer.minutes(10)
 
+config :urfu_swiss_bot, UrFUSwissKnife.Scheduler,
+  timezone: "Asia/Yekaterinburg",
+  jobs: [
+    # At 00:00 on every day-of-week from Monday through Saturday.
+    {"0 0 * * 1-6", {UrFUSwissKnife.CacheWarming, :warm_today_schedule, []}},
+    # At 14:00.
+    {"0 14 * * *", {UrFUSwissKnife.CacheWarming, :warm_ubu_dates, []}},
+    # At every 15th minute.
+    {"*/15 * * * *", {UrFUSwissKnife.CacheWarming, :warm_istudent_brs, []}},
+  ]
+
 config :elixir, :time_zone_database, Tzdata.TimeZoneDatabase
 
 config :urfu_swiss_bot, UrFUSwissBot.Repo,

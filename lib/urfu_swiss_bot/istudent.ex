@@ -13,7 +13,7 @@ defmodule UrFUSwissBot.IStudent do
     Auth.sign_in(username, password)
   end
 
-  @decorate cacheable(cache: Cache, key: {:get_subjects, auth.username}, ttl: :timer.hours(1))
+  @decorate cacheable(cache: Cache, key: {:get_subjects, auth.username}, ttl: :timer.minutes(15))
   @spec get_subjects(Token.t()) :: [Subject.t()]
   def get_subjects(auth) do
     auth

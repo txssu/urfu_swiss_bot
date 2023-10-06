@@ -63,7 +63,7 @@ defmodule UrFUSwissBot.Modeus do
               key:
                 {:get_schedule, auth.username, DateTime.to_unix(after_time),
                  DateTime.to_unix(before_time)},
-              ttl: :timer.hours(8)
+              ttl: :timer.hours(24)
             )
   @spec get_schedule(Token.t(), DateTime.t(), DateTime.t()) :: ScheduleData.t()
   def get_schedule(auth, after_time, before_time) do
