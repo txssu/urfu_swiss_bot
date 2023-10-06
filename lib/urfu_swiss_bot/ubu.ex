@@ -14,7 +14,7 @@ defmodule UrFUSwissBot.UBU do
     Auth.sign_in(username, password)
   end
 
-  @decorate cacheable(cache: Cache, key: {:get_dates, auth}, ttl: :timer.hours(24))
+  @decorate cacheable(cache: Cache, key: {:get_dates, auth.username}, ttl: :timer.hours(24))
   @spec get_dates(Token.t()) :: Info.t()
   def get_dates(auth) do
     CommunalCharges.get_dates(auth)

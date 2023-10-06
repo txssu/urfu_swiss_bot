@@ -61,7 +61,7 @@ defmodule UrFUSwissBot.Modeus do
   @decorate cacheable(
               cache: Cache,
               key:
-                {:get_schedule, extract_person_id(auth), DateTime.to_unix(after_time),
+                {:get_schedule, auth.username, DateTime.to_unix(after_time),
                  DateTime.to_unix(before_time)},
               ttl: :timer.hours(8)
             )
@@ -82,7 +82,4 @@ defmodule UrFUSwissBot.Modeus do
 
     Time.before?(time, ~T[08:00:00]) or Time.after?(time, ~T[20:00:00])
   end
-
-  @spec extract_person_id(Token.t()) :: integer()
-  defp extract_person_id(%Token{claims: %TokenClaims{person_id: person_id}}), do: person_id
 end
