@@ -1,8 +1,11 @@
 defmodule UrFUSwissKnife.CacheWarming do
+  alias UrFUSwissKnife.Cache
   alias UrFUSwissKnife.Utils
   alias UrFUSwissKnife.IStudent
   alias UrFUSwissKnife.Modeus
   alias UrFUSwissKnife.UBU
+
+  alias UrFUSwissBot.UpdatesNotifier
 
   alias UrFUSwissKnife.Accounts
 
@@ -15,7 +18,6 @@ defmodule UrFUSwissKnife.CacheWarming do
         |> Utils.start_of_day()
         |> Utils.to_yekaterinburg_zone()
 
-
       Modeus.get_schedule_by_day(auth, today)
     end
 
@@ -26,7 +28,12 @@ defmodule UrFUSwissKnife.CacheWarming do
     for user <- Accounts.get_users() do
       {:ok, auth} = UBU.auth_user(user)
 
-      UBU.get_dates(auth)
+      was = Cache.get({:get_dates, user.username})
+      became = UBU.update_dates_cache(auth)
+
+      unless is_nil(was) do
+        UpdatesNotifier.update_ubu_debt(user, was, became)
+      end
     end
 
     :ok
@@ -36,7 +43,7 @@ defmodule UrFUSwissKnife.CacheWarming do
     for user <- Accounts.get_users() do
       {:ok, auth} = IStudent.auth_user(user)
 
-      IStudent.get_subjects(auth)
+      IStudent.update_subjects_cache(auth)
     end
 
     :ok
