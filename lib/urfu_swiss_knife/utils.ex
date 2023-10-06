@@ -1,4 +1,4 @@
-defmodule UrFUSwissBot.Utils do
+defmodule UrFUSwissKnife.Utils do
   @type weekday :: 1 | 2 | 3 | 4 | 5 | 6 | 7
 
   @spec start_of_next_day(DateTime.t()) :: DateTime.t()

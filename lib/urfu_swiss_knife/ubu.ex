@@ -1,10 +1,10 @@
-defmodule UrFUSwissBot.UBU do
+defmodule UrFUSwissKnife.UBU do
   alias UrFUAPI.UBU.Auth
   alias UrFUAPI.UBU.Auth.Token
   alias UrFUAPI.UBU.CommunalCharges
   alias UrFUAPI.UBU.CommunalCharges.Info
 
-  alias UrFUSwissBot.Cache
+  alias UrFUSwissKnife.Cache
 
   use Nebulex.Caching
 

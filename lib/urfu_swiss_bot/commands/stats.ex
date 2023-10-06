@@ -1,7 +1,7 @@
-defmodule UrFUSwissBot.Bot.Stats do
+defmodule UrFUSwissBot.Commands.Stats do
   import ExGram.Dsl
 
-  alias UrFUSwissBot.Utils
+  alias UrFUSwissKnife.Utils
 
   alias ExGram.Cnt
   alias ExGram.Model.Message

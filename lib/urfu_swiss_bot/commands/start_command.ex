@@ -1,4 +1,4 @@
-defmodule UrFUSwissBot.Bot.StartCommand do
+defmodule UrFUSwissBot.Commands.Start do
   import ExGram.Dsl
 
   alias ExGram.Cnt
@@ -108,7 +108,7 @@ defmodule UrFUSwissBot.Bot.StartCommand do
   defp set_auth_state(context, user) do
     user
     |> User.delete_credentials()
-    |> User.set_state({UrFUSwissBot.Bot.Auth, :auth})
+    |> User.set_state({UrFUSwissBot.Commands.Auth, :auth})
     |> Accounts.save_user()
 
     context

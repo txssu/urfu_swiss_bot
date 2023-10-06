@@ -1,8 +1,8 @@
 defmodule UrFUSwissKnife.CacheWarming do
-  alias UrFUSwissBot.Utils
-  alias UrFUSwissBot.IStudent
-  alias UrFUSwissBot.Modeus
-  alias UrFUSwissBot.UBU
+  alias UrFUSwissKnife.Utils
+  alias UrFUSwissKnife.IStudent
+  alias UrFUSwissKnife.Modeus
+  alias UrFUSwissKnife.UBU
 
   alias UrFUSwissKnife.Accounts
 

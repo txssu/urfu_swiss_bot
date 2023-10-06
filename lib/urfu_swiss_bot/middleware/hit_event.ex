@@ -1,4 +1,4 @@
-defmodule UrFUSwissBot.Bot.Middleware.HitEvent do
+defmodule UrFUSwissBot.Middleware.HitEvent do
   use ExGram.Middleware
 
   alias ExGram.Cnt

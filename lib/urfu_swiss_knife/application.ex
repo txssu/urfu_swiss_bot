@@ -1,8 +1,8 @@
-defmodule UrFUSwissBot.Application do
+defmodule UrFUSwissKnife.Application do
   @moduledoc false
   use Application
 
-  @app :urfu_swiss_bot
+  @app :urfu_swiss_knife
   @supervisor_opts [strategy: :one_for_one, name: UrFUSwissBot.Supervisor]
 
   @impl Application
@@ -14,7 +14,7 @@ defmodule UrFUSwissBot.Application do
 
     children = [
       {CubDB, [name: UrFUSwissKnife.Repo, data_dir: data_dir]},
-      UrFUSwissBot.Cache,
+      UrFUSwissKnife.Cache,
       ExGram,
       {UrFUSwissBot.Bot, [method: :polling, token: telegram_token]},
       UrFUSwissKnife.Scheduler

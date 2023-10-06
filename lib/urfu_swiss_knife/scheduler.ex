@@ -1,3 +1,3 @@
 defmodule UrFUSwissKnife.Scheduler do
-  use Quantum, otp_app: :urfu_swiss_bot
+  use Quantum, otp_app: :urfu_swiss_knife
 end

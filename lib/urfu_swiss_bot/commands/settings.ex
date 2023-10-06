@@ -1,4 +1,4 @@
-defmodule UrFUSwissBot.Bot.Settings do
+defmodule UrFUSwissBot.Commands.Settings do
   import ExGram.Dsl
   import ExGram.Dsl.Keyboard
 

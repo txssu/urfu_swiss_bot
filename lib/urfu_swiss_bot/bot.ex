@@ -3,9 +3,9 @@ defmodule UrFUSwissBot.Bot do
   alias ExGram.Model.CallbackQuery
   alias ExGram.Model.Message
 
-  alias UrFUSwissBot.Bot
+  alias UrFUSwissBot.Commands
 
-  @bot :urfu_swiss_bot
+  @bot :urfu_swiss_knife
 
   use ExGram.Bot,
     name: @bot,
@@ -17,10 +17,10 @@ defmodule UrFUSwissBot.Bot do
   command "stats"
 
   middleware ExGram.Middleware.IgnoreUsername
-  middleware UrFUSwissBot.Bot.Middleware.GetUser
-  middleware UrFUSwissBot.Bot.Middleware.HitEvent
+  middleware UrFUSwissBot.Middleware.GetUser
+  middleware UrFUSwissBot.Middleware.HitEvent
 
-  @spec bot :: :urfu_swiss_bot
+  @spec bot :: :urfu_swiss_knife
   def bot, do: @bot
 
   ###############################################
@@ -49,15 +49,15 @@ defmodule UrFUSwissBot.Bot do
   ###############################################
 
   def handle({:command, :start, _message} = event, context) do
-    Bot.StartCommand.handle(event, context)
+    Commands.Start.handle(event, context)
   end
 
   def handle(event, %Cnt{extra: %{user: nil}} = context) do
-    Bot.StartCommand.handle(event, context)
+    Commands.Start.handle(event, context)
   end
 
   def handle(event, %Cnt{extra: %{user: %{username: nil, password: nil}}} = context) do
-    Bot.StartCommand.handle(event, context)
+    Commands.Start.handle(event, context)
   end
 
   ###############################################
@@ -65,15 +65,15 @@ defmodule UrFUSwissBot.Bot do
   ###############################################
 
   def handle({:command, :menu, _message} = event, context) do
-    Bot.Menu.handle(event, context)
+    Commands.Menu.handle(event, context)
   end
 
   def handle({:command, :reply_feedback, _message} = event, context) do
-    Bot.Feedback.handle(event, context)
+    Commands.Feedback.handle(event, context)
   end
 
   def handle({:command, :stats, _message} = event, context) do
-    Bot.Stats.handle(event, context)
+    Commands.Stats.handle(event, context)
   end
 
   def handle({:command, _unknow, _message}, context) do
@@ -85,30 +85,30 @@ defmodule UrFUSwissBot.Bot do
   ###############################################
 
   def handle({:callback_query, %{data: "start" <> _}} = event, context) do
-    Bot.StartCommand.handle(event, context)
+    Commands.Start.handle(event, context)
   end
 
   def handle({:callback_query, %{data: "menu" <> _}} = event, context) do
-    Bot.Menu.handle(event, context)
+    Commands.Menu.handle(event, context)
   end
 
   def handle({:callback_query, %{data: "schedule" <> _}} = event, context) do
-    Bot.Schedule.handle(event, context)
+    Commands.Schedule.handle(event, context)
   end
 
   def handle({:callback_query, %{data: "settings" <> _}} = event, context) do
-    Bot.Settings.handle(event, context)
+    Commands.Settings.handle(event, context)
   end
 
   def handle({:callback_query, %{data: "feedback" <> _}} = event, context) do
-    Bot.Feedback.handle(event, context)
+    Commands.Feedback.handle(event, context)
   end
 
   def handle({:callback_query, %{data: "brs" <> _}} = event, context) do
-    Bot.BRS.handle(event, context)
+    Commands.BRS.handle(event, context)
   end
 
   def handle({:callback_query, %{data: "ubu" <> _}} = event, context) do
-    Bot.UBU.handle(event, context)
+    Commands.UBU.handle(event, context)
   end
 end

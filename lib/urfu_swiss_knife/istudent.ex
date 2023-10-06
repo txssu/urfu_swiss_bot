@@ -1,9 +1,9 @@
-defmodule UrFUSwissBot.IStudent do
+defmodule UrFUSwissKnife.IStudent do
   alias UrFUAPI.IStudent.Auth
   alias UrFUAPI.IStudent.Auth.Token
   alias UrFUAPI.IStudent.BRS
   alias UrFUAPI.IStudent.BRS.Subject
-  alias UrFUSwissBot.Cache
+  alias UrFUSwissKnife.Cache
 
   use Nebulex.Caching
 

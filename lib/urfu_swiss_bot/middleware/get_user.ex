@@ -1,4 +1,4 @@
-defmodule UrFUSwissBot.Bot.Middleware.GetUser do
+defmodule UrFUSwissBot.Middleware.GetUser do
   use ExGram.Middleware
 
   alias ExGram.Cnt

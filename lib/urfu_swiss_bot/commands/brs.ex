@@ -1,4 +1,4 @@
-defmodule UrFUSwissBot.Bot.BRS do
+defmodule UrFUSwissBot.Commands.BRS do
   import ExGram.Dsl
   import ExGram.Dsl.Keyboard
 
@@ -10,8 +10,8 @@ defmodule UrFUSwissBot.Bot.BRS do
 
   alias UrFUSwissKnife.Accounts.User
 
-  alias UrFUSwissBot.IStudent
-  alias UrFUSwissBot.Utils
+  alias UrFUSwissKnife.IStudent
+  alias UrFUSwissKnife.Utils
 
   require ExGram.Dsl
   require ExGram.Dsl.Keyboard

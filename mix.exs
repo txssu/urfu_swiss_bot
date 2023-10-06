@@ -3,7 +3,7 @@ defmodule UrFUSwissBot.MixProject do
 
   def project do
     [
-      app: :urfu_swiss_bot,
+      app: :urfu_swiss_knife,
       version: "0.1.0",
       elixir: "~> 1.15",
       start_permanent: Mix.env() == :prod,
@@ -14,7 +14,7 @@ defmodule UrFUSwissBot.MixProject do
   def application do
     [
       extra_applications: [:logger],
-      mod: {UrFUSwissBot.Application, []}
+      mod: {UrFUSwissKnife.Application, []}
     ]
   end
 

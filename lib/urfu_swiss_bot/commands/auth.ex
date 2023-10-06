@@ -1,11 +1,11 @@
-defmodule UrFUSwissBot.Bot.Auth do
+defmodule UrFUSwissBot.Commands.Auth do
   import ExGram.Dsl
 
   alias ExGram.Cnt
   alias ExGram.Model.Message
 
-  alias UrFUSwissBot.Bot.Menu
-  alias UrFUSwissBot.IStudent
+  alias UrFUSwissBot.Commands.Menu
+  alias UrFUSwissKnife.IStudent
 
   alias UrFUSwissKnife.Accounts
   alias UrFUSwissKnife.Accounts.User

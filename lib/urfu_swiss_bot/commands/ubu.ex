@@ -1,4 +1,4 @@
-defmodule UrFUSwissBot.Bot.UBU do
+defmodule UrFUSwissBot.Commands.UBU do
   import ExGram.Dsl
   import ExGram.Dsl.Keyboard
 
@@ -6,7 +6,7 @@ defmodule UrFUSwissBot.Bot.UBU do
   alias ExGram.Model.CallbackQuery
   alias ExGram.Model.InlineKeyboardMarkup
 
-  alias UrFUSwissBot.UBU
+  alias UrFUSwissKnife.UBU
 
   alias UrFUSwissKnife.Accounts.User
 

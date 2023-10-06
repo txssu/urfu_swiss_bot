@@ -1,4 +1,4 @@
-defmodule UrFUSwissBot.Bot.Schedule do
+defmodule UrFUSwissBot.Commands.Schedule do
   import ExGram.Dsl
   import ExGram.Dsl.Keyboard
 
@@ -10,13 +10,13 @@ defmodule UrFUSwissBot.Bot.Schedule do
   alias UrFUAPI.Modeus
   alias UrFUAPI.Modeus.Schedule.ScheduleData
 
-  alias UrFUSwissBot.Modeus
-  alias UrFUSwissBot.Utils
+  alias UrFUSwissKnife.Modeus
+  alias UrFUSwissKnife.Utils
 
   alias UrFUSwissKnife.Accounts
   alias UrFUSwissKnife.Accounts.User
 
-  alias UrFUSwissBot.Bot.Schedule.Formatter
+  alias UrFUSwissBot.Commands.Schedule.Formatter
 
   require ExGram.Dsl
   require ExGram.Dsl.Keyboard

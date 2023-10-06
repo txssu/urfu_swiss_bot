@@ -1,4 +1,4 @@
-defmodule UrFUSwissBot.Modeus do
+defmodule UrFUSwissKnife.Modeus do
   alias UrFUAPI.Modeus.Auth
   alias UrFUAPI.Modeus.Auth.Token
   alias UrFUAPI.Modeus.Auth.TokenClaims
@@ -6,8 +6,8 @@ defmodule UrFUSwissBot.Modeus do
   alias UrFUAPI.Modeus.Schedule.ScheduleData
   alias UrFUAPI.Modeus.Schedule.ScheduleData.Event
 
-  alias UrFUSwissBot.Cache
-  alias UrFUSwissBot.Utils
+  alias UrFUSwissKnife.Cache
+  alias UrFUSwissKnife.Utils
 
   use Nebulex.Caching
 
