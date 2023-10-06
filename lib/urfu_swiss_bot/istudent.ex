@@ -16,16 +16,8 @@ defmodule UrFUSwissBot.IStudent do
   @decorate cacheable(cache: Cache, key: {:get_subjects, auth.username}, ttl: :timer.hours(1))
   @spec get_subjects(Token.t()) :: [Subject.t()]
   def get_subjects(auth) do
-    BRS.get_subjects(auth)
-  end
-
-  @decorate cacheable(
-              cache: Cache,
-              key: {:perload_subject_scores, auth.username, subject},
-              ttl: :timer.hours(1)
-            )
-  @spec preload_subject_scores(Token.t(), Subject.t()) :: Subject.t()
-  def preload_subject_scores(auth, subject) do
-    BRS.preload_subject_scores(auth, subject)
+    auth
+    |> BRS.get_subjects()
+    |> Enum.map(&BRS.preload_subject_scores(auth, &1))
   end
 end

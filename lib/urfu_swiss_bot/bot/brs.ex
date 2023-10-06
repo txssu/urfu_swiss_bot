@@ -33,10 +33,8 @@ defmodule UrFUSwissBot.Bot.BRS do
   def get_response(user) do
     {:ok, auth} = IStudent.auth_user(user)
 
-    subjects = IStudent.get_subjects(auth)
-
-    subjects
-    |> Enum.map(&IStudent.preload_subject_scores(auth, &1))
+    auth
+    |> IStudent.get_subjects()
     |> Enum.map_join("\n\n", &format_subjects/1)
   end
 
