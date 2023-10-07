@@ -1,18 +1,12 @@
 defmodule UrFUAPI.IStudent.BRS do
   alias UrFUAPI.IStudent.Auth.Token
+  alias UrFUAPI.IStudent.Client
   alias UrFUAPI.IStudent.BRS.Subject
   alias UrFUAPI.IStudent.BRS.SubjectScore
-  alias UrFUAPI.Istudent.Headers
-
-  defmodule Client do
-    use Tesla
-
-    plug Tesla.Middleware.BaseUrl, "https://istudent.urfu.ru/s/http-urfu-ru-ru-students-study-brs"
-  end
 
   @spec get_subjects(Token.t()) :: [Subject.t()]
   def get_subjects(auth) do
-    %{body: body} = Client.get!("/", Headers.from_token(auth))
+    %{body: body} = Client.get!("/", Client.headers_from_token(auth))
 
     parse_subjects(body)
   end
@@ -68,7 +62,7 @@ defmodule UrFUAPI.IStudent.BRS do
   @spec preload_subject_scores(Token.t(), Subject.t()) :: Subject.t()
   def preload_subject_scores(auth, %Subject{id: object_id} = subject) do
     %{body: body} =
-      Client.get!("/discipline?discipline_id=#{object_id}", Headers.from_token(auth))
+      Client.get!("/discipline?discipline_id=#{object_id}", Client.headers_from_token(auth))
 
     scores = parse_subject_scores(body)
 

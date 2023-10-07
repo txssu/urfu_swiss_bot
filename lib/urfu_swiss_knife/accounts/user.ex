@@ -1,4 +1,6 @@
 defmodule UrFUSwissKnife.Accounts.User do
+  @derive {Inspect, except: [:password]}
+
   use TypedStruct
 
   @type state :: {module(), atom()}

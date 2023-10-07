@@ -1,16 +1,8 @@
 defmodule UrFUAPI.Modeus.Schedule do
   alias UrFUAPI.Modeus.Auth.Token
   alias UrFUAPI.Modeus.Auth.TokenClaims
-  alias UrFUAPI.Modeus.Headers
-  alias UrFUAPI.Modeus.Schedule.Client
+  alias UrFUAPI.Modeus.Client
   alias UrFUAPI.Modeus.Schedule.ScheduleData
-
-  defmodule Client do
-    use Tesla
-
-    plug Tesla.Middleware.BaseUrl, "https://urfu.modeus.org/schedule-calendar-v2/api"
-    plug Tesla.Middleware.JSON
-  end
 
   @spec get_schedule(Token.t(), DateTime.t(), DateTime.t()) :: ScheduleData.t()
   def get_schedule(
@@ -26,7 +18,7 @@ defmodule UrFUAPI.Modeus.Schedule do
     }
 
     %{body: %{"_embedded" => database}} =
-      Client.post!("/calendar/events/search", body, Headers.from_token(auth))
+      Client.post!("/calendar/events/search", body, Client.headers_from_token(auth))
 
     ScheduleData.new(database)
   end
