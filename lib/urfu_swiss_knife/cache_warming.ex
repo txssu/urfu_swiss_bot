@@ -1,14 +1,15 @@
 defmodule UrFUSwissKnife.CacheWarming do
   alias UrFUSwissKnife.Cache
-  alias UrFUSwissKnife.Utils
   alias UrFUSwissKnife.IStudent
   alias UrFUSwissKnife.Modeus
   alias UrFUSwissKnife.UBU
+  alias UrFUSwissKnife.Utils
 
   alias UrFUSwissBot.UpdatesNotifier
 
   alias UrFUSwissKnife.Accounts
 
+  @spec warm_today_schedule :: :ok
   def warm_today_schedule do
     for user <- Accounts.get_users() do
       {:ok, auth} = Modeus.auth_user(user)
@@ -24,6 +25,7 @@ defmodule UrFUSwissKnife.CacheWarming do
     :ok
   end
 
+  @spec warm_ubu_dates :: :ok
   def warm_ubu_dates do
     for user <- Accounts.get_users() do
       {:ok, auth} = UBU.auth_user(user)
@@ -39,6 +41,7 @@ defmodule UrFUSwissKnife.CacheWarming do
     :ok
   end
 
+  @spec warm_istudent_brs :: :ok
   def warm_istudent_brs do
     for user <- Accounts.get_users() do
       {:ok, auth} = IStudent.auth_user(user)

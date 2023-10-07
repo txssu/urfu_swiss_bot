@@ -1,7 +1,14 @@
 defmodule UrFUSwissBot.UpdatesNotifier do
   import ExGram.Dsl.Keyboard
+
+  alias UrFUAPI.UBU.CommunalCharges.Info
+  alias UrFUSwissKnife.Accounts
+
+  alias ExGram.Model.InlineKeyboardMarkup
+
   require ExGram.Dsl.Keyboard
 
+  @spec pay_keyboard(String.t()) :: InlineKeyboardMarkup.t()
   defp pay_keyboard(contract) do
     keyboard(:inline) do
       row do
@@ -10,6 +17,7 @@ defmodule UrFUSwissBot.UpdatesNotifier do
     end
   end
 
+  @spec update_ubu_debt(Accounts.User.t(), Info.t(), Info.t()) :: :ok
   def update_ubu_debt(user, was, became) do
     if was.debt != became.debt do
       formatted_debt = format_debt(became.debt)
@@ -21,8 +29,13 @@ defmodule UrFUSwissBot.UpdatesNotifier do
       Оплатить коммунальные платежи вы всегда можете на портале «Платежи УрФУ»"
       """
 
-      ExGram.send_message!(user.id, text, reply_markup: pay_keyboard(became.contract), bot: UrFUSwissBot.Bot.bot())
+      ExGram.send_message!(user.id, text,
+        reply_markup: pay_keyboard(became.contract),
+        bot: UrFUSwissBot.Bot.bot()
+      )
     end
+
+    :ok
   end
 
   @spec format_debt(integer) :: String.t()
