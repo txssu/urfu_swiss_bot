@@ -20,7 +20,7 @@ config :urfu_swiss_knife, UrFUSwissKnife.Scheduler,
     # At 14:00.
     {"0 14 * * *", {UrFUSwissKnife.CacheWarming, :warm_ubu_dates, []}},
     # At every 15th minute.
-    {"*/15 * * * *", {UrFUSwissKnife.CacheWarming, :warm_istudent_brs, []}},
+    {"*/15 * * * *", {UrFUSwissKnife.CacheWarming, :warm_istudent_brs, []}}
   ]
 
 config :elixir, :time_zone_database, Tzdata.TimeZoneDatabase

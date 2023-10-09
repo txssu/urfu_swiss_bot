@@ -1,8 +1,7 @@
 defmodule UrFUAPI.UBU.CommunalCharges do
   alias UrFUAPI.UBU.Auth.Token
-  alias UrFUAPI.UBU.CommunalCharges.Client
-  alias UrFUAPI.UBU.CommunalCharges.Info
   alias UrFUAPI.UBU.Client
+  alias UrFUAPI.UBU.CommunalCharges.Info
 
   @spec get_dates(Token.t()) :: Info.t()
   def get_dates(auth) do
