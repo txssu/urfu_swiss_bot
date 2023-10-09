@@ -103,9 +103,10 @@ defmodule UrFUSwissBot.Commands.Schedule do
   def handle({:callback_query, %{data: "schedule-tomorrow"}}, context) do
     today = DateTime.utc_now(:second)
 
-    tomorrow = today
-    |> Utils.to_yekaterinburg_zone()
-    |> Utils.start_of_next_day()
+    tomorrow =
+      today
+      |> Utils.to_yekaterinburg_zone()
+      |> Utils.start_of_next_day()
 
     generic_answer(context, tomorrow, @tommorow_no_events)
   end
@@ -133,17 +134,18 @@ defmodule UrFUSwissBot.Commands.Schedule do
 
     case Modeus.auth_user(user) do
       {:ok, auth} ->
-        local_time = Utils.to_yekaterinburg_zone(date)
+        local_time =
+          date
+          |> Utils.start_of_day()
+          |> Utils.to_yekaterinburg_zone()
+
+        not_filtered_schedule = Modeus.get_schedule_by_day(auth, local_time)
 
         schedule =
           if today? do
-            today = Utils.start_of_day(local_time)
-
-            auth
-            |> Modeus.get_schedule_by_day(today)
-            |> reject_passed_events(date)
+            reject_passed_events(not_filtered_schedule, date)
           else
-            Modeus.get_schedule_by_day(auth, local_time)
+            not_filtered_schedule
           end
 
         response =
