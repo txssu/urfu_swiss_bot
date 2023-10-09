@@ -13,6 +13,8 @@ config :urfu_swiss_knife, UrFUSwissKnife.Cache,
 config :urfu_swiss_knife, UrFUSwissKnife.Scheduler,
   timezone: "Asia/Yekaterinburg",
   jobs: [
+    # After rebooting.
+    {"@reboot", {UrFUSwissKnife.CacheWarming, :warm_all, []}},
     # At 00:00 on every day-of-week from Monday through Saturday.
     {"0 0 * * 1-6", {UrFUSwissKnife.CacheWarming, :warm_today_schedule, []}},
     # At 14:00.

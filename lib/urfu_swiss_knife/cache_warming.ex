@@ -1,4 +1,6 @@
 defmodule UrFUSwissKnife.CacheWarming do
+  alias UrFUSwissKnife.Accounts
+  alias UrFUSwissKnife.Accounts.User
   alias UrFUSwissKnife.Cache
   alias UrFUSwissKnife.IStudent
   alias UrFUSwissKnife.Modeus
@@ -7,7 +9,12 @@ defmodule UrFUSwissKnife.CacheWarming do
 
   alias UrFUSwissBot.UpdatesNotifier
 
-  alias UrFUSwissKnife.Accounts
+  @spec warm_all() :: :ok
+  def warm_all do
+    warm_today_schedule()
+    warm_ubu_dates()
+    warm_istudent_brs()
+  end
 
   @spec warm_today_schedule :: :ok
   def warm_today_schedule do
@@ -46,6 +53,7 @@ defmodule UrFUSwissKnife.CacheWarming do
     :ok
   end
 
+  @spec get_authed_users(module()) :: Enumerable.t(User.t())
   defp get_authed_users(auth_module) do
     Accounts.get_users()
     |> Stream.map(fn user -> {user, auth_module.auth_user(user)} end)
