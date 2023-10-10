@@ -17,7 +17,7 @@ defmodule UrFUSwissBot.Commands.Settings do
 
   @keyboard (keyboard(:inline) do
                row do
-                 button("Обновить данные авторизации", callback_data: "settings-confirm-reauth")
+                 button("Обновить данные авторизации", callback_data: "start-reauth")
                end
 
                row do
@@ -44,14 +44,6 @@ defmodule UrFUSwissBot.Commands.Settings do
     context
     |> answer_callback(callback_query)
     |> edit(:inline, @settings_text, reply_markup: @keyboard)
-  end
-
-  def handle({:callback_query, %{data: "settings-confirm-reauth"} = callback_query}, context) do
-    context
-    |> answer_callback(callback_query)
-    |> edit(:inline, "Вы точно хотите повторно пройти авторизацию?",
-      reply_markup: confirmation_keyboard("start-reauth")
-    )
   end
 
   def handle({:callback_query, %{data: "settings-confirm-delete"} = callback_query}, context) do

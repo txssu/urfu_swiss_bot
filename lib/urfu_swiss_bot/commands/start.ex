@@ -15,7 +15,7 @@ defmodule UrFUSwissBot.Commands.Start do
   """
 
   @reauth_text """
-  Теперь повторно пройдите авторизацию.
+  Теперь повторно пройдите авторизацию. Или используйте команду /menu для отмены.
   """
 
   @continue_text """
@@ -129,8 +129,7 @@ defmodule UrFUSwissBot.Commands.Start do
   @spec set_auth_state(Cnt.t(), User.t()) :: Cnt.t()
   defp set_auth_state(context, user) do
     user
-    |> User.delete_credentials()
-    |> User.set_state({UrFUSwissBot.Commands.Auth, :auth})
+    |> User.set_auth_state()
     |> Accounts.save_user()
 
     context
