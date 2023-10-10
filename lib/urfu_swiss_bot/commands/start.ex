@@ -143,6 +143,6 @@ defmodule UrFUSwissBot.Commands.Start do
   defp answer_callback_auth(context, callback, text) do
     context
     |> answer_callback(callback)
-    |> edit(:inline, text <> @instruction)
+    |> answer_message_auth(text)
   end
 end
