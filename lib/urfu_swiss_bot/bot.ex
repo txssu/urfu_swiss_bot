@@ -19,9 +19,18 @@ defmodule UrFUSwissBot.Bot do
   middleware ExGram.Middleware.IgnoreUsername
   middleware UrFUSwissBot.Middleware.GetUser
   middleware UrFUSwissBot.Middleware.HitEvent
+  middleware UrFUSwissBot.Middleware.UserRecovering
 
   @spec bot :: :urfu_swiss_knife
   def bot, do: @bot
+
+  ###############################################
+  # Recover after deleting
+  ###############################################
+
+  def handle(event, %Cnt{extra: %{is_recover: true}} = context) do
+    Commands.Start.handle(event, context)
+  end
 
   ###############################################
   # Handle state
@@ -38,10 +47,6 @@ defmodule UrFUSwissBot.Bot do
         %Cnt{extra: %{user: %{state: {module, state}}}} = context
       ) do
     module.handle(state, event, context)
-  end
-
-  def handle({:text, _text, _message}, %Cnt{extra: %{user: %{state: nil}}} = context) do
-    answer(context, "Команда не найдена")
   end
 
   ###############################################
@@ -81,7 +86,15 @@ defmodule UrFUSwissBot.Bot do
     Commands.Stats.handle(event, context)
   end
 
+  ###############################################
+  # Not found commands
+  ###############################################
+
   def handle({:command, _unknow, _message}, context) do
+    answer(context, "Команда не найдена")
+  end
+
+  def handle({:text, _text, _message}, %Cnt{extra: %{user: %{state: nil}}} = context) do
     answer(context, "Команда не найдена")
   end
 

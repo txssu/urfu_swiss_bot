@@ -22,6 +22,10 @@ defmodule UrFUSwissBot.Commands.Start do
   Сначала закончите авторизацию!
   """
 
+  @recover_text """
+  Спасибо, что вернулись! Вам нужно пройти авторизацию повторно.
+  """
+
   @again_text """
   Похоже, что-то пошло не так! Чтобы продолжить пользоваться ботом \
   вам необходимо повторно авторизироваться.
@@ -44,6 +48,11 @@ defmodule UrFUSwissBot.Commands.Start do
         ) :: Cnt.t()
   def handle({:command, :start, %{from: %{id: user_id}}}, context) do
     start_auth_new_user(context, user_id)
+  end
+
+  # If user is recovering
+  def handle(update, %Cnt{extra: %{is_recover: true}} = context) do
+    start_recover_user(context, update)
   end
 
   # If database is lost it need to handle others actions and start auth
@@ -76,6 +85,19 @@ defmodule UrFUSwissBot.Commands.Start do
       end
 
     continue_auth(answered_context)
+  end
+
+  @spec start_recover_user(Cnt.t(), integer()) :: Cnt.t()
+  def start_recover_user(context, update) do
+    Accounts.recover_user(context.extra.user)
+
+    case update do
+      {:callback_query, callback_query} ->
+        answer_callback_auth(context, callback_query, @recover_text)
+
+      _update ->
+        answer_message_auth(context, @recover_text)
+    end
   end
 
   @spec start_auth_new_user(Cnt.t(), integer()) :: Cnt.t()

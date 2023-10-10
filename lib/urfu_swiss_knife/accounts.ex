@@ -20,9 +20,18 @@ defmodule UrFUSwissKnife.Accounts do
     user
   end
 
-  @spec delete_user(User.t()) :: :ok
+  @spec delete_user(User.t()) :: User.t()
   def delete_user(user) do
-    Repo.delete(user)
+    user
+    |> User.delete()
+    |> save_user()
+  end
+
+  @spec recover_user(User.t()) :: User.t()
+  def recover_user(user) do
+    user
+    |> User.recover()
+    |> save_user()
   end
 
   @spec get_users :: Enumerable.t(User.t())
