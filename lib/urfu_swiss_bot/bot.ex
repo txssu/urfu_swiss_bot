@@ -53,13 +53,14 @@ defmodule UrFUSwissBot.Bot do
   # Auth
   ###############################################
 
-  def handle({:command, :start, _message} = event, %Cnt{extra: %{user: nil}} = context) do
+  def handle({:command, :start, _message} = event, %Cnt{extra: %{user: user}} = context) do
     Commands.Start.handle(event, context)
-  end
 
-  # already authed
-  def handle({:command, :start, _message} = event, context) do
-    Commands.Menu.handle(event, context)
+    case user do
+      nil -> Commands.Start.handle(event, context)
+      %{username: nil, password: nil} -> Commands.Start.handle(event, context)
+      _already_authed -> Commands.Menu.handle(event, context)
+    end
   end
 
   def handle(event, %Cnt{extra: %{user: nil}} = context) do
