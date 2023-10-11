@@ -1,9 +1,9 @@
 defmodule UrFUSwissKnife.CacheWarming do
   alias UrFUSwissKnife.Accounts
   alias UrFUSwissKnife.Accounts.User
-  alias UrFUSwissKnife.Cache
   alias UrFUSwissKnife.IStudent
   alias UrFUSwissKnife.Modeus
+  alias UrFUSwissKnife.PersistentCache
   alias UrFUSwissKnife.UBU
   alias UrFUSwissKnife.Utils
 
@@ -33,8 +33,9 @@ defmodule UrFUSwissKnife.CacheWarming do
   @spec warm_ubu_dates :: :ok
   def warm_ubu_dates do
     for {user, auth} <- get_authed_users(UBU) do
-      was = Cache.get({:get_dates, user.username})
+      was = PersistentCache.get_communal_charges(user.id)
       became = UBU.update_dates_cache(auth)
+      PersistentCache.create_communal_charges(user.id, became)
 
       unless is_nil(was) do
         UpdatesNotifier.update_ubu_debt(user, was, became)

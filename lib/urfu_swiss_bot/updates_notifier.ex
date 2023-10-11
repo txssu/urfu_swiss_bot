@@ -3,6 +3,9 @@ defmodule UrFUSwissBot.UpdatesNotifier do
 
   alias UrFUAPI.UBU.CommunalCharges.Info
   alias UrFUSwissKnife.Accounts
+  alias UrFUSwissKnife.PersistentCache.CommunalCharges
+
+  @type communal_charges() :: CommunalCharges.t() | Info.t()
 
   alias ExGram.Model.InlineKeyboardMarkup
 
@@ -17,7 +20,7 @@ defmodule UrFUSwissBot.UpdatesNotifier do
     end
   end
 
-  @spec update_ubu_debt(Accounts.User.t(), Info.t(), Info.t()) :: :ok
+  @spec update_ubu_debt(Accounts.User.t(), communal_charges(), communal_charges()) :: :ok
   def update_ubu_debt(user, was, became) do
     if was.debt != became.debt do
       formatted_debt = format_debt(became.debt)
@@ -42,7 +45,7 @@ defmodule UrFUSwissBot.UpdatesNotifier do
   defp format_debt(debt)
 
   defp format_debt(0) do
-    "нет переплаты или задолженности\\."
+    "нет переплаты или задолженности."
   end
 
   defp format_debt(debt) when debt > 0 do
