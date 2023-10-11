@@ -28,21 +28,21 @@ defmodule UrFUSwissKnife.Accounts do
   @spec set_auth_state(User.t()) :: User.t()
   def set_auth_state(user) do
     user
-    |> User.set_state({UrFUSwissBot.Commands.Auth, :auth})
+    |> User.set_state(:auth)
     |> save_user()
   end
 
   @spec set_sending_feedback_state(User.t()) :: User.t()
   def set_sending_feedback_state(user) do
     user
-    |> User.set_state({UrFUSwissBot.Commands.Feedback, :send_feedback})
+    |> User.set_state(:sending_feeback)
     |> save_user()
   end
 
   @spec set_sending_schedule_date_state(User.t()) :: User.t()
   def set_sending_schedule_date_state(user) do
     user
-    |> User.set_state({UrFUSwissBot.Commands.Schedule, :date})
+    |> User.set_state(:sending_schedule_date)
     |> save_user()
   end
 

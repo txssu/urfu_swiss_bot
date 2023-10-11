@@ -26,8 +26,8 @@ defmodule UrFUSwissBot.Commands.Auth do
   123456qwerty
   """
 
-  @spec handle(:auth, {:text, String.t(), Message.t()}, Cnt.t()) :: Cnt.t()
-  def handle(:auth, {:text, text, message}, context) do
+  @spec handle({:text, String.t(), Message.t()}, Cnt.t()) :: Cnt.t()
+  def handle({:text, text, message}, context) do
     user = context.extra.user
 
     case String.split(text) do

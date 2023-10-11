@@ -27,7 +27,8 @@ defmodule UrFUSwissBot.Commands.Feedback do
 
   @spec handle(
           {:callback_query, CallbackQuery.t()}
-          | {:command, :reply_feedback, Message.t()},
+          | {:command, :reply_feedback, Message.t()}
+          | {:text, String.t(), Message.t()},
           Cnt.t()
         ) :: Cnt.t()
   def handle({:command, :reply_feedback, message}, context) do
@@ -49,7 +50,6 @@ defmodule UrFUSwissBot.Commands.Feedback do
   end
 
   def handle({:callback_query, %{data: "feedback"} = callback_query}, context) do
-
     Accounts.set_sending_feedback_state(context.extra.user)
 
     context
@@ -57,8 +57,7 @@ defmodule UrFUSwissBot.Commands.Feedback do
     |> edit(:inline, @text, reply_markup: @keyboard)
   end
 
-  @spec handle(:send_feedback, {:text, String.t(), Message.t()}, Cnt.t()) :: Cnt.t()
-  def handle(:send_feedback, {:text, text, message}, context) do
+  def handle({:text, text, message}, context) do
     forwared_ids =
       Accounts.get_admins()
       |> Stream.map(fn admin ->

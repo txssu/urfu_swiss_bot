@@ -44,11 +44,14 @@ defmodule UrFUSwissBot.Bot do
   # Handle state
   ###############################################
 
-  def handle(
-        {:text, _text, _message} = event,
-        %Cnt{extra: %{user: %{state: {module, state}}}} = context
-      ) do
-    module.handle(state, event, context)
+  def handle({:text, _text, _message} = update, context) do
+    %{extra: %{user: %{state: state}}} = context
+
+    case state do
+      :auth -> Commands.Auth.handle(update, context)
+      :sending_schedule_date -> Commands.Schedule.handle(update, context)
+      :sending_feeback -> Commands.Feedback.handle(update, context)
+    end
   end
 
   ###############################################

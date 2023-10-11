@@ -114,8 +114,8 @@ defmodule UrFUSwissBot.Commands.Schedule do
     generic_answer(context, date, @no_events)
   end
 
-  @spec handle(:date, {:text, String.t(), Message}, Cnt.t()) :: Cnt.t()
-  def handle(:date, {:text, text, _message}, context) do
+  @spec handle({:text, String.t(), Message}, Cnt.t()) :: Cnt.t()
+  def handle({:text, text, _message}, context) do
     case Utils.parse_russian_date(text) do
       {:ok, date} ->
         generic_answer(context, date, @no_events)

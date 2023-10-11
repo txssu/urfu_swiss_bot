@@ -3,13 +3,13 @@ defmodule UrFUSwissKnife.Accounts.User do
 
   use TypedStruct
 
-  @type state :: {module(), atom()}
+  @type state :: atom()
 
   typedstruct enforce: true do
     field :id, integer()
     field :username, String.t() | nil
     field :password, String.t() | nil
-    field :state, state | nil
+    field :state, state
     field :is_admin, boolean, default: false
     field :is_deleted, boolean(), default: false
   end
