@@ -33,7 +33,7 @@ defmodule UrFUSwissBot.Commands.Auth do
     case String.split(text) do
       [username, password] ->
         user
-        |> User.set_credentials(username, password)
+        |> Accounts.edit_user_credentials(username, password)
         |> try_auth_user(message, context)
 
       _error ->
@@ -45,9 +45,7 @@ defmodule UrFUSwissBot.Commands.Auth do
   defp try_auth_user(user, message, context) do
     case IStudent.auth_user(user) do
       {:ok, _autj} ->
-        user
-        |> User.nil_state()
-        |> Accounts.save_user()
+        Accounts.remove_state(user)
 
         context
         |> accepted(message, user.username)

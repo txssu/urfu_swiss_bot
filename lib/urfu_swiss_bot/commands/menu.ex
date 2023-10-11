@@ -59,9 +59,7 @@ defmodule UrFUSwissBot.Commands.Menu do
 
   @spec remove_state(User.t()) :: :ok
   defp remove_state(user) do
-    user
-    |> User.nil_state()
-    |> Accounts.save_user()
+    Accounts.remove_state(user)
 
     :ok
   end

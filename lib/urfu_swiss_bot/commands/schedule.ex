@@ -14,7 +14,6 @@ defmodule UrFUSwissBot.Commands.Schedule do
   alias UrFUSwissKnife.Utils
 
   alias UrFUSwissKnife.Accounts
-  alias UrFUSwissKnife.Accounts.User
 
   alias UrFUSwissBot.Commands.Schedule.Formatter
 
@@ -85,9 +84,7 @@ defmodule UrFUSwissBot.Commands.Schedule do
           Cnt.t()
         ) :: Cnt.t()
   def handle({:callback_query, %{data: "schedule"} = callback_query}, context) do
-    context.extra.user
-    |> User.set_state({__MODULE__, :date})
-    |> Accounts.save_user()
+    Accounts.set_sending_schedule_date_state(context.extra.user)
 
     context
     |> answer_callback(callback_query)

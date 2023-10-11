@@ -8,6 +8,11 @@ defmodule UrFUSwissKnife.Accounts do
     User.new(id: id)
   end
 
+  @spec edit_user_credentials(User.t(), String.t(), String.t()) :: User.t()
+  def edit_user_credentials(user, username, password) do
+    User.set_credentials(user, username, password)
+  end
+
   @spec get_user(integer()) :: User.t()
   def get_user(id) do
     Repo.get(User, id)
@@ -18,6 +23,34 @@ defmodule UrFUSwissKnife.Accounts do
     :ok = Repo.save(user)
 
     user
+  end
+
+  @spec set_auth_state(User.t()) :: User.t()
+  def set_auth_state(user) do
+    user
+    |> User.set_state({UrFUSwissBot.Commands.Auth, :auth})
+    |> save_user()
+  end
+
+  @spec set_sending_feedback_state(User.t()) :: User.t()
+  def set_sending_feedback_state(user) do
+    user
+    |> User.set_state({UrFUSwissBot.Commands.Feedback, :send_feedback})
+    |> save_user()
+  end
+
+  @spec set_sending_schedule_date_state(User.t()) :: User.t()
+  def set_sending_schedule_date_state(user) do
+    user
+    |> User.set_state({UrFUSwissBot.Commands.Schedule, :date})
+    |> save_user()
+  end
+
+  @spec remove_state(User.t()) :: User.t()
+  def remove_state(user) do
+    user
+    |> User.nil_state()
+    |> save_user()
   end
 
   @spec delete_user(User.t()) :: User.t()
@@ -31,6 +64,7 @@ defmodule UrFUSwissKnife.Accounts do
   def recover_user(user) do
     user
     |> User.recover()
+    |> set_auth_state()
     |> save_user()
   end
 

@@ -128,9 +128,7 @@ defmodule UrFUSwissBot.Commands.Start do
 
   @spec set_auth_state(Cnt.t(), User.t()) :: Cnt.t()
   defp set_auth_state(context, user) do
-    user
-    |> User.set_auth_state()
-    |> Accounts.save_user()
+    Accounts.set_auth_state(user)
 
     context
   end

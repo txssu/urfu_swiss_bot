@@ -26,11 +26,6 @@ defmodule UrFUSwissKnife.Accounts.User do
     %{user | username: nil, password: nil}
   end
 
-  @spec set_auth_state(t()) :: t()
-  def set_auth_state(user) do
-    %{user | state: {UrFUSwissBot.Commands.Auth, :auth}}
-  end
-
   @spec set_state(t, state) :: t
   def set_state(user, state) do
     %{user | state: state}
@@ -43,9 +38,7 @@ defmodule UrFUSwissKnife.Accounts.User do
 
   @spec recover(t()) :: t()
   def recover(user) do
-    user
-    |> set_not_deleted()
-    |> set_auth_state()
+    set_not_deleted(user)
   end
 
   @spec delete(t()) :: t()
