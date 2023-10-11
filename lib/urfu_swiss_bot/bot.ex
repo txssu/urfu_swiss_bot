@@ -24,6 +24,14 @@ defmodule UrFUSwissBot.Bot do
   @spec bot :: :urfu_swiss_knife
   def bot, do: @bot
 
+  @spec handle(
+          {:text, String.t(), Message.t()}
+          | {:callback_query, CallbackQuery.t()}
+          | {:command, atom(), Message.t()},
+          Cnt.t()
+        ) :: Cnt.t()
+  def handle(update, context)
+
   ###############################################
   # Recover after deleting
   ###############################################
@@ -36,12 +44,6 @@ defmodule UrFUSwissBot.Bot do
   # Handle state
   ###############################################
 
-  @spec handle(
-          {:text, String.t(), Message.t()}
-          | {:callback_query, CallbackQuery.t()}
-          | {:command, atom(), Message.t()},
-          Cnt.t()
-        ) :: Cnt.t()
   def handle(
         {:text, _text, _message} = event,
         %Cnt{extra: %{user: %{state: {module, state}}}} = context
