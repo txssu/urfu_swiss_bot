@@ -165,8 +165,8 @@ defmodule UrFUSwissBot.Commands.Schedule do
   @spec reject_passed_events(term(), DateTime.t()) :: term()
   defp reject_passed_events(%ScheduleData{events: events} = schedule, now) do
     future_events =
-      Enum.reject(events, fn %ScheduleData.Event{starts_at: starts_at} ->
-        DateTime.after?(now, starts_at)
+      Enum.reject(events, fn %ScheduleData.Event{ends_at: ends_at} ->
+        DateTime.after?(now, ends_at)
       end)
 
     %{schedule | events: future_events}
