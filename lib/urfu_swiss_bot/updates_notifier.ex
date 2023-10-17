@@ -2,14 +2,15 @@ defmodule UrFUSwissBot.UpdatesNotifier do
   import ExGram.Dsl.Keyboard
 
   alias UrFUAPI.UBU.CommunalCharges.Info
+
   alias UrFUSwissKnife.Accounts
   alias UrFUSwissKnife.PersistentCache.CommunalCharges
-
-  @type communal_charges() :: CommunalCharges.t() | Info.t()
 
   alias ExGram.Model.InlineKeyboardMarkup
 
   require ExGram.Dsl.Keyboard
+
+  @type communal_charges() :: CommunalCharges.t() | Info.t()
 
   @spec pay_keyboard(String.t()) :: InlineKeyboardMarkup.t()
   defp pay_keyboard(contract) do
