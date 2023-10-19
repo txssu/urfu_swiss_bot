@@ -102,7 +102,7 @@ defmodule UrFUSwissBot.Commands.Schedule do
 
     tomorrow =
       today
-      |> Utils.to_yekaterinburg_zone()
+      |> Utils.yekaterinburg_start_of_day()
       |> Utils.start_of_next_day()
 
     generic_answer(context, tomorrow, @tommorow_no_events)
@@ -131,10 +131,7 @@ defmodule UrFUSwissBot.Commands.Schedule do
 
     case Modeus.auth_user(user) do
       {:ok, auth} ->
-        local_time =
-          date
-          |> Utils.start_of_day()
-          |> Utils.to_yekaterinburg_zone()
+        local_time = Utils.yekaterinburg_start_of_day(date)
 
         not_filtered_schedule = Modeus.get_schedule_by_day(auth, local_time)
 

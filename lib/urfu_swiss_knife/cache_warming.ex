@@ -20,9 +20,7 @@ defmodule UrFUSwissKnife.CacheWarming do
   def warm_today_schedule do
     for {_user, auth} <- get_authed_users(Modeus) do
       today =
-        DateTime.utc_now()
-        |> Utils.start_of_day()
-        |> Utils.to_yekaterinburg_zone()
+        Utils.yekaterinburg_start_of_day(DateTime.utc_now())
 
       Modeus.get_schedule_by_day(auth, today)
     end

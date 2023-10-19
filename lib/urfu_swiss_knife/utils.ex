@@ -30,6 +30,21 @@ defmodule UrFUSwissKnife.Utils do
     DateTime.shift_zone!(datetime, "Asia/Yekaterinburg")
   end
 
+  @spec utc_as_yekaterinburg_zone(DateTime.t()) :: DateTime.t()
+  def utc_as_yekaterinburg_zone(datetime) do
+    datetime
+    |> DateTime.shift_zone!("Asia/Yekaterinburg")
+    |> DateTime.add(5, :hour)
+  end
+
+  @spec yekaterinburg_start_of_day(DateTime.t()) :: DateTime.t()
+  def yekaterinburg_start_of_day(datetime) do
+    datetime
+    |> to_yekaterinburg_zone()
+    |> start_of_day()
+    |> utc_as_yekaterinburg_zone()
+  end
+
   @spec month_to_russian(1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12) :: String.t()
   def month_to_russian(month)
   def month_to_russian(1), do: "Января"
