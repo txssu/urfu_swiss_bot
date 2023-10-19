@@ -61,7 +61,7 @@ defmodule UrFUSwissBot.Commands.UBU do
   defp format_debt(debt)
 
   defp format_debt(0) do
-    "Задолженности и переплаты на текущий момент нет\\."
+    "Задолженности и переплаты на текущий момент нет."
   end
 
   defp format_debt(debt) when debt > 0 do
