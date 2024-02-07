@@ -32,4 +32,4 @@ urfu_swiss_knife-*.tar
 .env
 
 # Nix venv
-.nix-*
+.direnv
