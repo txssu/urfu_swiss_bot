@@ -1,4 +1,5 @@
 defmodule UrFUSwissKnife.Utils do
+  @moduledoc false
   @type weekday :: 1 | 2 | 3 | 4 | 5 | 6 | 7
 
   @spec start_of_next_day(DateTime.t()) :: DateTime.t()
@@ -204,8 +205,7 @@ defmodule UrFUSwissKnife.Utils do
     <<>>
   end
 
-  def escape_telegram_markdown(<<char::utf8, rest::binary>>)
-      when char in @chars_need_escape do
+  def escape_telegram_markdown(<<char::utf8, rest::binary>>) when char in @chars_need_escape do
     <<?\\::utf8, char::utf8, escape_telegram_markdown(rest)::binary>>
   end
 

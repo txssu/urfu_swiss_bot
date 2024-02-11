@@ -1,13 +1,12 @@
-defmodule UrFUSwissBot.Commands.Stats do
+defmodule UrfuSwissBot.Commands.Stats do
+  @moduledoc false
   import ExGram.Dsl
-
-  alias UrFUSwissKnife.Utils
 
   alias ExGram.Cnt
   alias ExGram.Model.Message
-
   alias UrFUSwissKnife.Accounts
   alias UrFUSwissKnife.Metrics
+  alias UrFUSwissKnife.Utils
 
   require ExGram.Dsl
   require ExGram.Dsl.Keyboard

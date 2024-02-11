@@ -1,14 +1,13 @@
-defmodule UrFUSwissBot.Commands.Auth do
+defmodule UrfuSwissBot.Commands.Auth do
+  @moduledoc false
   import ExGram.Dsl
 
   alias ExGram.Cnt
   alias ExGram.Model.Message
-
-  alias UrFUSwissBot.Commands.Menu
-  alias UrFUSwissKnife.IStudent
-
+  alias UrfuSwissBot.Commands.Menu
   alias UrFUSwissKnife.Accounts
   alias UrFUSwissKnife.Accounts.User
+  alias UrFUSwissKnife.Istudent
 
   require ExGram.Dsl
 
@@ -43,7 +42,7 @@ defmodule UrFUSwissBot.Commands.Auth do
 
   @spec try_auth_user(User.t(), Message.t(), Cnt.t()) :: Cnt.t()
   defp try_auth_user(user, message, context) do
-    case IStudent.auth_user(user) do
+    case Istudent.auth_user(user) do
       {:ok, _autj} ->
         Accounts.remove_state(user)
 

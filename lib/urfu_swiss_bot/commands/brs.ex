@@ -1,16 +1,14 @@
-defmodule UrFUSwissBot.Commands.BRS do
+defmodule UrfuSwissBot.Commands.BRS do
+  @moduledoc false
   import ExGram.Dsl
   import ExGram.Dsl.Keyboard
 
   alias ExGram.Cnt
   alias ExGram.Model.CallbackQuery
-
-  alias UrFUAPI.IStudent.BRS.Subject
-  alias UrFUAPI.IStudent.BRS.SubjectScore
-
+  alias UrfuApi.Istudent.BRS.Subject
+  alias UrfuApi.Istudent.BRS.SubjectScore
   alias UrFUSwissKnife.Accounts.User
-
-  alias UrFUSwissKnife.IStudent
+  alias UrFUSwissKnife.Istudent
   alias UrFUSwissKnife.Utils
 
   require ExGram.Dsl
@@ -31,10 +29,10 @@ defmodule UrFUSwissBot.Commands.BRS do
 
   @spec get_response(User.t()) :: String.t()
   def get_response(user) do
-    {:ok, auth} = IStudent.auth_user(user)
+    {:ok, auth} = Istudent.auth_user(user)
 
     auth
-    |> IStudent.get_subjects()
+    |> Istudent.get_subjects()
     |> Enum.map_join("\n\n", &format_subjects/1)
   end
 
@@ -57,12 +55,7 @@ defmodule UrFUSwissBot.Commands.BRS do
   end
 
   @spec format_subject_scores(SubjectScore.t()) :: String.t()
-  defp format_subject_scores(%SubjectScore{
-         name: name,
-         raw: raw,
-         multiplier: multiplier,
-         total: total
-       }) do
+  defp format_subject_scores(%SubjectScore{name: name, raw: raw, multiplier: multiplier, total: total}) do
     Utils.escape_telegram_markdown("#{name} - #{raw} × #{multiplier} = #{total}")
   end
 end

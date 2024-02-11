@@ -1,13 +1,12 @@
-defmodule UrFUSwissBot.Commands.Feedback do
+defmodule UrfuSwissBot.Commands.Feedback do
+  @moduledoc false
   import ExGram.Dsl
   import ExGram.Dsl.Keyboard
 
   alias ExGram.Cnt
   alias ExGram.Model.CallbackQuery
   alias ExGram.Model.Message
-
-  alias UrFUSwissBot.Commands.Menu
-
+  alias UrfuSwissBot.Commands.Menu
   alias UrFUSwissKnife.Accounts
   alias UrFUSwissKnife.Feedback
 

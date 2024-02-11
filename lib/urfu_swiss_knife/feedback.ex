@@ -1,7 +1,7 @@
 defmodule UrFUSwissKnife.Feedback do
-  alias UrFUSwissKnife.Repo
-
+  @moduledoc false
   alias UrFUSwissKnife.Feedback.Message
+  alias UrFUSwissKnife.Repo
 
   @spec create_message(ExConstructor.map_or_kwlist()) :: Message.t()
   def create_message(fields) do

@@ -1,14 +1,13 @@
-defmodule UrFUSwissBot.Commands.UBU do
+defmodule UrfuSwissBot.Commands.Ubu do
+  @moduledoc false
   import ExGram.Dsl
   import ExGram.Dsl.Keyboard
 
   alias ExGram.Cnt
   alias ExGram.Model.CallbackQuery
   alias ExGram.Model.InlineKeyboardMarkup
-
-  alias UrFUSwissKnife.UBU
-
   alias UrFUSwissKnife.Accounts.User
+  alias UrFUSwissKnife.Ubu
 
   require ExGram.Dsl
   require ExGram.Dsl.Keyboard
@@ -51,8 +50,8 @@ defmodule UrFUSwissBot.Commands.UBU do
 
   @spec get_response(User.t()) :: {InlineKeyboardMarkup.t(), String.t()}
   def get_response(user) do
-    {:ok, auth} = UBU.auth_user(user)
-    %{debt: debt, contract: contract} = UBU.get_dates(auth)
+    {:ok, auth} = Ubu.auth_user(user)
+    %{debt: debt, contract: contract} = Ubu.get_dates(auth)
 
     {pay_keyboard(contract), format_debt(debt) <> @pay_urfu_ru_ad}
   end

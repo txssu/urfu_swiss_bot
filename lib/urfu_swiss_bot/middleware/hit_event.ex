@@ -1,15 +1,12 @@
-defmodule UrFUSwissBot.Middleware.HitEvent do
+defmodule UrfuSwissBot.Middleware.HitEvent do
+  @moduledoc false
   use ExGram.Middleware
 
   alias ExGram.Cnt
-
   alias UrFUSwissKnife.Metrics
 
   @spec call(Cnt.t(), keyword()) :: Cnt.t()
-  def call(
-        %Cnt{update: %{update_id: id, message: %{text: text, from: %{id: by_user_id}}}} = context,
-        _opts
-      ) do
+  def call(%Cnt{update: %{update_id: id, message: %{text: text, from: %{id: by_user_id}}}} = context, _opts) do
     if String.starts_with?(text, "/") do
       command = String.replace_prefix(text, "/", "")
 
@@ -25,12 +22,7 @@ defmodule UrFUSwissBot.Middleware.HitEvent do
   end
 
   def call(
-        %Cnt{
-          update: %{
-            update_id: id,
-            callback_query: %{data: "schedule-date-" <> _date, from: %{id: by_user_id}}
-          }
-        } =
+        %Cnt{update: %{update_id: id, callback_query: %{data: "schedule-date-" <> _date, from: %{id: by_user_id}}}} =
           context,
         _opts
       ) do
@@ -44,11 +36,7 @@ defmodule UrFUSwissBot.Middleware.HitEvent do
     context
   end
 
-  def call(
-        %Cnt{update: %{update_id: id, callback_query: %{data: command, from: %{id: by_user_id}}}} =
-          context,
-        _opts
-      ) do
+  def call(%Cnt{update: %{update_id: id, callback_query: %{data: command, from: %{id: by_user_id}}}} = context, _opts) do
     Metrics.hit_command(
       id: id,
       command: command,

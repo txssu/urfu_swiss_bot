@@ -1,9 +1,9 @@
-defmodule UrFUSwissBot.Commands.Schedule.Formatter do
-  alias UrFUAPI.Modeus.Schedule
-  alias UrFUAPI.Modeus.Schedule.ScheduleData
-  alias UrFUAPI.Modeus.Schedule.ScheduleData.Event
-  alias UrFUAPI.Modeus.Schedule.ScheduleData.EventLocation
-
+defmodule UrfuSwissBot.Commands.Schedule.Formatter do
+  @moduledoc false
+  alias UrfuApi.Modeus.Schedule
+  alias UrfuApi.Modeus.Schedule.ScheduleData
+  alias UrfuApi.Modeus.Schedule.ScheduleData.Event
+  alias UrfuApi.Modeus.Schedule.ScheduleData.EventLocation
   alias UrFUSwissKnife.Utils
 
   @spec format_events(ScheduleData.t(), Date.t() | DateTime.t()) :: String.t()
@@ -15,11 +15,7 @@ defmodule UrFUSwissBot.Commands.Schedule.Formatter do
 
   @spec format_event(Event.t(), ScheduleData.t(), DateTime.t()) :: String.t()
   def format_event(
-        %Event{
-          starts_at_local: starts_at,
-          ends_at_local: ends_at,
-          type_id: type_id
-        } = event,
+        %Event{starts_at_local: starts_at, ends_at_local: ends_at, type_id: type_id} = event,
         schedule,
         datetime
       ) do

@@ -1,7 +1,7 @@
 defmodule UrFUSwissKnife.Accounts do
-  alias UrFUSwissKnife.Repo
-
+  @moduledoc false
   alias UrFUSwissKnife.Accounts.User
+  alias UrFUSwissKnife.Repo
 
   @spec create_user(integer()) :: User.t()
   def create_user(id) do

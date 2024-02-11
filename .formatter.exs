@@ -1,6 +1,6 @@
 # Used by "mix format"
 [
-  import_deps: [:tesla, :typed_struct],
+  import_deps: [:typedstruct],
   inputs: ["{mix,.formatter}.exs", "{config,lib,test}/**/*.{ex,exs}"],
   locals_without_parens: [
     # import from ex_gram
@@ -14,5 +14,6 @@
     row: 1,
     button: 1,
     button: 2
-  ]
+  ],
+  plugins: [Styler]
 ]

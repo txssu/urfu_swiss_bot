@@ -1,7 +1,5 @@
 import Config
 
-config :tesla, adapter: Tesla.Adapter.Hackney
-
 config :urfu_swiss_knife, UrFUSwissKnife.Cache,
   backend: :shards,
   gc_interval: :timer.hours(12),
@@ -25,11 +23,9 @@ config :urfu_swiss_knife, UrFUSwissKnife.Scheduler,
 
 config :elixir, :time_zone_database, Tzdata.TimeZoneDatabase
 
-config :urfu_swiss_knife, UrFUSwissBot.Repo,
-  database_folder: System.get_env("DATABASE_FOLDER", ".db")
+config :urfu_swiss_knife, UrfuSwissBot.Repo, database_folder: System.get_env("DATABASE_FOLDER", ".db")
 
-config :urfu_swiss_knife, :secret_vault,
-  default: [password: System.fetch_env!("SECRET_VAULT_PASSWORD")]
+config :urfu_swiss_knife, :secret_vault, default: [password: System.fetch_env!("SECRET_VAULT_PASSWORD")]
 
 config :floki, :html_parser, Floki.HTMLParser.FastHtml
 

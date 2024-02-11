@@ -1,15 +1,11 @@
-defmodule UrFUSwissBot.Bot do
+defmodule UrfuSwissBot.Bot do
+  @moduledoc false
+  use ExGram.Bot, name: __MODULE__, setup_commands: true
+
   alias ExGram.Cnt
   alias ExGram.Model.CallbackQuery
   alias ExGram.Model.Message
-
-  alias UrFUSwissBot.Commands
-
-  @bot :urfu_swiss_knife
-
-  use ExGram.Bot,
-    name: @bot,
-    setup_commands: true
+  alias UrfuSwissBot.Commands
 
   command "start"
   command "menu", description: "Вызвать меню"
@@ -17,12 +13,12 @@ defmodule UrFUSwissBot.Bot do
   command "stats"
 
   middleware ExGram.Middleware.IgnoreUsername
-  middleware UrFUSwissBot.Middleware.GetUser
-  middleware UrFUSwissBot.Middleware.HitEvent
-  middleware UrFUSwissBot.Middleware.UserRecovering
+  middleware UrfuSwissBot.Middleware.GetUser
+  middleware UrfuSwissBot.Middleware.HitEvent
+  middleware UrfuSwissBot.Middleware.UserRecovering
 
-  @spec bot :: :urfu_swiss_knife
-  def bot, do: @bot
+  @spec bot :: __MODULE__
+  def bot, do: __MODULE__
 
   @spec handle(
           {:text, String.t(), Message.t()}
@@ -133,6 +129,6 @@ defmodule UrFUSwissBot.Bot do
   end
 
   def handle({:callback_query, %{data: "ubu" <> _}} = event, context) do
-    Commands.UBU.handle(event, context)
+    Commands.Ubu.handle(event, context)
   end
 end

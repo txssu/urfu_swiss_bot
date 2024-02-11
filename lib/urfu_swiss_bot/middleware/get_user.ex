@@ -1,8 +1,8 @@
-defmodule UrFUSwissBot.Middleware.GetUser do
+defmodule UrfuSwissBot.Middleware.GetUser do
+  @moduledoc false
   use ExGram.Middleware
 
   alias ExGram.Cnt
-
   alias UrFUSwissKnife.Accounts
 
   @spec call(Cnt.t(), keyword()) :: Cnt.t()

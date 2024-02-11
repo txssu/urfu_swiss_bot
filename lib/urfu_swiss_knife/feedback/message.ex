@@ -1,5 +1,7 @@
 defmodule UrFUSwissKnife.Feedback.Message do
+  @moduledoc false
   use TypedStruct
+  use ExConstructor
 
   typedstruct enforce: true do
     field :id, integer()
@@ -7,6 +9,4 @@ defmodule UrFUSwissKnife.Feedback.Message do
     field :forwared_ids, [integer()]
     field :text, String.t(), default: ""
   end
-
-  use ExConstructor
 end

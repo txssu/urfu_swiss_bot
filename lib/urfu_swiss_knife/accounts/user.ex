@@ -1,7 +1,9 @@
 defmodule UrFUSwissKnife.Accounts.User do
-  @derive {Inspect, except: [:password]}
-
+  @moduledoc false
   use TypedStruct
+  use ExConstructor
+
+  @derive {Inspect, except: [:password]}
 
   @type state :: atom()
 
@@ -13,8 +15,6 @@ defmodule UrFUSwissKnife.Accounts.User do
     field :is_admin, boolean, default: false
     field :is_deleted, boolean(), default: false
   end
-
-  use ExConstructor
 
   @spec set_credentials(t, String.t(), String.t()) :: t
   def set_credentials(%__MODULE__{} = user, username, password) do

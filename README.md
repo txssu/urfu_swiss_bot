@@ -1,4 +1,4 @@
-# UrFUSwissBot
+# UrfuSwissBot
 
 **TODO: Add description**
 

@@ -3,20 +3,20 @@ defmodule UrFUSwissKnife.Application do
   use Application
 
   @app :urfu_swiss_knife
-  @supervisor_opts [strategy: :one_for_one, name: UrFUSwissBot.Supervisor]
+  @supervisor_opts [strategy: :one_for_one, name: UrfuSwissBot.Supervisor]
 
   @impl Application
   @spec start(Application.start_type(), start_args :: term) ::
           {:ok, pid} | {:ok, pid, Application.state()} | {:error, reason :: term}
   def start(_type, _args) do
-    telegram_token = Application.get_env(@app, UrFUSwissBot.Bot)[:token]
-    data_dir = Application.get_env(@app, UrFUSwissBot.Repo)[:database_folder]
+    telegram_token = Application.get_env(@app, UrfuSwissBot.Bot)[:token]
+    data_dir = Application.get_env(@app, UrfuSwissBot.Repo)[:database_folder]
 
     children = [
       {CubDB, [name: UrFUSwissKnife.Repo, data_dir: data_dir]},
       UrFUSwissKnife.Cache,
       ExGram,
-      {UrFUSwissBot.Bot, [method: :polling, token: telegram_token]},
+      {UrfuSwissBot.Bot, [method: :polling, token: telegram_token]},
       UrFUSwissKnife.Scheduler
     ]
 
@@ -28,7 +28,7 @@ defmodule UrFUSwissKnife.Application do
   defp migrate(data_dir) do
     {:ok, db} = CubDB.start_link(data_dir: data_dir)
 
-    :ok = UrFUSwissBot.Migrator.migrate(db)
+    :ok = UrfuSwissBot.Migrator.migrate(db)
 
     :ok = GenServer.stop(db)
   end

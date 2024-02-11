@@ -1,13 +1,14 @@
-defmodule UrFUSwissBot.MixProject do
+defmodule UrfuSwissBot.MixProject do
   use Mix.Project
 
   def project do
     [
       app: :urfu_swiss_knife,
       version: "0.1.0",
-      elixir: "~> 1.15",
+      elixir: "~> 1.16",
       start_permanent: Mix.env() == :prod,
       consolidate_protocols: Mix.env() == :prod,
+      aliases: aliases(),
       deps: deps()
     ]
   end
@@ -41,16 +42,32 @@ defmodule UrFUSwissBot.MixProject do
       # HTML Parser
       {:floki, "~> 0.35.0"},
       {:fast_html, "~> 2.0"},
-      # UrFU API
-      {:typed_struct, "~> 0.3.0"},
-      {:exconstructor, "~> 1.2.9"},
       # Cron
       {:quantum, "~> 3.0"},
+      # UrFU API
+      {:urfu_api, github: "txssu/urfu_api"},
       # Code quality
-      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
-      {:dialyxir, "~> 1.3", only: [:dev, :test], runtime: false},
+      {:credo, "~> 1.7.3", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.4.3", only: [:dev, :test], runtime: false},
+      {:mix_audit, "~> 2.1.2", only: [:dev, :test], runtime: false},
+      {:styler, "~> 0.11.9", only: [:dev, :test], runtime: false},
       # Secret
-      {:secret_vault, "~> 1.0"}
+      {:secret_vault, "~> 1.0"},
+      # Other
+      {:typedstruct, "~> 0.5.2"},
+      {:exconstructor, github: "txssu/exconstructor"}
+    ]
+  end
+
+  defp aliases do
+    [
+      ci: [
+        "compile --all-warnings --warnings-as-errors",
+        "format --check-formatted",
+        "credo --strict",
+        "deps.audit",
+        "dialyzer"
+      ]
     ]
   end
 end

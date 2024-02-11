@@ -1,15 +1,15 @@
 defmodule UrFUSwissKnife.Modeus do
-  alias UrFUAPI.Modeus.Auth
-  alias UrFUAPI.Modeus.Auth.Token
-  alias UrFUAPI.Modeus.Auth.TokenClaims
-  alias UrFUAPI.Modeus.Schedule
-  alias UrFUAPI.Modeus.Schedule.ScheduleData
-  alias UrFUAPI.Modeus.Schedule.ScheduleData.Event
+  @moduledoc false
+  use Nebulex.Caching
 
+  alias UrfuApi.Modeus.Auth
+  alias UrfuApi.Modeus.Auth.Token
+  alias UrfuApi.Modeus.Auth.TokenClaims
+  alias UrfuApi.Modeus.Schedule
+  alias UrfuApi.Modeus.Schedule.ScheduleData
+  alias UrfuApi.Modeus.Schedule.ScheduleData.Event
   alias UrFUSwissKnife.Cache
   alias UrFUSwissKnife.Utils
-
-  use Nebulex.Caching
 
   @decorate cacheable(cache: Cache, key: {:modeus_auth, username}, match: &match_auth/1)
   @spec auth_user(map()) :: {:ok, Token.t()} | {:error, String.t()}
@@ -60,9 +60,7 @@ defmodule UrFUSwissKnife.Modeus do
 
   @decorate cacheable(
               cache: Cache,
-              key:
-                {:get_schedule, auth.username, DateTime.to_unix(after_time),
-                 DateTime.to_unix(before_time)},
+              key: {:get_schedule, auth.username, DateTime.to_unix(after_time), DateTime.to_unix(before_time)},
               ttl: :timer.hours(24)
             )
   @spec get_schedule(Token.t(), DateTime.t(), DateTime.t()) :: ScheduleData.t()

@@ -1,12 +1,11 @@
-defmodule UrFUSwissBot.UpdatesNotifier do
+defmodule UrfuSwissBot.UpdatesNotifier do
+  @moduledoc false
   import ExGram.Dsl.Keyboard
 
-  alias UrFUAPI.UBU.CommunalCharges.Info
-
+  alias ExGram.Model.InlineKeyboardMarkup
+  alias UrfuApi.Ubu.CommunalCharges.Info
   alias UrFUSwissKnife.Accounts
   alias UrFUSwissKnife.PersistentCache.CommunalCharges
-
-  alias ExGram.Model.InlineKeyboardMarkup
 
   require ExGram.Dsl.Keyboard
 
@@ -35,7 +34,7 @@ defmodule UrFUSwissBot.UpdatesNotifier do
 
       ExGram.send_message!(user.id, text,
         reply_markup: pay_keyboard(became.contract),
-        bot: UrFUSwissBot.Bot.bot()
+        bot: UrfuSwissBot.Bot
       )
     end
 

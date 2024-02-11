@@ -1,5 +1,7 @@
 defmodule UrFUSwissKnife.Metrics.CommandCall do
+  @moduledoc false
   use TypedStruct
+  use ExConstructor
 
   typedstruct enforce: true do
     field :id, integer()
@@ -7,6 +9,4 @@ defmodule UrFUSwissKnife.Metrics.CommandCall do
     field :by_user_id, integer()
     field :called_at, DateTime.t()
   end
-
-  use ExConstructor
 end

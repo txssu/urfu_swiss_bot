@@ -1,4 +1,5 @@
-defmodule UrFUSwissBot.Migrator do
+defmodule UrfuSwissBot.Migrator do
+  @moduledoc false
   alias CubDB.Tx
 
   @spec migrate(GenServer.server()) :: :ok

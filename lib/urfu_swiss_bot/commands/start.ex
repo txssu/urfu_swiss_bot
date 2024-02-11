@@ -1,10 +1,10 @@
-defmodule UrFUSwissBot.Commands.Start do
+defmodule UrfuSwissBot.Commands.Start do
+  @moduledoc false
   import ExGram.Dsl
 
   alias ExGram.Cnt
   alias ExGram.Model.CallbackQuery
   alias ExGram.Model.Message
-
   alias UrFUSwissKnife.Accounts
   alias UrFUSwissKnife.Accounts.User
 

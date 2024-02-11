@@ -1,8 +1,8 @@
 defmodule UrFUSwissKnife.Metrics do
+  @moduledoc false
   alias UrFUSwissKnife.Accounts
-  alias UrFUSwissKnife.Repo
-
   alias UrFUSwissKnife.Metrics.CommandCall
+  alias UrFUSwissKnife.Repo
 
   @spec hit_command(ExConstructor.map_or_kwlist()) :: :ok
   def hit_command(fields) do
@@ -20,7 +20,6 @@ defmodule UrFUSwissKnife.Metrics do
     |> Repo.select()
     |> Stream.reject(fn %{by_user_id: by_user_id} -> by_user_id in admins end)
     |> Enum.group_by(fn %{command: command} -> command end)
-    |> Enum.map(fn {command, calls} -> {command, Enum.count(calls)} end)
-    |> Enum.into(%{})
+    |> Map.new(fn {command, calls} -> {command, Enum.count(calls)} end)
   end
 end

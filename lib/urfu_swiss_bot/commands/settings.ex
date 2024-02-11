@@ -1,11 +1,11 @@
-defmodule UrFUSwissBot.Commands.Settings do
+defmodule UrfuSwissBot.Commands.Settings do
+  @moduledoc false
   import ExGram.Dsl
   import ExGram.Dsl.Keyboard
 
   alias ExGram.Cnt
   alias ExGram.Model.CallbackQuery
   alias ExGram.Model.InlineKeyboardMarkup
-
   alias UrFUSwissKnife.Accounts
 
   require ExGram.Dsl
@@ -49,9 +49,7 @@ defmodule UrFUSwissBot.Commands.Settings do
   def handle({:callback_query, %{data: "settings-confirm-delete"} = callback_query}, context) do
     context
     |> answer_callback(callback_query)
-    |> edit(:inline, "Вы точно хотите удалить аккаунт?",
-      reply_markup: confirmation_keyboard("settings-delete")
-    )
+    |> edit(:inline, "Вы точно хотите удалить аккаунт?", reply_markup: confirmation_keyboard("settings-delete"))
   end
 
   def handle({:callback_query, %{data: "settings-delete"} = callback_query}, context) do
