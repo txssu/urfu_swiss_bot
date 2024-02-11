@@ -49,7 +49,7 @@ defmodule UrFUSwissKnife.Utils do
   @spec month_to_russian(1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12) :: String.t()
   def month_to_russian(month)
   def month_to_russian(1), do: "Января"
-  def month_to_russian(2), do: "Феврала"
+  def month_to_russian(2), do: "Февраля"
   def month_to_russian(3), do: "Марта"
   def month_to_russian(4), do: "Апреля"
   def month_to_russian(5), do: "Мая"
