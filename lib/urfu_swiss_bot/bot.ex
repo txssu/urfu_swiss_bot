@@ -125,7 +125,7 @@ defmodule UrfuSwissBot.Bot do
   end
 
   def handle({:callback_query, %{data: "brs" <> _}} = event, context) do
-    Commands.BRS.handle(event, context)
+    Commands.Brs.handle(event, context)
   end
 
   def handle({:callback_query, %{data: "ubu" <> _}} = event, context) do
