@@ -7,6 +7,10 @@ defmodule UrfuSwissBot.Bot do
   alias ExGram.Model.Message
   alias UrfuSwissBot.Commands
 
+  require Logger
+
+  @callback_context Commands
+
   command "start"
   command "menu", description: "Вызвать меню"
   command "reply_feedback"
@@ -104,31 +108,24 @@ defmodule UrfuSwissBot.Bot do
   # Callbacks
   ###############################################
 
-  def handle({:callback_query, %{data: "start" <> _}} = event, context) do
-    Commands.Start.handle(event, context)
+  def handle({:callback_query, %{data: callback}} = event, context) do
+    callback_module_name = callback |> String.split(".") |> hd() |> dbg()
+
+    case module_concat(@callback_context, callback_module_name) do
+      {:ok, module} ->
+        module.handle(event, context)
+
+      :error ->
+        not_found_module = "#{@callback_context}.#{callback_module_name}"
+        Logger.error(~s(Cannot find #{not_found_module} for callback query "#{callback}".))
+
+        Commands.Menu.handle(event, context)
+    end
   end
 
-  def handle({:callback_query, %{data: "menu" <> _}} = event, context) do
-    Commands.Menu.handle(event, context)
-  end
-
-  def handle({:callback_query, %{data: "schedule" <> _}} = event, context) do
-    Commands.Schedule.handle(event, context)
-  end
-
-  def handle({:callback_query, %{data: "settings" <> _}} = event, context) do
-    Commands.Settings.handle(event, context)
-  end
-
-  def handle({:callback_query, %{data: "feedback" <> _}} = event, context) do
-    Commands.Feedback.handle(event, context)
-  end
-
-  def handle({:callback_query, %{data: "brs" <> _}} = event, context) do
-    Commands.Brs.handle(event, context)
-  end
-
-  def handle({:callback_query, %{data: "ubu" <> _}} = event, context) do
-    Commands.Ubu.handle(event, context)
+  defp module_concat(left, right) do
+    {:ok, Module.safe_concat(left, right)}
+  rescue
+    ArgumentError -> :error
   end
 end

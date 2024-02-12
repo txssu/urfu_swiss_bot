@@ -16,11 +16,11 @@ defmodule UrfuSwissBot.Commands.Ubu do
 
   @keyboard (keyboard(:inline) do
                row do
-                 button("Проверить задолженность за общагу", callback_data: "ubu-check-charges")
+                 button("Проверить задолженность за общагу", callback_data: "Ubu.check_charges")
                end
 
                row do
-                 button("В меню", callback_data: "menu")
+                 button("В меню", callback_data: "Menu")
                end
              end)
 
@@ -32,17 +32,17 @@ defmodule UrfuSwissBot.Commands.Ubu do
       end
 
       row do
-        button("В меню", callback_data: "menu")
+        button("В меню", callback_data: "Menu")
       end
     end
   end
 
   @spec handle({:callback_query, CallbackQuery.t()}, Cnt.t()) :: Cnt.t()
-  def handle({:callback_query, %{data: "ubu"}}, context) do
+  def handle({:callback_query, %{data: "Ubu"}}, context) do
     edit(context, :inline, "Что вас интересует?", reply_markup: @keyboard)
   end
 
-  def handle({:callback_query, %{data: "ubu-check-charges"}}, context) do
+  def handle({:callback_query, %{data: "Ubu.check_charges"}}, context) do
     {kbd, response} = get_response(context.extra.user)
 
     edit(context, :inline, response, reply_markup: kbd)

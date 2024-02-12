@@ -69,7 +69,7 @@ defmodule UrfuSwissBot.Commands.Start do
   end
 
   # User manual reauth
-  def handle({:callback_query, %{data: "start-reauth"} = callback_query}, context) do
+  def handle({:callback_query, %{data: "Start.reauth"} = callback_query}, context) do
     reauth(context, context.extra.user, callback_query)
   end
 

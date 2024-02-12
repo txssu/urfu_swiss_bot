@@ -48,7 +48,7 @@ defmodule UrfuSwissBot.Commands.Feedback do
     end
   end
 
-  def handle({:callback_query, %{data: "feedback"} = callback_query}, context) do
+  def handle({:callback_query, %{data: "Feedback"} = callback_query}, context) do
     Accounts.set_sending_feedback_state(context.extra.user)
 
     context

@@ -65,9 +65,9 @@ defmodule UrfuSwissBot.Commands.Schedule do
 
     keyboard :inline do
       row do
-        button("⬅️", callback_data: "schedule-date-#{previous_day}")
-        button("Сегодня", callback_data: "schedule-today")
-        button("➡️", callback_data: "schedule-date-#{next_day}")
+        button("⬅️", callback_data: "Schedule.date:#{previous_day}")
+        button("Сегодня", callback_data: "Schedule.today")
+        button("➡️", callback_data: "Schedule.date:#{next_day}")
       end
 
       row do
@@ -80,7 +80,7 @@ defmodule UrfuSwissBot.Commands.Schedule do
           {:callback_query, CallbackQuery.t()},
           Cnt.t()
         ) :: Cnt.t()
-  def handle({:callback_query, %{data: "schedule"} = callback_query}, context) do
+  def handle({:callback_query, %{data: "Schedule"} = callback_query}, context) do
     Accounts.set_sending_schedule_date_state(context.extra.user)
 
     context
@@ -88,13 +88,13 @@ defmodule UrfuSwissBot.Commands.Schedule do
     |> edit(:inline, @start_text, reply_markup: @start_keyboard)
   end
 
-  def handle({:callback_query, %{data: "schedule-today"}}, context) do
+  def handle({:callback_query, %{data: "Schedule.today"}}, context) do
     now = DateTime.utc_now(:second)
 
     generic_answer(context, now, @today_no_more_events, true)
   end
 
-  def handle({:callback_query, %{data: "schedule-tomorrow"}}, context) do
+  def handle({:callback_query, %{data: "Schedule.tomorrow"}}, context) do
     today = DateTime.utc_now(:second)
 
     tomorrow =
@@ -105,7 +105,7 @@ defmodule UrfuSwissBot.Commands.Schedule do
     generic_answer(context, tomorrow, @tommorow_no_events)
   end
 
-  def handle({:callback_query, %{data: "schedule-date-" <> date}}, context) do
+  def handle({:callback_query, %{data: "Schedule.date:" <> date}}, context) do
     {:ok, date, _offset} = DateTime.from_iso8601(date, :basic)
 
     generic_answer(context, date, @no_events)

@@ -21,7 +21,7 @@ defmodule UrfuSwissBot.Commands.Brs do
              end)
 
   @spec handle({:callback_query, CallbackQuery.t()}, Cnt.t()) :: Cnt.t()
-  def handle({:callback_query, %{data: "brs"}}, context) do
+  def handle({:callback_query, %{data: "Brs"}}, context) do
     response = get_response(context.extra.user)
 
     edit(context, :inline, response, reply_markup: @keyboard, parse_mode: "MarkdownV2")

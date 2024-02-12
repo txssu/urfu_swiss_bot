@@ -18,20 +18,20 @@ defmodule UrfuSwissBot.Commands.Menu do
 
   @keyboard (keyboard(:inline) do
                row do
-                 button("Расписание 🏫", callback_data: "schedule")
-                 button("БРС 🔰", callback_data: "brs")
+                 button("Расписание 🏫", callback_data: "Schedule")
+                 button("БРС 🔰", callback_data: "Brs")
                end
 
                row do
-                 button("Финансовые Сервисы 💸", callback_data: "ubu")
+                 button("Финансовые Сервисы 💸", callback_data: "Ubu")
                end
 
                row do
-                 button("Настройки ⚙️", callback_data: "settings")
+                 button("Настройки ⚙️", callback_data: "Settings")
                end
 
                row do
-                 button("Обратная связь ✉️", callback_data: "feedback")
+                 button("Обратная связь ✉️", callback_data: "Feedback")
                end
              end)
 
