@@ -40,8 +40,8 @@ defmodule UrfuSwissBot.Commands.Schedule do
 
   @start_keyboard (keyboard :inline do
                      row do
-                       button("Сегодня⬇️", callback_data: "schedule-today")
-                       button("Завтра➡️", callback_data: "schedule-tomorrow")
+                       button("Сегодня⬇️", callback_data: "Schedule.today")
+                       button("Завтра➡️", callback_data: "Schedule.tomorrow")
                      end
 
                      row do
