@@ -1,4 +1,4 @@
-defmodule UrFUSwissKnife.Istudent do
+defmodule UrfuSwissKnife.Istudent do
   @moduledoc false
   use Nebulex.Caching
 
@@ -6,7 +6,7 @@ defmodule UrFUSwissKnife.Istudent do
   alias UrfuApi.Istudent.Auth.Token
   alias UrfuApi.Istudent.Brs
   alias UrfuApi.Istudent.Brs.Subject
-  alias UrFUSwissKnife.Cache
+  alias UrfuSwissKnife.Cache
 
   @decorate cacheable(cache: Cache, key: {:istudent, username}, ttl: :timer.hours(24))
   @spec auth_user(map()) :: {:ok, Token.t()} | {:error, String.t()}

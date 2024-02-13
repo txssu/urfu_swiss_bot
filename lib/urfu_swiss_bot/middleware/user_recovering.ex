@@ -3,7 +3,7 @@ defmodule UrfuSwissBot.Middleware.UserRecovering do
   use ExGram.Middleware
 
   alias ExGram.Cnt
-  alias UrFUSwissKnife.Accounts.User
+  alias UrfuSwissKnife.Accounts.User
 
   @spec call(Cnt.t(), []) :: Cnt.t()
   def call(%Cnt{extra: %{user: %User{is_deleted: true}}} = context, _opts) do

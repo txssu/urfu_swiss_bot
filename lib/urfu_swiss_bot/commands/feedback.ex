@@ -7,8 +7,8 @@ defmodule UrfuSwissBot.Commands.Feedback do
   alias ExGram.Model.CallbackQuery
   alias ExGram.Model.Message
   alias UrfuSwissBot.Commands.Menu
-  alias UrFUSwissKnife.Accounts
-  alias UrFUSwissKnife.Feedback
+  alias UrfuSwissKnife.Accounts
+  alias UrfuSwissKnife.Feedback
 
   require ExGram.Dsl
   require ExGram.Dsl.Keyboard

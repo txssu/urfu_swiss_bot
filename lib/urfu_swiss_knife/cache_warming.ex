@@ -1,13 +1,13 @@
-defmodule UrFUSwissKnife.CacheWarming do
+defmodule UrfuSwissKnife.CacheWarming do
   @moduledoc false
   alias UrfuSwissBot.UpdatesNotifier
-  alias UrFUSwissKnife.Accounts
-  alias UrFUSwissKnife.Accounts.User
-  alias UrFUSwissKnife.Istudent
-  alias UrFUSwissKnife.Modeus
-  alias UrFUSwissKnife.PersistentCache
-  alias UrFUSwissKnife.Ubu
-  alias UrFUSwissKnife.Utils
+  alias UrfuSwissKnife.Accounts
+  alias UrfuSwissKnife.Accounts.User
+  alias UrfuSwissKnife.Istudent
+  alias UrfuSwissKnife.Modeus
+  alias UrfuSwissKnife.PersistentCache
+  alias UrfuSwissKnife.Ubu
+  alias UrfuSwissKnife.Utils
 
   @spec warm_all() :: :ok
   def warm_all do

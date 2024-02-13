@@ -3,7 +3,7 @@ defmodule UrfuSwissBot.Middleware.GetUser do
   use ExGram.Middleware
 
   alias ExGram.Cnt
-  alias UrFUSwissKnife.Accounts
+  alias UrfuSwissKnife.Accounts
 
   @spec call(Cnt.t(), keyword()) :: Cnt.t()
   def call(%Cnt{update: %{message: %{from: %{id: id}}}} = context, _opts) do

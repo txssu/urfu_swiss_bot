@@ -6,8 +6,8 @@ defmodule UrfuSwissBot.Commands.Ubu do
   alias ExGram.Cnt
   alias ExGram.Model.CallbackQuery
   alias ExGram.Model.InlineKeyboardMarkup
-  alias UrFUSwissKnife.Accounts.User
-  alias UrFUSwissKnife.Ubu
+  alias UrfuSwissKnife.Accounts.User
+  alias UrfuSwissKnife.Ubu
 
   require ExGram.Dsl
   require ExGram.Dsl.Keyboard

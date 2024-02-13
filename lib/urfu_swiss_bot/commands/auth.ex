@@ -5,9 +5,9 @@ defmodule UrfuSwissBot.Commands.Auth do
   alias ExGram.Cnt
   alias ExGram.Model.Message
   alias UrfuSwissBot.Commands.Menu
-  alias UrFUSwissKnife.Accounts
-  alias UrFUSwissKnife.Accounts.User
-  alias UrFUSwissKnife.Istudent
+  alias UrfuSwissKnife.Accounts
+  alias UrfuSwissKnife.Accounts.User
+  alias UrfuSwissKnife.Istudent
 
   require ExGram.Dsl
 

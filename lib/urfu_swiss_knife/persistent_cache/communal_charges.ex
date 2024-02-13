@@ -1,4 +1,4 @@
-defmodule UrFUSwissKnife.PersistentCache.CommunalCharges do
+defmodule UrfuSwissKnife.PersistentCache.CommunalCharges do
   @moduledoc false
   use TypedStruct
   use ExConstructor

@@ -1,4 +1,4 @@
-defmodule UrFUSwissKnife.Application do
+defmodule UrfuSwissKnife.Application do
   @moduledoc false
   use Application
 
@@ -13,11 +13,11 @@ defmodule UrFUSwissKnife.Application do
     data_dir = Application.get_env(@app, UrfuSwissBot.Repo)[:database_folder]
 
     children = [
-      {CubDB, [name: UrFUSwissKnife.Repo, data_dir: data_dir]},
-      UrFUSwissKnife.Cache,
+      {CubDB, [name: UrfuSwissKnife.Repo, data_dir: data_dir]},
+      UrfuSwissKnife.Cache,
       ExGram,
       {UrfuSwissBot.Bot, [method: :polling, token: telegram_token]},
-      UrFUSwissKnife.Scheduler
+      UrfuSwissKnife.Scheduler
     ]
 
     migrate(data_dir)

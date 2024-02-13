@@ -1,7 +1,7 @@
-alias UrFUSwissKnife.Accounts
-alias UrFUSwissKnife.Feedback
-alias UrFUSwissKnife.Metrics
+alias UrfuSwissKnife.Accounts
+alias UrfuSwissKnife.Feedback
+alias UrfuSwissKnife.Metrics
 
-alias UrFUSwissKnife.Istudent
-alias UrFUSwissKnife.Modeus
-alias UrFUSwissKnife.Ubu
+alias UrfuSwissKnife.Istudent
+alias UrfuSwissKnife.Modeus
+alias UrfuSwissKnife.Ubu

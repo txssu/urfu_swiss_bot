@@ -1,4 +1,4 @@
-defmodule UrFUSwissKnife.Feedback.Message do
+defmodule UrfuSwissKnife.Feedback.Message do
   @moduledoc false
   use TypedStruct
   use ExConstructor

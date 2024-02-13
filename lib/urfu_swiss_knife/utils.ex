@@ -1,4 +1,4 @@
-defmodule UrFUSwissKnife.Utils do
+defmodule UrfuSwissKnife.Utils do
   @moduledoc false
   @type weekday :: 1 | 2 | 3 | 4 | 5 | 6 | 7
 

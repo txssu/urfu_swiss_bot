@@ -1,4 +1,4 @@
-defmodule UrFUSwissKnife.Cache do
+defmodule UrfuSwissKnife.Cache do
   @moduledoc false
   use Nebulex.Cache,
     otp_app: :urfu_swiss_knife,

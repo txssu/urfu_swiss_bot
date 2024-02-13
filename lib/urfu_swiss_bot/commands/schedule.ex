@@ -10,9 +10,9 @@ defmodule UrfuSwissBot.Commands.Schedule do
   alias UrfuApi.Modeus
   alias UrfuApi.Modeus.Schedule.ScheduleData
   alias UrfuSwissBot.Commands.Schedule.Formatter
-  alias UrFUSwissKnife.Accounts
-  alias UrFUSwissKnife.Modeus
-  alias UrFUSwissKnife.Utils
+  alias UrfuSwissKnife.Accounts
+  alias UrfuSwissKnife.Modeus
+  alias UrfuSwissKnife.Utils
 
   require ExGram.Dsl
   require ExGram.Dsl.Keyboard

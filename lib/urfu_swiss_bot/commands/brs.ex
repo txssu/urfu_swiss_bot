@@ -7,9 +7,9 @@ defmodule UrfuSwissBot.Commands.Brs do
   alias ExGram.Model.CallbackQuery
   alias UrfuApi.Istudent.Brs.Subject
   alias UrfuApi.Istudent.Brs.SubjectScore
-  alias UrFUSwissKnife.Accounts.User
-  alias UrFUSwissKnife.Istudent
-  alias UrFUSwissKnife.Utils
+  alias UrfuSwissKnife.Accounts.User
+  alias UrfuSwissKnife.Istudent
+  alias UrfuSwissKnife.Utils
 
   require ExGram.Dsl
   require ExGram.Dsl.Keyboard

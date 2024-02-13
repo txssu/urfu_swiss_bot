@@ -4,9 +4,9 @@ defmodule UrfuSwissBot.Commands.Stats do
 
   alias ExGram.Cnt
   alias ExGram.Model.Message
-  alias UrFUSwissKnife.Accounts
-  alias UrFUSwissKnife.Metrics
-  alias UrFUSwissKnife.Utils
+  alias UrfuSwissKnife.Accounts
+  alias UrfuSwissKnife.Metrics
+  alias UrfuSwissKnife.Utils
 
   require ExGram.Dsl
   require ExGram.Dsl.Keyboard
