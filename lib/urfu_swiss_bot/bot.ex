@@ -109,7 +109,7 @@ defmodule UrfuSwissBot.Bot do
   ###############################################
 
   def handle({:callback_query, %{data: callback}} = event, context) do
-    callback_module_name = callback |> String.split(".") |> hd() |> dbg()
+    callback_module_name = callback |> String.split(".") |> hd()
 
     case module_concat(@callback_context, callback_module_name) do
       {:ok, module} ->
