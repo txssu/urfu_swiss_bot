@@ -2,6 +2,7 @@ defmodule UrfuSwissBot.Commands.Brs do
   @moduledoc false
   import ExGram.Dsl
   import ExGram.Dsl.Keyboard
+  import UrfuSwissKnife.CharEscape
 
   alias ExGram.Cnt
   alias ExGram.Model.CallbackQuery
@@ -9,7 +10,6 @@ defmodule UrfuSwissBot.Commands.Brs do
   alias UrfuApi.Istudent.Brs.SubjectScore
   alias UrfuSwissKnife.Accounts.User
   alias UrfuSwissKnife.Istudent
-  alias UrfuSwissKnife.Utils
 
   require ExGram.Dsl
   require ExGram.Dsl.Keyboard
@@ -38,14 +38,14 @@ defmodule UrfuSwissBot.Commands.Brs do
 
   @spec format_subjects(Subject.t()) :: String.t()
   defp format_subjects(%Subject{name: name, total: total, grade: grade, scores: scores}) do
-    name = Utils.escape_telegram_markdown(name)
+    name = escape_telegram_markdown(name)
 
     score =
       total
       |> Float.to_string()
-      |> Utils.escape_telegram_markdown()
+      |> escape_telegram_markdown()
 
-    grade = Utils.escape_telegram_markdown(grade)
+    grade = escape_telegram_markdown(grade)
 
     """
     *#{name}*
@@ -56,6 +56,6 @@ defmodule UrfuSwissBot.Commands.Brs do
 
   @spec format_subject_scores(SubjectScore.t()) :: String.t()
   defp format_subject_scores(%SubjectScore{name: name, raw: raw, multiplier: multiplier, total: total}) do
-    Utils.escape_telegram_markdown("#{name} - #{raw} × #{multiplier} = #{total}")
+    ~t"#{name} - #{raw} × #{multiplier} = #{total}"
   end
 end

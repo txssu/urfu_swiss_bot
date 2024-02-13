@@ -1,12 +1,12 @@
 defmodule UrfuSwissBot.Commands.Stats do
   @moduledoc false
   import ExGram.Dsl
+  import UrfuSwissKnife.CharEscape
 
   alias ExGram.Cnt
   alias ExGram.Model.Message
   alias UrfuSwissKnife.Accounts
   alias UrfuSwissKnife.Metrics
-  alias UrfuSwissKnife.Utils
 
   require ExGram.Dsl
   require ExGram.Dsl.Keyboard
@@ -38,7 +38,7 @@ defmodule UrfuSwissBot.Commands.Stats do
     Enum.map_join(
       [{:unescape, "*Статистика пользователей*"}, active_users_stat, inactive_users_stat],
       "\n",
-      &Utils.escape_telegram_markdown/1
+      &escape_telegram_markdown/1
     )
   end
 
@@ -48,7 +48,7 @@ defmodule UrfuSwissBot.Commands.Stats do
       Metrics.commands_usage()
       |> Enum.sort_by(fn {_command, count} -> count end)
       |> Enum.map_join("\n", fn {command, count} -> "#{command}: #{count}" end)
-      |> Utils.escape_telegram_markdown()
+      |> escape_telegram_markdown()
 
     "*Статистика команд*\n#{usage}"
   end

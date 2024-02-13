@@ -2,6 +2,7 @@ defmodule UrfuSwissBot.Commands.Schedule do
   @moduledoc false
   import ExGram.Dsl
   import ExGram.Dsl.Keyboard
+  import UrfuSwissKnife.CharEscape
 
   alias ExGram.Cnt
   alias ExGram.Model.CallbackQuery
@@ -22,17 +23,17 @@ defmodule UrfuSwissBot.Commands.Schedule do
   Вместо 25.09.2023 вы также можете написать 25.09 или просто 25
   """
 
-  @today_no_more_events Utils.escape_telegram_markdown("""
-                        Пары закончились. Пора отдыхать 😼\
-                        """)
+  @today_no_more_events ~t"""
+  Пары закончились. Пора отдыхать 😼\
+  """
 
-  @tommorow_no_events Utils.escape_telegram_markdown("""
-                      Завтра нет пар. Можно отметить🥴\
-                      """)
+  @tommorow_no_events ~t"""
+  Завтра нет пар. Можно отметить🥴\
+  """
 
-  @no_events Utils.escape_telegram_markdown("""
-             В этот день пар нет.\
-             """)
+  @no_events ~t"""
+  В этот день пар нет.\
+  """
 
   @parse_error """
   Вы ввели дату в неверном формате
@@ -151,7 +152,7 @@ defmodule UrfuSwissBot.Commands.Schedule do
 
       {:error, reason} ->
         reason
-        |> Utils.escape_telegram_markdown()
+        |> escape_telegram_markdown()
         |> reply(date, context)
     end
   end
@@ -235,6 +236,6 @@ defmodule UrfuSwissBot.Commands.Schedule do
       day_of_week_names: &Utils.weekday_to_russian/1,
       month_names: &Utils.month_to_russian/1
     )
-    |> Utils.escape_telegram_markdown()
+    |> escape_telegram_markdown()
   end
 end

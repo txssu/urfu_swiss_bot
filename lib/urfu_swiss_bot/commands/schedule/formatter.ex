@@ -1,10 +1,11 @@
 defmodule UrfuSwissBot.Commands.Schedule.Formatter do
   @moduledoc false
+  import UrfuSwissKnife.CharEscape
+
   alias UrfuApi.Modeus.Schedule
   alias UrfuApi.Modeus.Schedule.ScheduleData
   alias UrfuApi.Modeus.Schedule.ScheduleData.Event
   alias UrfuApi.Modeus.Schedule.ScheduleData.EventLocation
-  alias UrfuSwissKnife.Utils
 
   @spec format_events(ScheduleData.t(), Date.t() | DateTime.t()) :: String.t()
   def format_events(%ScheduleData{events: events} = schedule, datetime) do
@@ -28,7 +29,7 @@ defmodule UrfuSwissBot.Commands.Schedule.Formatter do
     status = get_status(event, datetime)
 
     [{:unescape, status}, time, color <> name, type, address]
-    |> Enum.map(&Utils.escape_telegram_markdown/1)
+    |> Enum.map(&escape_telegram_markdown/1)
     |> Enum.filter(fn
       "" -> false
       _not_empty -> true
