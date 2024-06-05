@@ -17,12 +17,16 @@ defmodule UrFUSwissKnife.UBU do
   @decorate cacheable(cache: Cache, key: {:get_dates, auth.username}, ttl: :timer.hours(36))
   @spec get_dates(Token.t()) :: Info.t()
   def get_dates(auth) do
-    CommunalCharges.get_dates(auth)
+    auth
+    |> CommunalCharges.get_dates()
+    |> elem(1)
   end
 
   @decorate cache_put(cache: Cache, key: {:get_dates, auth.username}, ttl: :timer.hours(36))
   @spec update_dates_cache(Token.t()) :: Info.t()
   def update_dates_cache(auth) do
-    CommunalCharges.get_dates(auth)
+    auth
+    |> CommunalCharges.get_dates()
+    |> elem(1)
   end
 end

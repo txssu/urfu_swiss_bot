@@ -66,7 +66,10 @@ defmodule UrFUSwissKnife.Modeus do
   @spec get_schedule(Token.t(), DateTime.t(), DateTime.t()) :: ScheduleData.t()
   def get_schedule(auth, after_time, before_time) do
     %ScheduleData{events: all_events} =
-      schedule = Schedule.get_schedule(auth, after_time, before_time)
+      schedule =
+      auth
+      |> Schedule.get_schedule(after_time, before_time)
+      |> elem(1)
 
     events =
       Enum.reject(all_events, &first_or_last_event_of_day?/1)

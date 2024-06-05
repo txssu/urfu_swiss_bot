@@ -6,8 +6,9 @@ defmodule UrFUSwissBot.Commands.BRS do
 
   alias ExGram.Cnt
   alias ExGram.Model.CallbackQuery
-  alias UrFUAPI.IStudent.BRS.Subject
-  alias UrFUAPI.IStudent.BRS.SubjectScore
+  alias UrFUAPI.IStudent.BRS.SubjectEvent
+  alias UrFUAPI.IStudent.BRS.SubjectInfo
+  alias UrFUAPI.IStudent.BRS.SubjectInfo.Result
   alias UrFUSwissKnife.Accounts.User
   alias UrFUSwissKnife.IStudent
 
@@ -36,13 +37,13 @@ defmodule UrFUSwissBot.Commands.BRS do
     |> Enum.map_join("\n\n", &format_subjects/1)
   end
 
-  @spec format_subjects(Subject.t()) :: String.t()
-  defp format_subjects(%Subject{name: name, total: total, grade: grade, scores: scores}) do
+  @spec format_subjects(SubjectInfo.t()) :: String.t()
+  defp format_subjects(%SubjectInfo{title: name, result: %Result{score: total, mark: grade}, events: events}) do
     name = escape_telegram_markdown(name)
 
     score =
       total
-      |> Float.to_string()
+      |> to_string()
       |> escape_telegram_markdown()
 
     grade = escape_telegram_markdown(grade)
@@ -51,11 +52,18 @@ defmodule UrFUSwissBot.Commands.BRS do
     *#{name}*
     *Итог:* #{score} \\- #{grade}
     """ <>
-      Enum.map_join(scores, "\n", &format_subject_scores/1)
+      Enum.map_join(events, "\n", &format_subject_events/1)
   end
 
-  @spec format_subject_scores(SubjectScore.t()) :: String.t()
-  defp format_subject_scores(%SubjectScore{name: name, raw: raw, multiplier: multiplier, total: total}) do
-    ~t"#{name} - #{raw} × #{multiplier} = #{total}"
+  @spec format_subject_events(SubjectEvent.t()) :: String.t()
+  defp format_subject_events(%SubjectEvent{
+         type_title: name,
+         score_without_factor: raw,
+         total_factor: multiplier,
+         score_with_factor: total
+       }) do
+    name = name |> String.capitalize() |> escape_telegram_markdown()
+
+    "  *#{name}*" <> ~t" - #{raw} × #{multiplier} = #{total}"
   end
 end
