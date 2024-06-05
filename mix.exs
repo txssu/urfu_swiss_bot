@@ -33,7 +33,7 @@ defmodule UrFUSwissBot.MixProject do
       {:cubdb, "~> 2.0.2"},
       {:cubrepo, github: "txssu/cubrepo"},
       # Telegram bot
-      {:ex_gram, "~> 0.50.0"},
+      {:ex_gram, "~> 0.52.2"},
       {:tesla, "~> 1.4"},
       {:hackney, "~> 1.17"},
       {:jason, ">= 1.0.0"},
