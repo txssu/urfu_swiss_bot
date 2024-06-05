@@ -7,6 +7,7 @@ defmodule UrFUSwissBot.Commands.Start do
   alias ExGram.Model.Message
   alias UrFUSwissKnife.Accounts
   alias UrFUSwissKnife.Accounts.User
+  alias UrFUSwissKnife.CharEscape
 
   require ExGram.Dsl
 
@@ -37,6 +38,11 @@ defmodule UrFUSwissBot.Commands.Start do
   Пример:
   ivan.ivanov@mail.ru
   123456qwerty
+  """
+
+  @policy """
+
+  Вводя свои данные, вы соглашаетесь с [политикой обработки персональных данных](https://raw.githubusercontent.com/txssu/urfu_swiss_bot/main/POLICY.md)\\.
   """
 
   # Start auth for new user
@@ -134,7 +140,10 @@ defmodule UrFUSwissBot.Commands.Start do
   end
 
   @spec answer_message_auth(Cnt.t(), String.t()) :: Cnt.t()
-  defp answer_message_auth(context, text), do: answer(context, text <> @instruction)
+  defp answer_message_auth(context, text) do
+    message_text = CharEscape.escape_telegram_markdown(text <> @instruction) <> @policy
+    answer(context, message_text, parse_mode: "MarkdownV2")
+  end
 
   @spec answer_callback_auth(Cnt.t(), CallbackQuery.t(), String.t()) :: Cnt.t()
   defp answer_callback_auth(context, callback, text) do
