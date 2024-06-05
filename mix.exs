@@ -48,8 +48,6 @@ defmodule UrFUSwissBot.MixProject do
       {:dialyxir, "~> 1.4.3", only: [:dev, :test], runtime: false},
       {:mix_audit, "~> 2.1.2", only: [:dev, :test], runtime: false},
       {:styler, "~> 0.11.9", only: [:dev, :test], runtime: false},
-      # Secret
-      {:secret_vault, "~> 1.0"},
       # Other
       {:typedstruct, "~> 0.5.2"},
       {:exconstructor, github: "txssu/exconstructor"}

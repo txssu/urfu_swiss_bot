@@ -35,7 +35,6 @@ RUN mix local.hex --force && \
 # set build ENV
 ENV MIX_ENV="prod"
 ENV DATABASE_FOLDER="/app/db"
-ARG SECRET_VAULT_PASSWORD
 
 # install mix dependencies
 COPY mix.exs mix.lock ./

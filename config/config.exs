@@ -25,6 +25,4 @@ config :elixir, :time_zone_database, Tzdata.TimeZoneDatabase
 
 config :urfu_swiss_knife, UrFUSwissBot.Repo, database_folder: System.get_env("DATABASE_FOLDER", ".db")
 
-config :urfu_swiss_knife, :secret_vault, default: [password: System.fetch_env!("SECRET_VAULT_PASSWORD")]
-
 import_config "#{config_env()}.exs"
