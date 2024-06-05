@@ -27,6 +27,4 @@ config :urfu_swiss_knife, UrfuSwissBot.Repo, database_folder: System.get_env("DA
 
 config :urfu_swiss_knife, :secret_vault, default: [password: System.fetch_env!("SECRET_VAULT_PASSWORD")]
 
-config :floki, :html_parser, Floki.HTMLParser.FastHtml
-
 import_config "#{config_env()}.exs"

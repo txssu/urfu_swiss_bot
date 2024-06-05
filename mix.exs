@@ -39,9 +39,6 @@ defmodule UrfuSwissBot.MixProject do
       {:shards, "~> 1.1"},
       {:decorator, "~> 1.4"},
       {:telemetry, "~> 1.0"},
-      # HTML Parser
-      {:floki, "~> 0.35.0"},
-      {:fast_html, "~> 2.0"},
       # Cron
       {:quantum, "~> 3.0"},
       # UrFU API
