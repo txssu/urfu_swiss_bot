@@ -1,13 +1,13 @@
-defmodule UrfuSwissKnife.CacheWarming do
+defmodule UrFUSwissKnife.CacheWarming do
   @moduledoc false
-  alias UrfuSwissBot.UpdatesNotifier
-  alias UrfuSwissKnife.Accounts
-  alias UrfuSwissKnife.Accounts.User
-  alias UrfuSwissKnife.Istudent
-  alias UrfuSwissKnife.Modeus
-  alias UrfuSwissKnife.PersistentCache
-  alias UrfuSwissKnife.UBU
-  alias UrfuSwissKnife.Utils
+  alias UrFUSwissBot.UpdatesNotifier
+  alias UrFUSwissKnife.Accounts
+  alias UrFUSwissKnife.Accounts.User
+  alias UrFUSwissKnife.IStudent
+  alias UrFUSwissKnife.Modeus
+  alias UrFUSwissKnife.PersistentCache
+  alias UrFUSwissKnife.UBU
+  alias UrFUSwissKnife.Utils
 
   @spec warm_all() :: :ok
   def warm_all do
@@ -45,8 +45,8 @@ defmodule UrfuSwissKnife.CacheWarming do
 
   @spec warm_istudent_brs :: :ok
   def warm_istudent_brs do
-    for {_user, auth} <- get_authed_users(Istudent) do
-      Istudent.update_subjects_cache(auth)
+    for {_user, auth} <- get_authed_users(IStudent) do
+      IStudent.update_subjects_cache(auth)
     end
 
     :ok

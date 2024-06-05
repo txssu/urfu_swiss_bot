@@ -1,7 +1,7 @@
-defmodule UrfuSwissKnife.PersistentCache do
+defmodule UrFUSwissKnife.PersistentCache do
   @moduledoc false
-  alias UrfuSwissKnife.PersistentCache.CommunalCharges
-  alias UrfuSwissKnife.Repo
+  alias UrFUSwissKnife.PersistentCache.CommunalCharges
+  alias UrFUSwissKnife.Repo
 
   @spec create_communal_charges(integer(), map()) :: :ok
   def create_communal_charges(user_id, fields) do

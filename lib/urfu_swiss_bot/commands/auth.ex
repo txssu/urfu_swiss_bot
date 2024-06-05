@@ -1,13 +1,13 @@
-defmodule UrfuSwissBot.Commands.Auth do
+defmodule UrFUSwissBot.Commands.Auth do
   @moduledoc false
   import ExGram.Dsl
 
   alias ExGram.Cnt
   alias ExGram.Model.Message
-  alias UrfuSwissBot.Commands.Menu
-  alias UrfuSwissKnife.Accounts
-  alias UrfuSwissKnife.Accounts.User
-  alias UrfuSwissKnife.IStudent
+  alias UrFUSwissBot.Commands.Menu
+  alias UrFUSwissKnife.Accounts
+  alias UrFUSwissKnife.Accounts.User
+  alias UrFUSwissKnife.IStudent
 
   require ExGram.Dsl
 

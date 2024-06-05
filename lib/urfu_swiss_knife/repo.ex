@@ -1,10 +1,10 @@
-defmodule UrfuSwissKnife.Repo do
+defmodule UrFUSwissKnife.Repo do
   use CubRepo
 
-  alias UrfuSwissKnife.Accounts.User
-  alias UrfuSwissKnife.Feedback.Message
-  alias UrfuSwissKnife.Metrics.CommandCall
-  alias UrfuSwissKnife.PersistentCache.CommunalCharges
+  alias UrFUSwissKnife.Accounts.User
+  alias UrFUSwissKnife.Feedback.Message
+  alias UrFUSwissKnife.Metrics.CommandCall
+  alias UrFUSwissKnife.PersistentCache.CommunalCharges
 
   deftable(:users, User)
   deftable(:feedback_messages, Message)

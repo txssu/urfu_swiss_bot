@@ -1,4 +1,4 @@
-defmodule UrfuSwissBot.MixProject do
+defmodule UrFUSwissBot.MixProject do
   use Mix.Project
 
   def project do
@@ -16,7 +16,7 @@ defmodule UrfuSwissBot.MixProject do
   def application do
     [
       extra_applications: [:logger],
-      mod: {UrfuSwissKnife.Application, []}
+      mod: {UrFUSwissKnife.Application, []}
     ]
   end
 

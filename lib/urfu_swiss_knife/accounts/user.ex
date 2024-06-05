@@ -1,4 +1,4 @@
-defmodule UrfuSwissKnife.Accounts.User do
+defmodule UrFUSwissKnife.Accounts.User do
   @moduledoc false
   use TypedStruct
   use ExConstructor

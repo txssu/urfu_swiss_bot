@@ -1,8 +1,8 @@
-defmodule UrfuSwissKnife.Metrics do
+defmodule UrFUSwissKnife.Metrics do
   @moduledoc false
-  alias UrfuSwissKnife.Accounts
-  alias UrfuSwissKnife.Metrics.CommandCall
-  alias UrfuSwissKnife.Repo
+  alias UrFUSwissKnife.Accounts
+  alias UrFUSwissKnife.Metrics.CommandCall
+  alias UrFUSwissKnife.Repo
 
   @spec hit_command(ExConstructor.map_or_kwlist()) :: :ok
   def hit_command(fields) do

@@ -1,6 +1,6 @@
-defmodule UrfuSwissBot.Commands.Schedule.Formatter do
+defmodule UrFUSwissBot.Commands.Schedule.Formatter do
   @moduledoc false
-  import UrfuSwissKnife.CharEscape
+  import UrFUSwissKnife.CharEscape
 
   alias UrFUAPI.Modeus.Schedule
   alias UrFUAPI.Modeus.Schedule.ScheduleData

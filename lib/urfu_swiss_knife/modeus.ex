@@ -1,4 +1,4 @@
-defmodule UrfuSwissKnife.Modeus do
+defmodule UrFUSwissKnife.Modeus do
   @moduledoc false
   use Nebulex.Caching
 
@@ -8,8 +8,8 @@ defmodule UrfuSwissKnife.Modeus do
   alias UrFUAPI.Modeus.Schedule
   alias UrFUAPI.Modeus.Schedule.ScheduleData
   alias UrFUAPI.Modeus.Schedule.ScheduleData.Event
-  alias UrfuSwissKnife.Cache
-  alias UrfuSwissKnife.Utils
+  alias UrFUSwissKnife.Cache
+  alias UrFUSwissKnife.Utils
 
   @decorate cacheable(cache: Cache, key: {:modeus_auth, username}, match: &match_auth/1)
   @spec auth_user(map()) :: {:ok, Token.t()} | {:error, String.t()}

@@ -1,11 +1,11 @@
-defmodule UrfuSwissBot.Bot do
+defmodule UrFUSwissBot.Bot do
   @moduledoc false
   use ExGram.Bot, name: __MODULE__, setup_commands: true
 
   alias ExGram.Cnt
   alias ExGram.Model.CallbackQuery
   alias ExGram.Model.Message
-  alias UrfuSwissBot.Commands
+  alias UrFUSwissBot.Commands
 
   require Logger
 
@@ -17,9 +17,9 @@ defmodule UrfuSwissBot.Bot do
   command "stats"
 
   middleware ExGram.Middleware.IgnoreUsername
-  middleware UrfuSwissBot.Middleware.GetUser
-  middleware UrfuSwissBot.Middleware.HitEvent
-  middleware UrfuSwissBot.Middleware.UserRecovering
+  middleware UrFUSwissBot.Middleware.GetUser
+  middleware UrFUSwissBot.Middleware.HitEvent
+  middleware UrFUSwissBot.Middleware.UserRecovering
 
   @spec bot :: __MODULE__
   def bot, do: __MODULE__

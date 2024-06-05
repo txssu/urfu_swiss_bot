@@ -1,8 +1,8 @@
-defmodule UrfuSwissBot.Commands.Schedule do
+defmodule UrFUSwissBot.Commands.Schedule do
   @moduledoc false
   import ExGram.Dsl
   import ExGram.Dsl.Keyboard
-  import UrfuSwissKnife.CharEscape
+  import UrFUSwissKnife.CharEscape
 
   alias ExGram.Cnt
   alias ExGram.Model.CallbackQuery
@@ -10,10 +10,10 @@ defmodule UrfuSwissBot.Commands.Schedule do
   alias ExGram.Model.Message
   alias UrFUAPI.Modeus
   alias UrFUAPI.Modeus.Schedule.ScheduleData
-  alias UrfuSwissBot.Commands.Schedule.Formatter
-  alias UrfuSwissKnife.Accounts
-  alias UrfuSwissKnife.Modeus
-  alias UrfuSwissKnife.Utils
+  alias UrFUSwissBot.Commands.Schedule.Formatter
+  alias UrFUSwissKnife.Accounts
+  alias UrFUSwissKnife.Modeus
+  alias UrFUSwissKnife.Utils
 
   require ExGram.Dsl
   require ExGram.Dsl.Keyboard

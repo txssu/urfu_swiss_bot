@@ -1,9 +1,9 @@
-defmodule UrfuSwissBot.Middleware.HitEvent do
+defmodule UrFUSwissBot.Middleware.HitEvent do
   @moduledoc false
   use ExGram.Middleware
 
   alias ExGram.Cnt
-  alias UrfuSwissKnife.Metrics
+  alias UrFUSwissKnife.Metrics
 
   @spec call(Cnt.t(), keyword()) :: Cnt.t()
   def call(%Cnt{update: %{update_id: id, message: %{text: text, from: %{id: by_user_id}}}} = context, _opts) do

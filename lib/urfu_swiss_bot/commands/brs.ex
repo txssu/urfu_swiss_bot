@@ -1,15 +1,15 @@
-defmodule UrfuSwissBot.Commands.BRS do
+defmodule UrFUSwissBot.Commands.BRS do
   @moduledoc false
   import ExGram.Dsl
   import ExGram.Dsl.Keyboard
-  import UrfuSwissKnife.CharEscape
+  import UrFUSwissKnife.CharEscape
 
   alias ExGram.Cnt
   alias ExGram.Model.CallbackQuery
   alias UrFUAPI.IStudent.BRS.Subject
   alias UrFUAPI.IStudent.BRS.SubjectScore
-  alias UrfuSwissKnife.Accounts.User
-  alias UrfuSwissKnife.IStudent
+  alias UrFUSwissKnife.Accounts.User
+  alias UrFUSwissKnife.IStudent
 
   require ExGram.Dsl
   require ExGram.Dsl.Keyboard

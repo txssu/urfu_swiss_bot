@@ -1,4 +1,4 @@
-defmodule UrfuSwissBot.Migrator do
+defmodule UrFUSwissBot.Migrator do
   @moduledoc false
   alias CubDB.Tx
 

@@ -1,4 +1,4 @@
-defmodule UrfuSwissKnife.Metrics.CommandCall do
+defmodule UrFUSwissKnife.Metrics.CommandCall do
   @moduledoc false
   use TypedStruct
   use ExConstructor

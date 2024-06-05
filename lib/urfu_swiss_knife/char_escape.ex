@@ -1,4 +1,4 @@
-defmodule UrfuSwissKnife.CharEscape do
+defmodule UrFUSwissKnife.CharEscape do
   @moduledoc false
   @chars_need_escape [?_, ?*, ?[, ?], ?(, ?), ?~, ?`, ?>, ?#, ?+, ?-, ?=, ?|, ?{, ?}, ?., ?!]
 
