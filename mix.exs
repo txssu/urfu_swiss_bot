@@ -9,7 +9,12 @@ defmodule UrFUSwissBot.MixProject do
       start_permanent: Mix.env() == :prod,
       consolidate_protocols: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      dialyzer: [
+        plt_add_apps: [:mix],
+        plt_file: {:no_warn, "priv/plts/dialyzer.plt"},
+        ignore_warnings: ".dialyzer_ignore.exs"
+      ]
     ]
   end
 
