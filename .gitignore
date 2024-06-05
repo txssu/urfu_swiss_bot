@@ -34,3 +34,7 @@ urfu_swiss_knife-*.tar
 # Nix venv
 .direnv
 .nix-*
+
+# Dialyzer
+/priv/plts/*.plt
+/priv/plts/*.plt.hash
