@@ -1,11 +1,11 @@
-defmodule UrfuSwissKnife.Istudent do
+defmodule UrfuSwissKnife.IStudent do
   @moduledoc false
   use Nebulex.Caching
 
-  alias UrfuApi.Istudent.Auth
-  alias UrfuApi.Istudent.Auth.Token
-  alias UrfuApi.Istudent.Brs
-  alias UrfuApi.Istudent.Brs.Subject
+  alias UrFUAPI.IStudent.Auth
+  alias UrFUAPI.IStudent.Auth.Token
+  alias UrFUAPI.IStudent.BRS
+  alias UrFUAPI.IStudent.BRS.Subject
   alias UrfuSwissKnife.Cache
 
   @decorate cacheable(cache: Cache, key: {:istudent, username}, ttl: :timer.hours(24))
@@ -18,15 +18,15 @@ defmodule UrfuSwissKnife.Istudent do
   @spec get_subjects(Token.t()) :: [Subject.t()]
   def get_subjects(auth) do
     auth
-    |> Brs.get_subjects()
-    |> Enum.map(&Brs.preload_subject_scores(auth, &1))
+    |> BRS.get_subjects()
+    |> Enum.map(&BRS.preload_subject_scores(auth, &1))
   end
 
   @decorate cache_put(cache: Cache, key: {:get_subjects, auth.username}, ttl: :timer.hours(1))
   @spec update_subjects_cache(Token.t()) :: [Subject.t()]
   def update_subjects_cache(auth) do
     auth
-    |> Brs.get_subjects()
-    |> Enum.map(&Brs.preload_subject_scores(auth, &1))
+    |> BRS.get_subjects()
+    |> Enum.map(&BRS.preload_subject_scores(auth, &1))
   end
 end

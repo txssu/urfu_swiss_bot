@@ -1,4 +1,4 @@
-defmodule UrfuSwissBot.Commands.Brs do
+defmodule UrfuSwissBot.Commands.BRS do
   @moduledoc false
   import ExGram.Dsl
   import ExGram.Dsl.Keyboard
@@ -6,10 +6,10 @@ defmodule UrfuSwissBot.Commands.Brs do
 
   alias ExGram.Cnt
   alias ExGram.Model.CallbackQuery
-  alias UrfuApi.Istudent.Brs.Subject
-  alias UrfuApi.Istudent.Brs.SubjectScore
+  alias UrFUAPI.IStudent.BRS.Subject
+  alias UrFUAPI.IStudent.BRS.SubjectScore
   alias UrfuSwissKnife.Accounts.User
-  alias UrfuSwissKnife.Istudent
+  alias UrfuSwissKnife.IStudent
 
   require ExGram.Dsl
   require ExGram.Dsl.Keyboard
@@ -21,7 +21,7 @@ defmodule UrfuSwissBot.Commands.Brs do
              end)
 
   @spec handle({:callback_query, CallbackQuery.t()}, Cnt.t()) :: Cnt.t()
-  def handle({:callback_query, %{data: "Brs"}}, context) do
+  def handle({:callback_query, %{data: "BRS"}}, context) do
     response = get_response(context.extra.user)
 
     edit(context, :inline, response, reply_markup: @keyboard, parse_mode: "MarkdownV2")
@@ -29,10 +29,10 @@ defmodule UrfuSwissBot.Commands.Brs do
 
   @spec get_response(User.t()) :: String.t()
   def get_response(user) do
-    {:ok, auth} = Istudent.auth_user(user)
+    {:ok, auth} = IStudent.auth_user(user)
 
     auth
-    |> Istudent.get_subjects()
+    |> IStudent.get_subjects()
     |> Enum.map_join("\n\n", &format_subjects/1)
   end
 

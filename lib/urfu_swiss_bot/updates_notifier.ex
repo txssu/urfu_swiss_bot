@@ -3,7 +3,7 @@ defmodule UrfuSwissBot.UpdatesNotifier do
   import ExGram.Dsl.Keyboard
 
   alias ExGram.Model.InlineKeyboardMarkup
-  alias UrfuApi.Ubu.CommunalCharges.Info
+  alias UrFUAPI.UBU.CommunalCharges.Info
   alias UrfuSwissKnife.Accounts
   alias UrfuSwissKnife.PersistentCache.CommunalCharges
 

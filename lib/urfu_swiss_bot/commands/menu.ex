@@ -19,11 +19,11 @@ defmodule UrfuSwissBot.Commands.Menu do
   @keyboard (keyboard(:inline) do
                row do
                  button("Расписание 🏫", callback_data: "Schedule")
-                 button("БРС 🔰", callback_data: "Brs")
+                 button("БРС 🔰", callback_data: "BRS")
                end
 
                row do
-                 button("Финансовые Сервисы 💸", callback_data: "Ubu")
+                 button("Финансовые Сервисы 💸", callback_data: "UBU")
                end
 
                row do

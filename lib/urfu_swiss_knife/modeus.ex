@@ -2,12 +2,12 @@ defmodule UrfuSwissKnife.Modeus do
   @moduledoc false
   use Nebulex.Caching
 
-  alias UrfuApi.Modeus.Auth
-  alias UrfuApi.Modeus.Auth.Token
-  alias UrfuApi.Modeus.Auth.TokenClaims
-  alias UrfuApi.Modeus.Schedule
-  alias UrfuApi.Modeus.Schedule.ScheduleData
-  alias UrfuApi.Modeus.Schedule.ScheduleData.Event
+  alias UrFUAPI.Modeus.Auth
+  alias UrFUAPI.Modeus.Auth.Token
+  alias UrFUAPI.Modeus.Auth.TokenClaims
+  alias UrFUAPI.Modeus.Schedule
+  alias UrFUAPI.Modeus.Schedule.ScheduleData
+  alias UrFUAPI.Modeus.Schedule.ScheduleData.Event
   alias UrfuSwissKnife.Cache
   alias UrfuSwissKnife.Utils
 

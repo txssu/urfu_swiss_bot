@@ -2,10 +2,10 @@ defmodule UrfuSwissBot.Commands.Schedule.Formatter do
   @moduledoc false
   import UrfuSwissKnife.CharEscape
 
-  alias UrfuApi.Modeus.Schedule
-  alias UrfuApi.Modeus.Schedule.ScheduleData
-  alias UrfuApi.Modeus.Schedule.ScheduleData.Event
-  alias UrfuApi.Modeus.Schedule.ScheduleData.EventLocation
+  alias UrFUAPI.Modeus.Schedule
+  alias UrFUAPI.Modeus.Schedule.ScheduleData
+  alias UrFUAPI.Modeus.Schedule.ScheduleData.Event
+  alias UrFUAPI.Modeus.Schedule.ScheduleData.EventLocation
 
   @spec format_events(ScheduleData.t(), Date.t() | DateTime.t()) :: String.t()
   def format_events(%ScheduleData{events: events} = schedule, datetime) do

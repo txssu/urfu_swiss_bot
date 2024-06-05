@@ -2,6 +2,6 @@ alias UrfuSwissKnife.Accounts
 alias UrfuSwissKnife.Feedback
 alias UrfuSwissKnife.Metrics
 
-alias UrfuSwissKnife.Istudent
+alias UrfuSwissKnife.IStudent
 alias UrfuSwissKnife.Modeus
-alias UrfuSwissKnife.Ubu
+alias UrfuSwissKnife.UBU

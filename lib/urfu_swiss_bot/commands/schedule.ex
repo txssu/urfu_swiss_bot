@@ -8,8 +8,8 @@ defmodule UrfuSwissBot.Commands.Schedule do
   alias ExGram.Model.CallbackQuery
   alias ExGram.Model.InlineKeyboardMarkup
   alias ExGram.Model.Message
-  alias UrfuApi.Modeus
-  alias UrfuApi.Modeus.Schedule.ScheduleData
+  alias UrFUAPI.Modeus
+  alias UrFUAPI.Modeus.Schedule.ScheduleData
   alias UrfuSwissBot.Commands.Schedule.Formatter
   alias UrfuSwissKnife.Accounts
   alias UrfuSwissKnife.Modeus

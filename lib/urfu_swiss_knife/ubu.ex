@@ -1,11 +1,11 @@
-defmodule UrfuSwissKnife.Ubu do
+defmodule UrfuSwissKnife.UBU do
   @moduledoc false
   use Nebulex.Caching
 
-  alias UrfuApi.Ubu.Auth
-  alias UrfuApi.Ubu.Auth.Token
-  alias UrfuApi.Ubu.CommunalCharges
-  alias UrfuApi.Ubu.CommunalCharges.Info
+  alias UrFUAPI.UBU.Auth
+  alias UrFUAPI.UBU.Auth.Token
+  alias UrFUAPI.UBU.CommunalCharges
+  alias UrFUAPI.UBU.CommunalCharges.Info
   alias UrfuSwissKnife.Cache
 
   @decorate cacheable(cache: Cache, key: {:ubu_auth, username}, ttl: :timer.hours(24))
