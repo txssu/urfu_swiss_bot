@@ -2,13 +2,15 @@ defmodule UrFUSwissBot.Migrator do
   @moduledoc false
   alias CubDB.Tx
 
+  require Logger
+
   @spec migrate(GenServer.server()) :: :ok
   def migrate(db) do
     version = CubDB.get(db, :version, 0)
 
     case to_migration(version + 1) do
       {:ok, migration} ->
-        log("Migrate vsn#{version} -> vsn#{version + 1}")
+        Logger.info("Migrate vsn#{version} -> vsn#{version + 1}")
 
         CubDB.transaction(db, fn tx ->
           tx = apply(__MODULE__, migration, [tx])
@@ -142,11 +144,5 @@ defmodule UrFUSwissBot.Migrator do
   defp increase_version(tx) do
     version = Tx.get(tx, :version, 0)
     Tx.put(tx, :version, version + 1)
-  end
-
-  @spec log(String.t()) :: :ok
-  def log(msg) do
-    # credo:disable-for-next-line
-    IO.puts(msg)
   end
 end
