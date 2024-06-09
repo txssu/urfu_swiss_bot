@@ -48,6 +48,7 @@ defmodule UrFUSwissBot.Bot do
     %{extra: %{user: %{state: state}}} = context
 
     case state do
+      nil -> Commands.Menu.handle(update, context)
       :auth -> Commands.Auth.handle(update, context)
       :sending_schedule_date -> Commands.Schedule.handle(update, context)
       :sending_feeback -> Commands.Feedback.handle(update, context)
@@ -57,16 +58,6 @@ defmodule UrFUSwissBot.Bot do
   ###############################################
   # Auth
   ###############################################
-
-  def handle({:command, :start, _message} = event, %Cnt{extra: %{user: user}} = context) do
-    Commands.Start.handle(event, context)
-
-    case user do
-      nil -> Commands.Start.handle(event, context)
-      %{username: nil, password: nil} -> Commands.Start.handle(event, context)
-      _already_authed -> Commands.Menu.handle(event, context)
-    end
-  end
 
   def handle(event, %Cnt{extra: %{user: nil}} = context) do
     Commands.Start.handle(event, context)
@@ -80,7 +71,7 @@ defmodule UrFUSwissBot.Bot do
   # Commands
   ###############################################
 
-  def handle({:command, :menu, _message} = event, context) do
+  def handle({:command, command, _message} = event, context) when command in [:start, :menu] do
     Commands.Menu.handle(event, context)
   end
 
@@ -92,15 +83,7 @@ defmodule UrFUSwissBot.Bot do
     Commands.Stats.handle(event, context)
   end
 
-  ###############################################
-  # Not found commands
-  ###############################################
-
-  def handle({:command, _unknow, _message}, context) do
-    answer(context, "Команда не найдена")
-  end
-
-  def handle({:text, _text, _message}, %Cnt{extra: %{user: %{state: nil}}} = context) do
+  def handle({:command, _unknown, _message}, context) do
     answer(context, "Команда не найдена")
   end
 
