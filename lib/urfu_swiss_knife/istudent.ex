@@ -14,43 +14,21 @@ defmodule UrFUSwissKnife.IStudent do
     Auth.sign_in(username, password)
   end
 
-  @decorate cacheable(cache: Cache, key: {:get_subjects, auth.username}, ttl: :timer.hours(1))
-  @spec get_subjects(Token.t()) :: [Subject.t()]
-  def get_subjects(auth) do
-    do_get_subjects(auth)
+  @decorate cacheable(cache: Cache, key: {:get_filters, auth.username}, ttl: :timer.hours(24))
+  @spec get_filters(Token.t()) :: {:ok, BRS.FiltersList.t()} | {:error, term()}
+  def get_filters(auth) do
+    BRS.get_filters(auth)
   end
 
-  @decorate cache_put(cache: Cache, key: {:get_subjects, auth.username}, ttl: :timer.hours(1))
-  @spec update_subjects_cache(Token.t()) :: [Subject.t()]
-  def update_subjects_cache(auth) do
-    do_get_subjects(auth)
+  @decorate cacheable(cache: Cache, key: {:get_subjects, auth.username, group_id, year, semester}, ttl: :timer.hours(1))
+  @spec get_subjects(Token.t(), String.t(), integer(), String.t()) :: {:ok, [Subject.t()]} | {:error, term()}
+  def get_subjects(auth, group_id, year, semester) do
+    BRS.get_subjects(auth, group_id, year, semester)
   end
 
-  defp do_get_subjects(auth) do
-    {:ok, filters} = BRS.get_filters(auth)
-
-    group = List.last(filters.groups)
-    group_id = group.group_id
-    year_info = List.last(group.years)
-    year = year_info.year
-    semester = List.last(year_info.semesters)
-
-    {:ok, subjects} = BRS.get_subjects(auth, group_id, year, semester)
-
-    subjects_ids = Enum.map(subjects, &Map.fetch!(&1, :id))
-
-    subjects_ids
-    |> Enum.reject(&all_digits/1)
-    |> Enum.map(fn subject_id ->
-      auth
-      |> BRS.get_subject(group_id, year, semester, subject_id)
-      |> elem(1)
-    end)
-  end
-
-  defp all_digits(str) do
-    str
-    |> String.codepoints()
-    |> Enum.all?(&(&1 in ~w(0 1 2 3 4 5 6 7 8 9)))
+  @decorate cache_put(cache: Cache, key: {:get_subjects, auth.username, group_id, year, semester}, ttl: :timer.hours(1))
+  @spec update_subjects_cache(Token.t(), String.t(), integer(), String.t()) :: {:ok, [Subject.t()]} | {:error, term()}
+  def update_subjects_cache(auth, group_id, year, semester) do
+    BRS.get_subjects(auth, group_id, year, semester)
   end
 end

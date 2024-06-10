@@ -45,8 +45,9 @@ defmodule UrFUSwissKnife.CacheWarming do
 
   @spec warm_istudent_brs :: :ok
   def warm_istudent_brs do
-    for {_user, auth} <- get_authed_users(IStudent) do
-      IStudent.update_subjects_cache(auth)
+    for {user, auth} <- get_authed_users(IStudent) do
+      [group_id, year, semester] = user.default_brs_args
+      IStudent.update_subjects_cache(auth, group_id, year, semester)
     end
 
     :ok

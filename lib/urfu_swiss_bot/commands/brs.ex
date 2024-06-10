@@ -1,69 +1,127 @@
 defmodule UrFUSwissBot.Commands.BRS do
   @moduledoc false
   import ExGram.Dsl
-  import ExGram.Dsl.Keyboard
   import UrFUSwissKnife.CharEscape
 
   alias ExGram.Cnt
   alias ExGram.Model.CallbackQuery
-  alias UrFUAPI.IStudent.BRS.SubjectEvent
-  alias UrFUAPI.IStudent.BRS.SubjectInfo
-  alias UrFUAPI.IStudent.BRS.SubjectInfo.Result
-  alias UrFUSwissKnife.Accounts.User
+  alias ExGram.Model.InlineKeyboardButton
+  alias ExGram.Model.InlineKeyboardMarkup
+  alias UrFUSwissKnife.Accounts
   alias UrFUSwissKnife.IStudent
 
   require ExGram.Dsl
   require ExGram.Dsl.Keyboard
 
-  @keyboard (keyboard(:inline) do
-               row do
-                 button("В меню", callback_data: "menu")
-               end
-             end)
+  defp menu_button_row do
+    [%InlineKeyboardButton{text: "В меню", callback_data: "menu"}]
+  end
 
   @spec handle({:callback_query, CallbackQuery.t()}, Cnt.t()) :: Cnt.t()
   def handle({:callback_query, %{data: "BRS"}}, context) do
-    response = get_response(context.extra.user)
+    dbg(context.extra.user.default_brs_args)
 
-    edit(context, :inline, response, reply_markup: @keyboard, parse_mode: "MarkdownV2")
+    case context.extra.user.default_brs_args do
+      nil -> ask_group(context)
+      [group_id, year, semester] -> response_subjects(group_id, year, semester, context)
+    end
   end
 
-  @spec get_response(User.t()) :: String.t()
-  def get_response(user) do
-    {:ok, auth} = IStudent.auth_user(user)
-
-    auth
-    |> IStudent.get_subjects()
-    |> Enum.map_join("\n\n", &format_subjects/1)
+  def handle({:callback_query, %{data: "BRS.get_group"}}, context) do
+    ask_group(context)
   end
 
-  @spec format_subjects(SubjectInfo.t()) :: String.t()
-  defp format_subjects(%SubjectInfo{title: name, result: %Result{score: total, mark: grade}, events: events}) do
-    name = escape_telegram_markdown(name)
+  def handle({:callback_query, %{data: "BRS.get_semester:" <> group_id}}, context) do
+    with {:ok, auth} <- IStudent.auth_user(context.extra.user),
+         {:ok, filters} <- IStudent.get_filters(auth) do
+      buttons =
+        filters.groups
+        |> Enum.find(&(&1.group_id == group_id))
+        |> Map.fetch!(:years)
+        |> Enum.map(&format_year_data(group_id, &1))
+        |> List.insert_at(0, [%InlineKeyboardButton{text: "Выбрать группу", callback_data: "BRS.get_group"}])
+        |> List.insert_at(0, menu_button_row())
+        |> Enum.reverse()
 
-    score =
-      total
-      |> to_string()
-      |> escape_telegram_markdown()
-
-    grade = escape_telegram_markdown(grade)
-
-    """
-    *#{name}*
-    *Итог:* #{score} \\- #{grade}
-    """ <>
-      Enum.map_join(events, "\n", &format_subject_events/1)
+      edit(context, :inline, "Выберите семестр", reply_markup: %InlineKeyboardMarkup{inline_keyboard: buttons})
+    end
   end
 
-  @spec format_subject_events(SubjectEvent.t()) :: String.t()
-  defp format_subject_events(%SubjectEvent{
-         type_title: name,
-         score_without_factor: raw,
-         total_factor: multiplier,
-         score_with_factor: total
-       }) do
-    name = name |> String.capitalize() |> escape_telegram_markdown()
+  def handle({:callback_query, %{data: "BRS.get_brs:" <> args}}, context) do
+    [group_id, year_str, semester] = args = String.split(args, ",")
+    year = String.to_integer(year_str)
+    Accounts.set_user_default_brs_args(context.extra.user, args)
 
-    "  *#{name}*" <> ~t" - #{raw} × #{multiplier} = #{total}"
+    response_subjects(group_id, year, semester, context)
   end
+
+  defp ask_group(context) do
+    with {:ok, auth} <- IStudent.auth_user(context.extra.user),
+         {:ok, filters} <- IStudent.get_filters(auth) do
+      buttons =
+        filters.groups
+        |> Enum.map(fn group ->
+          [%InlineKeyboardButton{text: group.group_title, callback_data: "BRS.get_semester:#{group.group_id}"}]
+        end)
+        |> List.insert_at(0, menu_button_row())
+        |> Enum.reverse()
+
+      edit(context, :inline, "Выберите группу", reply_markup: %InlineKeyboardMarkup{inline_keyboard: buttons})
+    end
+  end
+
+  defp response_subjects(group_id, year, semester, context) do
+    with {:ok, auth} <- IStudent.auth_user(context.extra.user),
+         {:ok, subjects} <- IStudent.get_subjects(auth, group_id, year, semester) do
+      response =
+        Enum.map_join(subjects, "\n", fn subject ->
+          title = escape_telegram_markdown(subject.title)
+          score = subject.score |> to_string() |> escape_telegram_markdown()
+          mark = format_mark(subject.summaryTitle)
+
+          """
+          *#{title}*
+            Итог: #{score}
+            Оценка: #{mark}
+          """
+        end)
+
+      markup = [
+        [%InlineKeyboardButton{text: "Обновить", callback_data: "BRS"}],
+        [%InlineKeyboardButton{text: "Выбрать семестр", callback_data: "BRS.get_semester:#{group_id}"}],
+        menu_button_row()
+      ]
+
+      context
+      |> answer_callback(context.update.callback_query)
+      |> edit(:inline, response,
+        parse_mode: "MarkdownV2",
+        reply_markup: %InlineKeyboardMarkup{inline_keyboard: markup}
+      )
+    end
+  end
+
+  defp format_year_data(group_id, %{semesters: semesters, year: year}) do
+    year_name = format_year(year)
+
+    Enum.map(semesters, fn semester ->
+      semester_name = semester_num_to_name(semester)
+
+      %InlineKeyboardButton{
+        text: "#{year_name} #{semester_name}",
+        callback_data: "BRS.get_brs:#{group_id},#{year},#{semester}"
+      }
+    end)
+  end
+
+  defp semester_num_to_name(1), do: "осенний"
+  defp semester_num_to_name(2), do: "весенний"
+
+  defp format_year(year) do
+    short_year = year - 2000
+    "#{short_year}/#{short_year + 1}"
+  end
+
+  defp format_mark(""), do: "отсутствует"
+  defp format_mark(mark) when is_binary(mark), do: String.downcase(mark)
 end
