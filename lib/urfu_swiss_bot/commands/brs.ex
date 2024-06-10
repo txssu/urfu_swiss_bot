@@ -77,7 +77,7 @@ defmodule UrFUSwissBot.Commands.BRS do
         Enum.map_join(subjects, "\n", fn subject ->
           title = escape_telegram_markdown(subject.title)
           score = subject.score |> to_string() |> escape_telegram_markdown()
-          mark = format_mark(subject.summaryTitle)
+          mark = format_mark(subject.summary_title)
 
           """
           *#{title}*
