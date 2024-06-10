@@ -133,6 +133,36 @@ defmodule UrFUSwissBot.Migrator do
     end)
   end
 
+  # Rename metric events commands
+  @spec to_version_8(Tx.t()) :: Tx.t()
+  def to_version_8(tx) do
+    items = Tx.select(tx)
+
+    Enum.reduce(items, tx, fn
+      {{:metric_command_calls, _id} = key, %{command: "start"} = item}, tx_acc ->
+        item = Map.put(item, :command, "/start")
+        Tx.put(tx_acc, key, item)
+
+      {{:metric_command_calls, _id} = key, %{command: "/start"}}, tx_acc ->
+        Tx.delete(tx_acc, key)
+
+      {{:metric_command_calls, _id} = key, %{command: "menu"} = item}, tx_acc ->
+        item = Map.put(item, :command, "/menu")
+        Tx.put(tx_acc, key, item)
+
+      {{:metric_command_calls, _id} = key, %{command: "/menu"}}, tx_acc ->
+        Tx.delete(tx_acc, key)
+
+      {{:metric_command_calls, _id} = key, %{command: data} = item}, tx_acc ->
+        [command | _args] = String.split(data, ":")
+        item = Map.put(item, :command, command)
+        Tx.put(tx_acc, key, item)
+
+      _others, tx_acc ->
+        tx_acc
+    end)
+  end
+
   @spec to_migration(integer()) :: {:ok, atom()} | :error
   defp to_migration(version) do
     {:ok, String.to_existing_atom("to_version_#{version}")}
