@@ -1,3 +1,4 @@
+# credo:disable-for-this-file Credo.Check.Refactor.ABCSize
 defmodule UrFUSwissBot.Migrator do
   @moduledoc false
   alias CubDB.Tx
