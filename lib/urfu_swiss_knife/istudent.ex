@@ -26,7 +26,7 @@ defmodule UrFUSwissKnife.IStudent do
     BRS.get_subjects(auth, group_id, year, semester)
   end
 
-  @decorate cache_put(cache: Cache, key: {:get_subjects, auth.username, group_id, year, semester}, ttl: :timer.hours(1))
+  @decorate cache_put(cache: Cache, key: {:update_subjects_cache, auth.username, group_id, year, semester}, ttl: :timer.hours(1))
   @spec update_subjects_cache(Token.t(), String.t(), integer(), String.t()) :: {:ok, [Subject.t()]} | {:error, term()}
   def update_subjects_cache(auth, group_id, year, semester) do
     BRS.get_subjects(auth, group_id, year, semester)
