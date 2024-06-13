@@ -79,9 +79,4 @@ defmodule UrFUSwissKnife.Accounts do
     |> Repo.select()
     |> Stream.filter(& &1.is_admin)
   end
-
-  @spec set_user_default_brs_args(User.t(), list()) :: User.t()
-  def set_user_default_brs_args(user, args) do
-    save_user(%User{user | default_brs_args: args})
-  end
 end

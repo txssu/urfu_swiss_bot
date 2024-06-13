@@ -1,13 +1,12 @@
 defmodule UrFUSwissBot.Commands.BRS do
   @moduledoc false
   import ExGram.Dsl
-  import UrFUSwissKnife.CharEscape
 
   alias ExGram.Cnt
   alias ExGram.Model.CallbackQuery
   alias ExGram.Model.InlineKeyboardButton
   alias ExGram.Model.InlineKeyboardMarkup
-  alias UrFUSwissKnife.Accounts
+  alias UrFUSwissBot.Commands.BRS.Formatter
   alias UrFUSwissKnife.IStudent
 
   require ExGram.Dsl
@@ -19,11 +18,9 @@ defmodule UrFUSwissBot.Commands.BRS do
 
   @spec handle({:callback_query, CallbackQuery.t()}, Cnt.t()) :: Cnt.t()
   def handle({:callback_query, %{data: "BRS"}}, context) do
-    dbg(context.extra.user.default_brs_args)
-
-    case context.extra.user.default_brs_args do
-      nil -> ask_group(context)
-      [group_id, year, semester] -> response_subjects(group_id, year, semester, context)
+    with {:ok, auth} <- IStudent.auth_user(context.extra.user),
+         {:ok, {group_id, year, semester}} <- IStudent.get_latest_filter(auth) do
+      response_subjects(auth, group_id, year, semester, context)
     end
   end
 
@@ -48,11 +45,12 @@ defmodule UrFUSwissBot.Commands.BRS do
   end
 
   def handle({:callback_query, %{data: "BRS.get_brs:" <> args}}, context) do
-    [group_id, year_str, semester] = args = String.split(args, ",")
+    [group_id, year_str, semester] = String.split(args, ",")
     year = String.to_integer(year_str)
-    Accounts.set_user_default_brs_args(context.extra.user, args)
 
-    response_subjects(group_id, year, semester, context)
+    with {:ok, auth} <- IStudent.auth_user(context.extra.user) do
+      response_subjects(auth, group_id, year, semester, context)
+    end
   end
 
   defp ask_group(context) do
@@ -70,21 +68,10 @@ defmodule UrFUSwissBot.Commands.BRS do
     end
   end
 
-  defp response_subjects(group_id, year, semester, context) do
-    with {:ok, auth} <- IStudent.auth_user(context.extra.user),
-         {:ok, subjects} <- IStudent.get_subjects(auth, group_id, year, semester) do
+  defp response_subjects(auth, group_id, year, semester, context) do
+    with {:ok, subjects} <- IStudent.get_subjects(auth, group_id, year, semester) do
       response =
-        Enum.map_join(subjects, "\n", fn subject ->
-          title = escape_telegram_markdown(subject.title)
-          score = subject.score |> to_string() |> escape_telegram_markdown()
-          mark = format_mark(subject.summary_title)
-
-          """
-          *#{title}*
-            Итог: #{score}
-            Оценка: #{mark}
-          """
-        end)
+        Enum.map_join(subjects, "\n", &Formatter.format_subject/1)
 
       markup = [
         [%InlineKeyboardButton{text: "Обновить", callback_data: "BRS"}],
@@ -121,7 +108,4 @@ defmodule UrFUSwissBot.Commands.BRS do
     short_year = year - 2000
     "#{short_year}/#{short_year + 1}"
   end
-
-  defp format_mark(""), do: "отсутствует"
-  defp format_mark(mark) when is_binary(mark), do: String.downcase(mark)
 end

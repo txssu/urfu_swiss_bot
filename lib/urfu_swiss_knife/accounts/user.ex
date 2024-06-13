@@ -14,8 +14,6 @@ defmodule UrFUSwissKnife.Accounts.User do
     field :state, state
     field :is_admin, boolean, default: false
     field :is_deleted, boolean(), default: false
-
-    field :default_brs_args, list() | nil
   end
 
   @spec set_credentials(t, String.t(), String.t()) :: t

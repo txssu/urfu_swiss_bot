@@ -6,6 +6,7 @@ defmodule UrFUSwissKnife.CacheWarming do
   alias UrFUSwissKnife.IStudent
   alias UrFUSwissKnife.Modeus
   alias UrFUSwissKnife.PersistentCache
+  alias UrFUSwissKnife.PersistentCache.BRSCache
   alias UrFUSwissKnife.UBU
   alias UrFUSwissKnife.Utils
 
@@ -46,10 +47,15 @@ defmodule UrFUSwissKnife.CacheWarming do
   @spec warm_istudent_brs :: :ok
   def warm_istudent_brs do
     for {user, auth} <- get_authed_users(IStudent) do
-      case user.default_brs_args do
-        nil -> nil
-        [group_id, year, semester] -> IStudent.update_subjects_cache(auth, group_id, year, semester)
-      end
+      {:ok, {group_id, year, semester}} = IStudent.get_latest_filter(auth)
+
+      {:ok, subjects} = IStudent.update_subjects_cache(auth, group_id, year, semester)
+      became = BRSCache.new(user.id, subjects)
+
+      was = PersistentCache.get_brs(user.id)
+
+      PersistentCache.create_brs(user.id, subjects)
+      UpdatesNotifier.update_brs(user, was, became)
     end
 
     :ok

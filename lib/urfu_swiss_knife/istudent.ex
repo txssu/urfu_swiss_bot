@@ -32,6 +32,22 @@ defmodule UrFUSwissKnife.IStudent do
     BRS.get_filters(auth)
   end
 
+  @decorate cacheable(cache: Cache, key: {:get_latest_filter, auth.username}, ttl: :timer.hours(24))
+  @spec get_latest_filter(Token.t()) :: {:ok, {String.t(), integer(), String.t()}} | {:error, term()}
+  def get_latest_filter(auth) do
+    with {:ok, filters} <- BRS.get_filters(auth) do
+      group =
+        filters
+        |> Map.fetch!(:groups)
+        |> List.last()
+
+      year_data = Enum.max_by(group.years, & &1.year)
+      semester = Enum.max(year_data.semesters)
+
+      {:ok, {group.group_id, year_data.year, semester}}
+    end
+  end
+
   @decorate cacheable(cache: Cache, key: {:get_subjects, auth.username, group_id, year, semester}, ttl: :timer.hours(1))
   @spec get_subjects(Token.t(), String.t(), integer(), String.t()) :: {:ok, [Subject.t()]} | {:error, term()}
   def get_subjects(auth, group_id, year, semester) do

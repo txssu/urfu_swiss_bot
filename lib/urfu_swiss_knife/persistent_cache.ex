@@ -1,5 +1,6 @@
 defmodule UrFUSwissKnife.PersistentCache do
   @moduledoc false
+  alias UrFUSwissKnife.PersistentCache.BRSCache
   alias UrFUSwissKnife.PersistentCache.CommunalCharges
   alias UrFUSwissKnife.Repo
 
@@ -15,5 +16,15 @@ defmodule UrFUSwissKnife.PersistentCache do
   @spec get_communal_charges(integer()) :: CommunalCharges.t() | nil
   def get_communal_charges(user_id) do
     Repo.get(CommunalCharges, user_id)
+  end
+
+  @spec create_brs(integer(), [map()]) :: :ok
+  def create_brs(user_id, subjects) do
+    Repo.save(%BRSCache{id: user_id, subjects: subjects})
+  end
+
+  @spec get_brs(integer()) :: BRSCache.t() | nil
+  def get_brs(user_id) do
+    Repo.get(BRSCache, user_id)
   end
 end
