@@ -4,6 +4,8 @@ defmodule UrFUSwissBot.Commands.BRS.Formatter do
 
   alias UrFUAPI.IStudent.BRS.Subject
 
+  require Logger
+
   @spec format_subject(Subject.t()) :: String.t()
   def format_subject(subject) do
     {title, score, mark} = format_subject_field(subject)
@@ -35,6 +37,10 @@ defmodule UrFUSwissBot.Commands.BRS.Formatter do
     {title, score, mark}
   end
 
-  defp format_mark(""), do: "отсутствует"
+  defp format_mark(mark) when mark in ["", nil], do: "отсутствует"
   defp format_mark(mark) when is_binary(mark), do: String.downcase(mark)
+
+  defp format_mark(mark) do
+    Logger.error(~s(Undefined formatting for mark "#{inspect(mark)}"))
+  end
 end
