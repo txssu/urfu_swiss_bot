@@ -39,7 +39,7 @@ defmodule UrFUSwissKnife.IStudent do
       group =
         filters
         |> Map.fetch!(:groups)
-        |> List.last()
+        |> List.first()
 
       year_data = Enum.max_by(group.years, & &1.year)
       semester = Enum.max(year_data.semesters)
