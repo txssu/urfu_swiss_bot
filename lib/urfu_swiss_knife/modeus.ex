@@ -43,7 +43,9 @@ defmodule UrFUSwissKnife.Modeus do
 
   @spec get_upcoming_schedule(Token.t(), DateTime.t()) :: {Date.t() | nil, ScheduleData.t()}
   def get_upcoming_schedule(auth, datetime) do
-    case get_schedule_for_week(auth, datetime) do
+    next_day = Utils.start_of_next_day(datetime)
+
+    case get_schedule_for_week(auth, next_day) do
       %ScheduleData{events: []} = schedule ->
         {nil, schedule}
 

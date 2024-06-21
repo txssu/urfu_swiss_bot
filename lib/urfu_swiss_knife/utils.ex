@@ -23,27 +23,7 @@ defmodule UrFUSwissKnife.Utils do
   def start_of_day(datetime) do
     datetime
     |> DateTime.to_date()
-    |> DateTime.new!(~T[00:00:00])
-  end
-
-  @spec to_yekaterinburg_zone(DateTime.t()) :: DateTime.t()
-  def to_yekaterinburg_zone(datetime) do
-    DateTime.shift_zone!(datetime, "Asia/Yekaterinburg")
-  end
-
-  @spec utc_as_yekaterinburg_zone(DateTime.t()) :: DateTime.t()
-  def utc_as_yekaterinburg_zone(datetime) do
-    datetime
-    |> DateTime.shift_zone!("Asia/Yekaterinburg")
-    |> DateTime.add(5, :hour)
-  end
-
-  @spec yekaterinburg_start_of_day(DateTime.t()) :: DateTime.t()
-  def yekaterinburg_start_of_day(datetime) do
-    datetime
-    |> to_yekaterinburg_zone()
-    |> start_of_day()
-    |> utc_as_yekaterinburg_zone()
+    |> DateTime.new!(~T[00:00:00], "Asia/Yekaterinburg")
   end
 
   @spec month_to_russian(1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12) :: String.t()
@@ -156,7 +136,7 @@ defmodule UrFUSwissKnife.Utils do
       end
 
     case Date.from_erl({corrected_year, month, day}) do
-      {:ok, date} -> DateTime.new(date, ~T[00:00:00])
+      {:ok, date} -> DateTime.new(date, ~T[00:00:00], "Asia/Yekaterinburg")
       _err -> :error
     end
   end
@@ -191,6 +171,6 @@ defmodule UrFUSwissKnife.Utils do
         Date.add(today, 7 + weekday - weekday_today)
       end
 
-    DateTime.new(future_date, ~T[00:00:00])
+    DateTime.new(future_date, ~T[00:00:00], "Asia/Yekaterinburg")
   end
 end

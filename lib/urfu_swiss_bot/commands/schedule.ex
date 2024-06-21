@@ -54,13 +54,11 @@ defmodule UrFUSwissBot.Commands.Schedule do
   defp keyboard_next(datetime) do
     previous_day =
       datetime
-      |> Utils.to_yekaterinburg_zone()
       |> Utils.start_of_previous_day()
       |> DateTime.to_iso8601(:basic)
 
     next_day =
       datetime
-      |> Utils.to_yekaterinburg_zone()
       |> Utils.start_of_next_day()
       |> DateTime.to_iso8601(:basic)
 
@@ -90,18 +88,21 @@ defmodule UrFUSwissBot.Commands.Schedule do
   end
 
   def handle({:callback_query, %{data: "Schedule.today"}}, context) do
-    now = DateTime.utc_now(:second)
+    now =
+      "Asia/Yekaterinburg"
+      |> DateTime.now!()
+      |> DateTime.truncate(:second)
 
     generic_answer(context, now, @today_no_more_events, true)
   end
 
   def handle({:callback_query, %{data: "Schedule.tomorrow"}}, context) do
-    today = DateTime.utc_now(:second)
+    today =
+      "Asia/Yekaterinburg"
+      |> DateTime.now!()
+      |> DateTime.truncate(:second)
 
-    tomorrow =
-      today
-      |> Utils.yekaterinburg_start_of_day()
-      |> Utils.start_of_next_day()
+    tomorrow = Utils.start_of_next_day(today)
 
     generic_answer(context, tomorrow, @tommorow_no_events)
   end
@@ -109,7 +110,9 @@ defmodule UrFUSwissBot.Commands.Schedule do
   def handle({:callback_query, %{data: "Schedule.date:" <> date}}, context) do
     {:ok, date, _offset} = DateTime.from_iso8601(date, :basic)
 
-    generic_answer(context, date, @no_events)
+    local_date = DateTime.shift_zone!(date, "Asia/Yekaterinburg")
+
+    generic_answer(context, local_date, @no_events)
   end
 
   @spec handle({:text, String.t(), Message}, Cnt.t()) :: Cnt.t()
@@ -129,7 +132,7 @@ defmodule UrFUSwissBot.Commands.Schedule do
 
     case Modeus.auth_user(user) do
       {:ok, auth} ->
-        local_time = Utils.yekaterinburg_start_of_day(date)
+        local_time = Utils.start_of_day(date)
 
         not_filtered_schedule = Modeus.get_schedule_by_day(auth, local_time)
 
@@ -225,13 +228,7 @@ defmodule UrFUSwissBot.Commands.Schedule do
 
   @spec format_date(Date.t() | DateTime.t()) :: String.t()
   defp format_date(date) do
-    date_with_timezone =
-      case date do
-        %Date{} -> date
-        %DateTime{} -> Utils.to_yekaterinburg_zone(date)
-      end
-
-    date_with_timezone
+    date
     |> Calendar.strftime("%A, %d %B",
       day_of_week_names: &Utils.weekday_to_russian/1,
       month_names: &Utils.month_to_russian/1
