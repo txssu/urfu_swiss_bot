@@ -39,9 +39,10 @@ defmodule UrFUSwissBot.Commands.Schedule.Formatter do
 
   @spec get_name_from_event(Event.t(), ScheduleData.t()) :: String.t()
   defp get_name_from_event(event, schedule) do
-    event
-    |> Schedule.fetch_by_link!("cycle_realization", schedule)
-    |> Map.fetch!(:course_unit_realization_name_short)
+    case Schedule.fetch_by_link(event, "cycle_realization", schedule) do
+      {:ok, cycle_realization} -> Map.fetch!(cycle_realization, :course_unit_realization_name_short)
+      :error -> Map.fetch!(event, :name)
+    end
   end
 
   @spec format_datetime(DateTime.t()) :: String.t()
