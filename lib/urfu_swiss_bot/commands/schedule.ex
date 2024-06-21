@@ -39,6 +39,10 @@ defmodule UrFUSwissBot.Commands.Schedule do
   Вы ввели дату в неверном формате
   """
 
+  @no_modeus_text """
+  Функционал доступен только при наличии аккаунта в urfu.modeus.org.\
+  """
+
   @start_keyboard (keyboard :inline do
                      row do
                        button("Сегодня⬇️", callback_data: "Schedule.today")
@@ -75,6 +79,15 @@ defmodule UrFUSwissBot.Commands.Schedule do
     end
   end
 
+  @spec only_menu_keyboard() :: InlineKeyboardMarkup.t()
+  def only_menu_keyboard do
+    keyboard :inline do
+      row do
+        button("Меню", callback_data: "menu")
+      end
+    end
+  end
+
   @spec handle(
           {:callback_query, CallbackQuery.t()},
           Cnt.t()
@@ -82,9 +95,19 @@ defmodule UrFUSwissBot.Commands.Schedule do
   def handle({:callback_query, %{data: "Schedule"} = callback_query}, context) do
     Accounts.set_sending_schedule_date_state(context.extra.user)
 
-    context
-    |> answer_callback(callback_query)
-    |> edit(:inline, @start_text, reply_markup: @start_keyboard)
+    with {:ok, auth} <- Modeus.auth_user(context.extra.user) do
+      case Modeus.get_self_person(auth) do
+        {:ok, %{"persons" => [_person]}} ->
+          context
+          |> answer_callback(callback_query)
+          |> edit(:inline, @start_text, reply_markup: @start_keyboard)
+
+        _otherwise ->
+          context
+          |> answer_callback(callback_query)
+          |> edit(:inline, @no_modeus_text, reply_markup: only_menu_keyboard())
+      end
+    end
   end
 
   def handle({:callback_query, %{data: "Schedule.today"}}, context) do

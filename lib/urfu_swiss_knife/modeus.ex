@@ -5,6 +5,7 @@ defmodule UrFUSwissKnife.Modeus do
   alias UrFUAPI.Modeus.Auth
   alias UrFUAPI.Modeus.Auth.Token
   alias UrFUAPI.Modeus.Auth.TokenClaims
+  alias UrFUAPI.Modeus.Persons
   alias UrFUAPI.Modeus.Schedule
   alias UrFUAPI.Modeus.Schedule.ScheduleData
   alias UrFUAPI.Modeus.Schedule.ScheduleData.Event
@@ -27,6 +28,12 @@ defmodule UrFUSwissKnife.Modeus do
 
   def match_auth({:error, _}) do
     false
+  end
+
+  @decorate cacheable(cache: Cache, key: {:modeus_get_self_person, auth.username}, ttl: :timer.days(1))
+  @spec get_self_person(Token.t()) :: {:ok, map()} | {:error, String.t()}
+  def get_self_person(auth) do
+    Persons.search(auth, %{id: [auth.claims.person_id]})
   end
 
   @spec get_schedule_by_day(Token.t(), DateTime.t()) :: ScheduleData.t()
