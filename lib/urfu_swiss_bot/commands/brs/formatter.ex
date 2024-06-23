@@ -29,12 +29,48 @@ defmodule UrFUSwissBot.Commands.BRS.Formatter do
     """
   end
 
+  @spec average_score([Subject.t()]) :: String.t()
+  def average_score(subjects) do
+    {sum, count, zeros} =
+      Enum.reduce(subjects, {0, 0, 0}, fn subject, {sum, count, zeros} ->
+        zeros = if subject.score == 0, do: zeros + 1, else: zeros
+        {sum + subject.score, count + 1, zeros}
+      end)
+
+    average_score = format_number(sum / count)
+
+    cond do
+      zeros == 0 ->
+        "Средний балл: #{average_score}"
+
+      zeros == count ->
+        "Все оценки нулевые"
+
+      true ->
+        average_score_no_zeros = format_number(sum / (count - zeros))
+        "Средний балл: #{average_score} \\(без нулей: #{average_score_no_zeros}\\)"
+    end
+  end
+
   defp format_subject_field(subject) do
     title = escape_telegram_markdown(subject.title)
-    score = subject.score |> to_string() |> escape_telegram_markdown()
+    score = format_number(subject.score)
     mark = format_mark(subject.summary_title)
 
     {title, score, mark}
+  end
+
+  defp format_number(number) when is_integer(number) do
+    number
+    |> to_string()
+    |> escape_telegram_markdown()
+  end
+
+  defp format_number(number) when is_float(number) do
+    number
+    |> Float.round(2)
+    |> to_string()
+    |> escape_telegram_markdown()
   end
 
   defp format_mark(mark) when mark in ["", nil], do: "отсутствует"

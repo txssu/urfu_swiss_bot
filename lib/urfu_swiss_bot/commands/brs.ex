@@ -70,8 +70,10 @@ defmodule UrFUSwissBot.Commands.BRS do
 
   defp response_subjects(auth, group_id, year, semester, context) do
     with {:ok, subjects} <- IStudent.get_subjects(auth, group_id, year, semester) do
-      response =
-        Enum.map_join(subjects, "\n", &Formatter.format_subject/1)
+      subjects_text = Enum.map_join(subjects, "\n", &Formatter.format_subject/1)
+      average_score_text = Formatter.average_score(subjects)
+
+      response = subjects_text <> "\n\n" <> average_score_text
 
       markup = [
         [%InlineKeyboardButton{text: "Обновить", callback_data: "BRS"}],
