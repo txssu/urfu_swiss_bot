@@ -4,6 +4,7 @@ defmodule UrFUSwissBot.UpdatesNotifier.BRSCache do
 
   alias UrFUSwissBot.Commands.BRS.Formatter
   alias UrFUSwissKnife.Accounts
+  alias UrFUSwissKnife.CharEscape
 
   require ExGram.Dsl.Keyboard
 
@@ -79,10 +80,10 @@ defmodule UrFUSwissBot.UpdatesNotifier.BRSCache do
     end)
   end
 
-  defp format_diffs({adds, changes, deletes}, became, was) do
+  defp format_diffs({adds, changes, deletes}, was_subjects, became_subjects) do
     adds_section =
       Enum.map_join(adds, "\n", fn added_id ->
-        became.subjects
+        became_subjects
         |> get_subject_from_list(added_id)
         |> Formatter.format_subject()
       end)
@@ -94,9 +95,10 @@ defmodule UrFUSwissBot.UpdatesNotifier.BRSCache do
 
     deletes_section =
       Enum.map_join(deletes, "\n", fn deleted_id ->
-        was.subjects
+        was_subjects
         |> get_subject_from_list(deleted_id)
         |> Map.fetch!(:title)
+        |> CharEscape.escape_telegram_markdown()
       end)
 
     {adds_section, changes_section, deletes_section}
