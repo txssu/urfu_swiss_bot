@@ -1,7 +1,10 @@
 defmodule UrFUSwissBot.Notifications.BRSUpdateFormatter do
   @moduledoc false
+  alias UrFUAPI.IStudent.BRS.Subject
+  alias UrFUSwissBot.Commands.BRS.Formatter
   alias UrFUSwissKnife.CharEscape
 
+  @spec format_update([Subject.t()], [Subject.t()], [Subject.t()]) :: String.t()
   def format_update(added_subjects, changed_subjects, deleted_subjects) do
     adds_section = format_added_subjects(added_subjects)
     changes_section = format_changed_subjects(changed_subjects)
@@ -20,16 +23,16 @@ defmodule UrFUSwissBot.Notifications.BRSUpdateFormatter do
   end
 
   defp format_added_subjects(added_subjects) do
-    Enum.map_join(added_subjects, "\n", &UrFUSwissBot.Commands.BRS.Formatter.format_subject/1)
+    Enum.map_join(added_subjects, "\n", &Formatter.format_subject/1)
   end
 
   defp format_deleted_subjects(deleted_subjects) do
     Enum.map_join(deleted_subjects, "\n", &CharEscape.escape_telegram_markdown(&1.title))
   end
 
-  def format_changed_subjects(changed_subjects) do
+  defp format_changed_subjects(changed_subjects) do
     Enum.map_join(changed_subjects, "\n", fn {subject_was, subject_became} ->
-      UrFUSwissBot.Commands.BRS.Formatter.format_subject_diff(subject_was, subject_became)
+      Formatter.format_subject_diff(subject_was, subject_became)
     end)
   end
 end

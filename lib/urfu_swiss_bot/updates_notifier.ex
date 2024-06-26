@@ -1,7 +1,6 @@
 defmodule UrFUSwissBot.UpdatesNotifier do
   @moduledoc false
 
-  alias UrFUSwissBot.UpdatesNotifier.BRSCache
   alias UrFUSwissBot.UpdatesNotifier.CommunalCharges
   alias UrFUSwissKnife.Accounts
 

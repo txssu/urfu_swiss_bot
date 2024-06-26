@@ -18,7 +18,7 @@ defmodule UrFUSwissKnife.PersistentCache do
     Repo.get(CommunalCharges, user_id)
   end
 
-  @spec create_brs(integer(), [map()]) :: :ok
+  @spec create_brs(integer(), [map()]) :: BRSCache.t()
   def create_brs(user_id, subjects) do
     brs_cache = %BRSCache{id: user_id, subjects: subjects}
     :ok = Repo.save(brs_cache)

@@ -1,6 +1,7 @@
 defmodule UrFUSwissKnife.Updates.BRSDeltaFinderTest do
   use ExUnit.Case
 
+  alias UrFUAPI.IStudent.BRS.Subject
   alias UrFUSwissKnife.Updates.BRSDeltaFinder
 
   describe "find_added/2" do
@@ -133,6 +134,6 @@ defmodule UrFUSwissKnife.Updates.BRSDeltaFinderTest do
   end
 
   defp subject(id, score \\ 0) do
-    UrFUAPI.IStudent.BRS.Subject.new(id: id, score: score)
+    Subject.new(id: id, score: score)
   end
 end
