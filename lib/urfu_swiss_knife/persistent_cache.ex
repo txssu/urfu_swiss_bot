@@ -20,7 +20,10 @@ defmodule UrFUSwissKnife.PersistentCache do
 
   @spec create_brs(integer(), [map()]) :: :ok
   def create_brs(user_id, subjects) do
-    Repo.save(%BRSCache{id: user_id, subjects: subjects})
+    brs_cache = %BRSCache{id: user_id, subjects: subjects}
+    :ok = Repo.save(brs_cache)
+
+    brs_cache
   end
 
   @spec get_brs(integer()) :: BRSCache.t() | nil

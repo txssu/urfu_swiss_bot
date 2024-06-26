@@ -1,13 +1,14 @@
 defmodule UrFUSwissKnife.CacheWarming do
   @moduledoc false
+  alias UrFUSwissBot.Notifications.BRSUpdateFormatter
   alias UrFUSwissBot.UpdatesNotifier
   alias UrFUSwissKnife.Accounts
   alias UrFUSwissKnife.Accounts.User
   alias UrFUSwissKnife.IStudent
   alias UrFUSwissKnife.Modeus
   alias UrFUSwissKnife.PersistentCache
-  alias UrFUSwissKnife.PersistentCache.BRSCache
   alias UrFUSwissKnife.UBU
+  alias UrFUSwissKnife.Updates.BRSDeltaFinder
   alias UrFUSwissKnife.Utils
 
   @spec warm_all() :: :ok
@@ -52,12 +53,18 @@ defmodule UrFUSwissKnife.CacheWarming do
       {:ok, {group_id, year, semester}} = IStudent.get_latest_filter(auth)
 
       {:ok, subjects} = IStudent.update_subjects_cache(auth, group_id, year, semester)
-      became = BRSCache.new(user.id, subjects)
 
       was = PersistentCache.get_brs(user.id)
+      became = PersistentCache.create_brs(user.id, subjects)
 
-      PersistentCache.create_brs(user.id, subjects)
-      UpdatesNotifier.update_brs(user, was, became)
+      added = BRSDeltaFinder.find_added(was.subjects, became.subjects)
+      changed = BRSDeltaFinder.find_changed(was.subjects, became.subjects)
+      deleted = BRSDeltaFinder.find_deleted(was.subjects, became.subjects)
+
+      unless Enum.all?([added, changed, deleted], &Enum.empty?/1) do
+        notification = BRSUpdateFormatter.format_update(added, changed, deleted)
+        UrfuSwissBot.Notifications.send_notification(user.id, notification)
+      end
     end
 
     :ok
