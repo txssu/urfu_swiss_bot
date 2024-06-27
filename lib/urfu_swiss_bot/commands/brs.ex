@@ -1,11 +1,13 @@
 defmodule UrFUSwissBot.Commands.BRS do
   @moduledoc false
   import ExGram.Dsl
+  import UrFUSwissBot.CommandsHelper
 
   alias ExGram.Cnt
   alias ExGram.Model.CallbackQuery
   alias ExGram.Model.InlineKeyboardButton
   alias ExGram.Model.InlineKeyboardMarkup
+  alias ExGram.Model.Message
   alias UrFUSwissBot.Commands.BRS.Formatter
   alias UrFUSwissKnife.IStudent
 
@@ -16,8 +18,19 @@ defmodule UrFUSwissBot.Commands.BRS do
     [%InlineKeyboardButton{text: "В меню", callback_data: "menu"}]
   end
 
-  @spec handle({:callback_query, CallbackQuery.t()}, Cnt.t()) :: Cnt.t()
+  @spec handle(
+          {:callback_query, CallbackQuery.t()}
+          | {:command, atom(), Message.t()},
+          Cnt.t()
+        ) :: Cnt.t()
   def handle({:callback_query, %{data: "BRS"}}, context) do
+    with {:ok, auth} <- IStudent.auth_user(context.extra.user),
+         {:ok, {group_id, year, semester}} <- IStudent.get_latest_filter(auth) do
+      response_subjects(auth, group_id, year, semester, context)
+    end
+  end
+
+  def handle({:command, _command, _message}, context) do
     with {:ok, auth} <- IStudent.auth_user(context.extra.user),
          {:ok, {group_id, year, semester}} <- IStudent.get_latest_filter(auth) do
       response_subjects(auth, group_id, year, semester, context)
@@ -83,7 +96,7 @@ defmodule UrFUSwissBot.Commands.BRS do
 
       context
       |> answer_callback(context.update.callback_query)
-      |> edit(:inline, response,
+      |> reply(response,
         parse_mode: "MarkdownV2",
         reply_markup: %InlineKeyboardMarkup{inline_keyboard: markup}
       )

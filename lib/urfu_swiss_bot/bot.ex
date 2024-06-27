@@ -13,6 +13,7 @@ defmodule UrFUSwissBot.Bot do
 
   command "start"
   command "menu", description: "Вызвать меню"
+  command "brs", description: "Вызвать БРС"
   command "reply_feedback"
   command "stats"
 
@@ -73,6 +74,10 @@ defmodule UrFUSwissBot.Bot do
 
   def handle({:command, command, _message} = event, context) when command in [:start, :menu] do
     Commands.Menu.handle(event, context)
+  end
+
+  def handle({:command, :brs, _message} = event, context) do
+    Commands.BRS.handle(event, context)
   end
 
   def handle({:command, :reply_feedback, _message} = event, context) do
