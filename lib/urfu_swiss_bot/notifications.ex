@@ -1,4 +1,4 @@
-defmodule UrfuSwissBot.Notifications do
+defmodule UrFUSwissBot.Notifications do
   @moduledoc false
   alias ExGram.Model.InlineKeyboardMarkup
   alias ExGram.Model.Message

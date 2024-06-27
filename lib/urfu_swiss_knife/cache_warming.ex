@@ -45,7 +45,7 @@ defmodule UrFUSwissKnife.CacheWarming do
 
       unless is_nil(change) do
         {text, markup} = UBUChargesFormatter.format_update(change, became.contract)
-        UrfuSwissBot.Notifications.send_notification(user.id, text, markup)
+        UrFUSwissBot.Notifications.send_notification(user.id, text, markup)
       end
     end
 
@@ -68,7 +68,7 @@ defmodule UrFUSwissKnife.CacheWarming do
 
       unless Enum.all?([added, changed, deleted], &Enum.empty?/1) do
         notification = BRSUpdateFormatter.format_update(added, changed, deleted)
-        UrfuSwissBot.Notifications.send_notification(user.id, notification)
+        UrFUSwissBot.Notifications.send_notification(user.id, notification)
       end
     end
 
