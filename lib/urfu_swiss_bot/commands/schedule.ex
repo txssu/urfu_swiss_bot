@@ -50,7 +50,7 @@ defmodule UrFUSwissBot.Commands.Schedule do
                      end
 
                      row do
-                       button("Меню", callback_data: "menu")
+                       button("Меню", callback_data: "Menu")
                      end
                    end)
 
@@ -74,7 +74,7 @@ defmodule UrFUSwissBot.Commands.Schedule do
       end
 
       row do
-        button("Меню", callback_data: "menu")
+        button("Меню", callback_data: "Menu")
       end
     end
   end
@@ -83,7 +83,7 @@ defmodule UrFUSwissBot.Commands.Schedule do
   def only_menu_keyboard do
     keyboard :inline do
       row do
-        button("Меню", callback_data: "menu")
+        button("Меню", callback_data: "Menu")
       end
     end
   end

@@ -20,7 +20,7 @@ defmodule UrFUSwissBot.Commands.Feedback do
 
   @keyboard (keyboard(:inline) do
                row do
-                 button("В меню", callback_data: "menu")
+                 button("В меню", callback_data: "Menu")
                end
              end)
 

@@ -15,7 +15,7 @@ defmodule UrFUSwissBot.Commands.BRS do
   require ExGram.Dsl.Keyboard
 
   defp menu_button_row do
-    [%InlineKeyboardButton{text: "В меню", callback_data: "menu"}]
+    [%InlineKeyboardButton{text: "В меню", callback_data: "Menu"}]
   end
 
   @spec handle(
