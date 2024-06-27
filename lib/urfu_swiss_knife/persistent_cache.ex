@@ -4,13 +4,14 @@ defmodule UrFUSwissKnife.PersistentCache do
   alias UrFUSwissKnife.PersistentCache.CommunalCharges
   alias UrFUSwissKnife.Repo
 
-  @spec create_communal_charges(integer(), map()) :: :ok
+  @spec create_communal_charges(integer(), map()) :: CommunalCharges.t()
   def create_communal_charges(user_id, fields) do
     fields_with_user = Map.put(fields, :id, user_id)
 
-    fields_with_user
-    |> CommunalCharges.new()
-    |> Repo.save()
+    charges = CommunalCharges.new(fields_with_user)
+    :ok = Repo.save(charges)
+
+    charges
   end
 
   @spec get_communal_charges(integer()) :: CommunalCharges.t() | nil

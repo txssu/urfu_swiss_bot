@@ -1,7 +1,7 @@
 defmodule UrFUSwissKnife.CacheWarming do
   @moduledoc false
   alias UrFUSwissBot.Notifications.BRSUpdateFormatter
-  alias UrFUSwissBot.UpdatesNotifier
+  alias UrFUSwissBot.Notifications.UBUChargesFormatter
   alias UrFUSwissKnife.Accounts
   alias UrFUSwissKnife.Accounts.User
   alias UrFUSwissKnife.IStudent
@@ -9,6 +9,7 @@ defmodule UrFUSwissKnife.CacheWarming do
   alias UrFUSwissKnife.PersistentCache
   alias UrFUSwissKnife.UBU
   alias UrFUSwissKnife.Updates.BRSDeltaFinder
+  alias UrFUSwissKnife.Updates.UBUDeltaFinder
   alias UrFUSwissKnife.Utils
 
   @spec warm_all() :: :ok
@@ -36,11 +37,15 @@ defmodule UrFUSwissKnife.CacheWarming do
   def warm_ubu_dates do
     for {user, auth} <- get_authed_users(UBU) do
       was = PersistentCache.get_communal_charges(user.id)
-      became = UBU.update_dates_cache(auth)
-      PersistentCache.create_communal_charges(user.id, became)
+      dates = UBU.update_dates_cache(auth)
 
-      unless is_nil(was) do
-        UpdatesNotifier.update_ubu_debt(user, was, became)
+      became = PersistentCache.create_communal_charges(user.id, dates)
+
+      change = UBUDeltaFinder.find_change(was.debt, became.debt)
+
+      unless is_nil(change) do
+        {text, markup} = UBUChargesFormatter.format_update(change, became.contract)
+        UrfuSwissBot.Notifications.send_notification(user.id, text, markup)
       end
     end
 
