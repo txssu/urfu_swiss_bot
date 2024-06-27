@@ -76,6 +76,6 @@ defmodule UrFUSwissBot.Commands.Feedback do
 
     context
     |> answer("Ваше сообщение было доставлено!")
-    |> Menu.menu_by_message()
+    |> Menu.redirect_to_menu()
   end
 end

@@ -49,7 +49,7 @@ defmodule UrFUSwissBot.Commands.Auth do
         context
         |> accepted(message, user.username)
         |> answer(@auth_success)
-        |> Menu.menu_by_message()
+        |> Menu.redirect_to_menu()
 
       _error ->
         context

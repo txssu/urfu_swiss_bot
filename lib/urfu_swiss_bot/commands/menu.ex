@@ -1,15 +1,13 @@
 defmodule UrFUSwissBot.Commands.Menu do
   @moduledoc false
-  import ExGram.Dsl
   import ExGram.Dsl.Keyboard
+  import UrFUSwissBot.CommandsHelper
 
   alias ExGram.Cnt
   alias ExGram.Model.CallbackQuery
   alias ExGram.Model.Message
   alias UrFUSwissKnife.Accounts
-  alias UrFUSwissKnife.Accounts.User
 
-  require ExGram.Dsl
   require ExGram.Dsl.Keyboard
 
   @text """
@@ -41,26 +39,20 @@ defmodule UrFUSwissBot.Commands.Menu do
           | {:command, atom(), Message.t()},
           Cnt.t()
         ) :: Cnt.t()
-  def handle({:callback_query, _}, context), do: menu_by_editing(context)
-
-  def handle(_event, context), do: menu_by_message(context)
-
-  @spec menu_by_editing(Cnt.t()) :: Cnt.t()
-  def menu_by_editing(context) do
-    remove_state(context.extra.user)
-
-    edit(context, :inline, @text, reply_markup: @keyboard)
+  def handle(_update, context) do
+    redirect_to_menu(context)
   end
 
-  @spec menu_by_message(Cnt.t()) :: Cnt.t()
-  def menu_by_message(context) do
-    answer(context, @text, reply_markup: @keyboard)
+  @spec redirect_to_menu(Cnt.t()) :: Cnt.t()
+  def redirect_to_menu(context) do
+    context
+    |> remove_user_state()
+    |> reply(@text, reply_markup: @keyboard)
   end
 
-  @spec remove_state(User.t()) :: :ok
-  defp remove_state(user) do
-    Accounts.remove_state(user)
+  defp remove_user_state(context) do
+    Accounts.remove_state(context.extra.user)
 
-    :ok
+    context
   end
 end
