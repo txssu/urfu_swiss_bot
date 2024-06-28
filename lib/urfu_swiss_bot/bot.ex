@@ -53,6 +53,7 @@ defmodule UrFUSwissBot.Bot do
       :auth -> Commands.Auth.handle(update, context)
       :sending_schedule_date -> Commands.Schedule.handle(update, context)
       :sending_feeback -> Commands.Feedback.handle(update, context)
+      {:brs_list, _args} -> Commands.BRS.handle(update, context)
     end
   end
 
@@ -86,6 +87,11 @@ defmodule UrFUSwissBot.Bot do
 
   def handle({:command, :stats, _message} = event, context) do
     Commands.Stats.handle(event, context)
+  end
+
+  # Convert to plain text
+  def handle({:command, text, message}, context) when is_binary(text) do
+    handle({:text, text, message}, context)
   end
 
   def handle({:command, _unknown, _message}, context) do

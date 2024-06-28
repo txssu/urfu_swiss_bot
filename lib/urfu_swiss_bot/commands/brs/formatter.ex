@@ -2,9 +2,29 @@ defmodule UrFUSwissBot.Commands.BRS.Formatter do
   @moduledoc false
   import UrFUSwissKnife.CharEscape
 
+  alias UrFUAPI.IStudent.BRS.Attestation
   alias UrFUAPI.IStudent.BRS.Subject
+  alias UrFUAPI.IStudent.BRS.SubjectEvent
+  alias UrFUAPI.IStudent.BRS.SubjectInfo
 
   require Logger
+
+  @spec format_subjects_with_info_command([Subject.t()]) :: String.t()
+  def format_subjects_with_info_command(subjects) do
+    subjects
+    |> Enum.with_index(1)
+    |> Enum.map_join("\n", &f/1)
+  end
+
+  defp f({subject, index}) do
+    # Cause we can't get additinal info using numberic id.
+    # BRS limitation/bug.
+    if numberic_id?(subject.id) do
+      format_subject(subject)
+    else
+      format_subject_with_add_info_link(subject, index)
+    end
+  end
 
   @spec format_subject(Subject.t()) :: String.t()
   def format_subject(subject) do
@@ -15,6 +35,11 @@ defmodule UrFUSwissBot.Commands.BRS.Formatter do
       Итог: #{score}
       Оценка: #{mark}
     """
+  end
+
+  @spec format_subject_with_add_info_link(Subject.t(), integer()) :: String.t()
+  def format_subject_with_add_info_link(subject, index) do
+    format_subject(subject) <> ~t"/brs_#{index}" <> "\n"
   end
 
   @spec format_subject_diff(Subject.t(), Subject.t()) :: String.t()
@@ -52,6 +77,74 @@ defmodule UrFUSwissBot.Commands.BRS.Formatter do
     end
   end
 
+  @spec format_subject_info(SubjectInfo.t()) :: String.t()
+  def format_subject_info(%SubjectInfo{} = subject_info) do
+    ~i"""
+    *#{subject_info.title}*
+    Итог: #{subject_info.result.score} / #{subject_info.result.mark}
+
+    """ <> format_subject_events(subject_info.events)
+  end
+
+  defp format_subject_events(events) do
+    Enum.map_join(events, "\n", fn %SubjectEvent{} = event ->
+      emoji = get_emoji_for_subject_type(event.type)
+      title = String.capitalize(event.type_title)
+      factor = format_factor(event.total_factor)
+
+      ~i"#{emoji} *#{title}* — #{event.score_without_factor} × #{factor} \= #{event.score_with_factor}" <>
+        format_attestations(event.attestations)
+    end)
+  end
+
+  defp format_attestations(attestations) do
+    not_zero_blocks = Enum.reject(attestations, &(&1.factor == 0))
+
+    formatted_attestations =
+      Enum.map_join(not_zero_blocks, "\n\n", fn %Attestation{} = attestation ->
+        type = format_attestation_type(attestation.type)
+        factor = format_factor(attestation.factor)
+
+        if attestation.factor == 1 do
+          format_controls(attestation.controls)
+        else
+          ~i"*#{type}* — #{attestation.score_without_factor} × #{factor} \= #{attestation.score_with_factor}" <>
+            "\n" <> format_controls(attestation.controls)
+        end
+      end)
+
+    result =
+      case not_zero_blocks do
+        [_attestation] -> formatted_attestations
+        _otherwise -> "\n" <> formatted_attestations
+      end
+
+    "\n" <> result <> "\n"
+  end
+
+  defp format_controls(controls) do
+    Enum.map_join(controls, "\n", fn %Attestation.Control{} = control ->
+      ~i"• #{control.title} — #{control.score} из #{control.max_score}"
+    end)
+  end
+
+  defp get_emoji_for_subject_type("practice"), do: "🔵"
+  defp get_emoji_for_subject_type("lecture"), do: "🟢"
+  defp get_emoji_for_subject_type("laboratory"), do: "🟠"
+  defp get_emoji_for_subject_type(_other), do: "🟣"
+
+  defp format_attestation_type("intermediate"), do: "Промежуточные"
+  defp format_attestation_type("current"), do: "Текущие"
+  defp format_attestation_type(other), do: other
+
+  defp format_factor(number) when is_integer(number) do
+    "#{number}.00"
+  end
+
+  defp format_factor(number) do
+    :erlang.float_to_binary(number, decimals: 2)
+  end
+
   defp format_subject_field(subject) do
     title = escape_telegram_markdown(subject.title)
     score = format_number(subject.score)
@@ -78,5 +171,9 @@ defmodule UrFUSwissBot.Commands.BRS.Formatter do
 
   defp format_mark(mark) do
     Logger.error(~s(Undefined formatting for mark "#{inspect(mark)}"))
+  end
+
+  defp numberic_id?(id) do
+    String.match?(id, ~r/^\d+$/)
   end
 end

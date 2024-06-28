@@ -5,7 +5,7 @@ defmodule UrFUSwissKnife.Accounts.User do
 
   @derive {Inspect, except: [:password]}
 
-  @type state :: atom()
+  @type state :: term()
 
   typedstruct enforce: true do
     field :id, integer()

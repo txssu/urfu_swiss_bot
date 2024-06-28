@@ -9,6 +9,7 @@ defmodule UrFUSwissBot.Commands.BRS do
   alias ExGram.Model.InlineKeyboardMarkup
   alias ExGram.Model.Message
   alias UrFUSwissBot.Commands.BRS.Formatter
+  alias UrFUSwissKnife.Accounts
   alias UrFUSwissKnife.IStudent
 
   require ExGram.Dsl
@@ -20,20 +21,25 @@ defmodule UrFUSwissBot.Commands.BRS do
 
   @spec handle(
           {:callback_query, CallbackQuery.t()}
-          | {:command, atom(), Message.t()},
+          | {:command, atom(), Message.t()}
+          | {:text, String.t(), Message.t()},
           Cnt.t()
         ) :: Cnt.t()
-  def handle({:callback_query, %{data: "BRS"}}, context) do
-    with {:ok, auth} <- IStudent.auth_user(context.extra.user),
-         {:ok, {group_id, year, semester}} <- IStudent.get_latest_filter(auth) do
-      response_subjects(auth, group_id, year, semester, context)
-    end
-  end
+  def handle({:command, _command, _message}, context), do: entry_point(context)
+  def handle({:callback_query, %{data: "BRS"}}, context), do: entry_point(context)
 
-  def handle({:command, _command, _message}, context) do
-    with {:ok, auth} <- IStudent.auth_user(context.extra.user),
-         {:ok, {group_id, year, semester}} <- IStudent.get_latest_filter(auth) do
-      response_subjects(auth, group_id, year, semester, context)
+  def handle({:text, "brs_" <> index, _message}, context) do
+    index = String.to_integer(index) - 1
+    user = context.extra.user
+    {:brs_list, {group_id, year, semester}} = user.state
+
+    with {:ok, auth} <- IStudent.auth_user(user),
+         {:ok, subjects} <- IStudent.get_subjects(auth, group_id, year, semester),
+         subject = Enum.at(subjects, index),
+         {:ok, subject_info} <- IStudent.get_subject_info(auth, group_id, year, semester, subject.id) do
+      subject_info
+      |> Formatter.format_subject_info()
+      |> then(&answer(context, &1, parse_mode: "MarkdownV2"))
     end
   end
 
@@ -66,6 +72,13 @@ defmodule UrFUSwissBot.Commands.BRS do
     end
   end
 
+  defp entry_point(context) do
+    with {:ok, auth} <- IStudent.auth_user(context.extra.user),
+         {:ok, {group_id, year, semester}} <- IStudent.get_latest_filter(auth) do
+      response_subjects(auth, group_id, year, semester, context)
+    end
+  end
+
   defp ask_group(context) do
     with {:ok, auth} <- IStudent.auth_user(context.extra.user),
          {:ok, filters} <- IStudent.get_filters(auth) do
@@ -83,7 +96,7 @@ defmodule UrFUSwissBot.Commands.BRS do
 
   defp response_subjects(auth, group_id, year, semester, context) do
     with {:ok, subjects} <- IStudent.get_subjects(auth, group_id, year, semester) do
-      subjects_text = Enum.map_join(subjects, "\n", &Formatter.format_subject/1)
+      subjects_text = Formatter.format_subjects_with_info_command(subjects)
       average_score_text = Formatter.average_score(subjects)
 
       response = subjects_text <> "\n\n" <> average_score_text
@@ -93,6 +106,8 @@ defmodule UrFUSwissBot.Commands.BRS do
         [%InlineKeyboardButton{text: "Выбрать семестр", callback_data: "BRS.get_semester:#{group_id}"}],
         menu_button_row()
       ]
+
+      Accounts.set_brs_list_state(context.extra.user, {group_id, year, semester})
 
       context
       |> answer_callback(context.update.callback_query)
