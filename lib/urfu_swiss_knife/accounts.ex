@@ -46,13 +46,6 @@ defmodule UrFUSwissKnife.Accounts do
     |> save_user()
   end
 
-  @spec set_brs_list_state(User.t()) :: User.t()
-  def set_brs_list_state(user) do
-    user
-    |> User.set_state(:brs_list)
-    |> save_user()
-  end
-
   @spec remove_state(User.t()) :: User.t()
   def remove_state(user) do
     user

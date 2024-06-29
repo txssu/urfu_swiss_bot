@@ -29,14 +29,14 @@ defmodule UrFUSwissBot.Commands.BRS.Formatter do
     indicator = if subject.score == 0, do: "🔴 ", else: "•"
 
     """
-    *#{title}*
+    *#{title}*2
     #{indicator} #{score} / #{mark}
     """
   end
 
   @spec format_subject_with_add_info_link(Subject.t(), String.t()) :: String.t()
   def format_subject_with_add_info_link(subject, link) do
-    format_subject(subject) <> ~t"/brs_#{link}" <> "\n"
+    format_subject(subject) <> ~t"/brsinfo_#{link}" <> "\n"
   end
 
   @spec format_subject_diff(Subject.t(), Subject.t()) :: String.t()

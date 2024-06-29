@@ -9,7 +9,6 @@ defmodule UrFUSwissBot.Commands.BRS do
   alias ExGram.Model.InlineKeyboardMarkup
   alias ExGram.Model.Message
   alias UrFUSwissBot.Commands.BRS.Formatter
-  alias UrFUSwissKnife.Accounts
   alias UrFUSwissKnife.BRSShortLink
   alias UrFUSwissKnife.IStudent
 
@@ -23,13 +22,14 @@ defmodule UrFUSwissBot.Commands.BRS do
   @spec handle(
           {:callback_query, CallbackQuery.t()}
           | {:command, atom(), Message.t()}
+          | {:command, String.t(), Message.t()}
           | {:text, String.t(), Message.t()},
           Cnt.t()
         ) :: Cnt.t()
-  def handle({:command, _command, _message}, context), do: entry_point(context)
+  def handle({:command, command, _message}, context) when is_atom(command), do: entry_point(context)
   def handle({:callback_query, %{data: "BRS"}}, context), do: entry_point(context)
 
-  def handle({:text, "brs_" <> id, _message}, context) do
+  def handle({:command, "brsinfo_" <> id, _message}, context) do
     case UrFUSwissKnife.BRSShortLink.get_args(id) do
       {group_id, year, semester, subject_id} -> response_subject(context, group_id, year, semester, subject_id)
       _other -> answer(context, "Ссылка устарела. Попробуйте обновить данные.")
@@ -104,8 +104,6 @@ defmodule UrFUSwissBot.Commands.BRS do
         [%InlineKeyboardButton{text: "Выбрать семестр", callback_data: "BRS.get_semester:#{group_id}"}],
         menu_button_row()
       ]
-
-      Accounts.set_brs_list_state(context.extra.user)
 
       context
       |> answer_callback(context.update.callback_query)
