@@ -21,6 +21,7 @@ defmodule UrFUSwissBot.Bot do
   middleware UrFUSwissBot.Middleware.GetUser
   middleware UrFUSwissBot.Middleware.HitEvent
   middleware UrFUSwissBot.Middleware.UserRecovering
+  middleware UrFUSwissBot.Middleware.ClearState
 
   @spec bot :: __MODULE__
   def bot, do: __MODULE__

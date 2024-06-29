@@ -6,7 +6,6 @@ defmodule UrFUSwissBot.Commands.Menu do
   alias ExGram.Cnt
   alias ExGram.Model.CallbackQuery
   alias ExGram.Model.Message
-  alias UrFUSwissKnife.Accounts
 
   require ExGram.Dsl.Keyboard
 
@@ -45,14 +44,6 @@ defmodule UrFUSwissBot.Commands.Menu do
 
   @spec redirect_to_menu(Cnt.t()) :: Cnt.t()
   def redirect_to_menu(context) do
-    context
-    |> remove_user_state()
-    |> reply(@text, reply_markup: @keyboard)
-  end
-
-  defp remove_user_state(context) do
-    Accounts.remove_state(context.extra.user)
-
-    context
+    reply(context, @text, reply_markup: @keyboard)
   end
 end
