@@ -9,21 +9,17 @@ defmodule UrFUSwissBot.Commands.BRS.Formatter do
 
   require Logger
 
-  @spec format_subjects_with_info_command([Subject.t()]) :: String.t()
-  def format_subjects_with_info_command(subjects) do
+  @spec format_subjects_with_info_command([Subject.t()], [String.t()]) :: String.t()
+  def format_subjects_with_info_command(subjects, links) do
     subjects
-    |> Enum.with_index(1)
-    |> Enum.map_join("\n", &f/1)
-  end
-
-  defp f({subject, index}) do
-    # Cause we can't get additinal info using numberic id.
-    # BRS limitation/bug.
-    if numberic_id?(subject.id) do
-      format_subject(subject)
-    else
-      format_subject_with_add_info_link(subject, index)
-    end
+    |> Enum.zip(links)
+    |> Enum.map_join("\n", fn {subject, link} ->
+      if numberic_id?(subject.id) do
+        format_subject(subject)
+      else
+        format_subject_with_add_info_link(subject, link)
+      end
+    end)
   end
 
   @spec format_subject(Subject.t()) :: String.t()
@@ -37,9 +33,9 @@ defmodule UrFUSwissBot.Commands.BRS.Formatter do
     """
   end
 
-  @spec format_subject_with_add_info_link(Subject.t(), integer()) :: String.t()
-  def format_subject_with_add_info_link(subject, index) do
-    format_subject(subject) <> ~t"/brs_#{index}" <> "\n"
+  @spec format_subject_with_add_info_link(Subject.t(), String.t()) :: String.t()
+  def format_subject_with_add_info_link(subject, link) do
+    format_subject(subject) <> ~t"/brs_#{link}" <> "\n"
   end
 
   @spec format_subject_diff(Subject.t(), Subject.t()) :: String.t()

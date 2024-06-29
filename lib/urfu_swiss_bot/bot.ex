@@ -53,7 +53,7 @@ defmodule UrFUSwissBot.Bot do
       :auth -> Commands.Auth.handle(update, context)
       :sending_schedule_date -> Commands.Schedule.handle(update, context)
       :sending_feeback -> Commands.Feedback.handle(update, context)
-      {:brs_list, _args} -> Commands.BRS.handle(update, context)
+      :brs_list -> Commands.BRS.handle(update, context)
     end
   end
 

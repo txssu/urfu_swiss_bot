@@ -55,7 +55,8 @@ defmodule UrFUSwissBot.MixProject do
       {:styler, "~> 0.11.9", only: [:dev, :test], runtime: false},
       # Other
       {:typedstruct, "~> 0.5.2"},
-      {:exconstructor, github: "txssu/exconstructor"}
+      {:exconstructor, github: "txssu/exconstructor"},
+      {:puid, "~> 2.1"}
     ]
   end
 

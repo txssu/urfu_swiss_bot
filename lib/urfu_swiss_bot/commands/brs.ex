@@ -10,6 +10,7 @@ defmodule UrFUSwissBot.Commands.BRS do
   alias ExGram.Model.Message
   alias UrFUSwissBot.Commands.BRS.Formatter
   alias UrFUSwissKnife.Accounts
+  alias UrFUSwissKnife.BRSShortLink
   alias UrFUSwissKnife.IStudent
 
   require ExGram.Dsl
@@ -28,18 +29,10 @@ defmodule UrFUSwissBot.Commands.BRS do
   def handle({:command, _command, _message}, context), do: entry_point(context)
   def handle({:callback_query, %{data: "BRS"}}, context), do: entry_point(context)
 
-  def handle({:text, "brs_" <> index, _message}, context) do
-    index = String.to_integer(index) - 1
-    user = context.extra.user
-    {:brs_list, {group_id, year, semester}} = user.state
-
-    with {:ok, auth} <- IStudent.auth_user(user),
-         {:ok, subjects} <- IStudent.get_subjects(auth, group_id, year, semester),
-         subject = Enum.at(subjects, index),
-         {:ok, subject_info} <- IStudent.get_subject_info(auth, group_id, year, semester, subject.id) do
-      subject_info
-      |> Formatter.format_subject_info()
-      |> then(&answer(context, &1, parse_mode: "MarkdownV2"))
+  def handle({:text, "brs_" <> id, _message}, context) do
+    case UrFUSwissKnife.BRSShortLink.get_args(id) do
+      {group_id, year, semester, subject_id} -> response_subject(context, group_id, year, semester, subject_id)
+      _ -> answer(context, "Ссылка устарела. Попробуйте обновить данные.")
     end
   end
 
@@ -96,7 +89,12 @@ defmodule UrFUSwissBot.Commands.BRS do
 
   defp response_subjects(auth, group_id, year, semester, context) do
     with {:ok, subjects} <- IStudent.get_subjects(auth, group_id, year, semester) do
-      subjects_text = Formatter.format_subjects_with_info_command(subjects)
+      short_links =
+        Enum.map(subjects, fn subject ->
+          BRSShortLink.get_link(context.extra.user.id, group_id, year, semester, subject.id)
+        end)
+
+      subjects_text = Formatter.format_subjects_with_info_command(subjects, short_links)
       average_score_text = Formatter.average_score(subjects)
 
       response = subjects_text <> "\n\n" <> average_score_text
@@ -107,7 +105,7 @@ defmodule UrFUSwissBot.Commands.BRS do
         menu_button_row()
       ]
 
-      Accounts.set_brs_list_state(context.extra.user, {group_id, year, semester})
+      Accounts.set_brs_list_state(context.extra.user)
 
       context
       |> answer_callback(context.update.callback_query)
@@ -115,6 +113,15 @@ defmodule UrFUSwissBot.Commands.BRS do
         parse_mode: "MarkdownV2",
         reply_markup: %InlineKeyboardMarkup{inline_keyboard: markup}
       )
+    end
+  end
+
+  defp response_subject(context, group_id, year, semester, subject_id) do
+    with {:ok, auth} <- IStudent.auth_user(context.extra.user),
+         {:ok, subject_info} <- IStudent.get_subject_info(auth, group_id, year, semester, subject_id) do
+      subject_info
+      |> Formatter.format_subject_info()
+      |> then(&answer(context, &1, parse_mode: "MarkdownV2"))
     end
   end
 
