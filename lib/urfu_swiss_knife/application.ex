@@ -9,16 +9,15 @@ defmodule UrFUSwissKnife.Application do
   @spec start(Application.start_type(), start_args :: term) ::
           {:ok, pid} | {:ok, pid, Application.state()} | {:error, reason :: term}
   def start(_type, _args) do
-    telegram_token = Application.get_env(@app, UrFUSwissBot.Bot)[:token]
     data_dir = Application.get_env(@app, UrFUSwissBot.Repo)[:database_folder]
 
-    children = [
-      {CubDB, [name: UrFUSwissKnife.Repo, data_dir: data_dir]},
-      UrFUSwissKnife.Cache,
-      ExGram,
-      {UrFUSwissBot.Bot, [method: :polling, token: telegram_token]},
-      UrFUSwissKnife.Scheduler
-    ]
+    children =
+      [
+        {CubDB, [name: UrFUSwissKnife.Repo, data_dir: data_dir]},
+        UrFUSwissKnife.Cache
+      ]
+      |> maybe_add_telegram_bot()
+      |> maybe_add_scheduler()
 
     migrate(data_dir)
     Supervisor.start_link(children, @supervisor_opts)
@@ -31,5 +30,24 @@ defmodule UrFUSwissKnife.Application do
     :ok = UrFUSwissBot.Migrator.migrate(db)
 
     :ok = GenServer.stop(db)
+  end
+
+  defp maybe_add_telegram_bot(children) do
+    token = Application.get_env(@app, UrFUSwissBot.Bot)[:token]
+    telegram_children = [ExGram, {UrFUSwissBot.Bot, [method: :polling, token: token]}]
+
+    if Application.get_env(@app, UrFUSwissBot.Bot)[:enabled] do
+      Enum.concat(children, telegram_children)
+    else
+      children
+    end
+  end
+
+  defp maybe_add_scheduler(children) do
+    if Application.get_env(@app, UrFUSwissKnife.Scheduler)[:enabled] do
+      [UrFUSwissKnife.Scheduler | children]
+    else
+      children
+    end
   end
 end
