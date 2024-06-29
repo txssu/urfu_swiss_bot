@@ -15,6 +15,10 @@ defmodule UrFUSwissBot.Commands.BRS do
   require ExGram.Dsl
   require ExGram.Dsl.Keyboard
 
+  @expired_link_text """
+  Ссылка устарела. Попробуйте обновить данные.
+  """
+
   defp menu_button_row do
     [%InlineKeyboardButton{text: "В меню", callback_data: "Menu"}]
   end
@@ -32,7 +36,7 @@ defmodule UrFUSwissBot.Commands.BRS do
   def handle({:command, "brsinfo_" <> id, _message}, context) do
     case UrFUSwissKnife.BRSShortLink.get_args(id) do
       {group_id, year, semester, subject_id} -> response_subject(context, group_id, year, semester, subject_id)
-      _other -> answer(context, "Ссылка устарела. Попробуйте обновить данные.")
+      _other -> answer(context, @expired_link_text)
     end
   end
 
@@ -117,9 +121,13 @@ defmodule UrFUSwissBot.Commands.BRS do
   defp response_subject(context, group_id, year, semester, subject_id) do
     with {:ok, auth} <- IStudent.auth_user(context.extra.user),
          {:ok, subject_info} <- IStudent.get_subject_info(auth, group_id, year, semester, subject_id) do
-      subject_info
-      |> Formatter.format_subject_info()
-      |> then(&answer(context, &1, parse_mode: "MarkdownV2"))
+      if subject_info.id != nil do
+        subject_info
+        |> Formatter.format_subject_info()
+        |> then(&answer(context, &1, parse_mode: "MarkdownV2"))
+      else
+        answer(context, @expired_link_text)
+      end
     end
   end
 
