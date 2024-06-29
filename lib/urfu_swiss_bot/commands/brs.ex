@@ -32,7 +32,7 @@ defmodule UrFUSwissBot.Commands.BRS do
   def handle({:text, "brs_" <> id, _message}, context) do
     case UrFUSwissKnife.BRSShortLink.get_args(id) do
       {group_id, year, semester, subject_id} -> response_subject(context, group_id, year, semester, subject_id)
-      _ -> answer(context, "Ссылка устарела. Попробуйте обновить данные.")
+      _other -> answer(context, "Ссылка устарела. Попробуйте обновить данные.")
     end
   end
 

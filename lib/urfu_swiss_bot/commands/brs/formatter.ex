@@ -26,10 +26,11 @@ defmodule UrFUSwissBot.Commands.BRS.Formatter do
   def format_subject(subject) do
     {title, score, mark} = format_subject_field(subject)
 
+    indicator = if subject.score == 0, do: "🔴 ", else: "•"
+
     """
     *#{title}*
-      Итог: #{score}
-      Оценка: #{mark}
+    #{indicator} #{score} / #{mark}
     """
   end
 
