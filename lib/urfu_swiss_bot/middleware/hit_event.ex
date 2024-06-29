@@ -6,7 +6,8 @@ defmodule UrFUSwissBot.Middleware.HitEvent do
   alias UrFUSwissKnife.Metrics
 
   @spec call(Cnt.t(), keyword()) :: Cnt.t()
-  def call(%Cnt{update: %{update_id: id, message: %{text: text, from: %{id: by_user_id}}}} = context, _opts) do
+  def call(%Cnt{update: %{update_id: id, message: %{text: text, from: %{id: by_user_id}}}} = context, _opts)
+      when is_binary(text) do
     if String.starts_with?(text, "/") do
       Metrics.hit_command(
         id: id,

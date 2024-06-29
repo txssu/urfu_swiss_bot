@@ -117,6 +117,12 @@ defmodule UrFUSwissBot.Bot do
     end
   end
 
+  def handle(update, context) do
+    data = inspect(update, limit: :infinity)
+    Logger.warning("Unhandled update: #{data}")
+    context
+  end
+
   defp module_concat(left, right) do
     {:ok, Module.safe_concat(left, right)}
   rescue
