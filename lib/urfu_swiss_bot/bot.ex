@@ -49,11 +49,11 @@ defmodule UrFUSwissBot.Bot do
     %{extra: %{user: %{state: state}}} = context
 
     case state do
-      nil -> Commands.Menu.handle(update, context)
       :auth -> Commands.Auth.handle(update, context)
       :sending_schedule_date -> Commands.Schedule.handle(update, context)
       :sending_feeback -> Commands.Feedback.handle(update, context)
       :brs_list -> Commands.BRS.handle(update, context)
+      _other -> Commands.Menu.handle(update, context)
     end
   end
 
