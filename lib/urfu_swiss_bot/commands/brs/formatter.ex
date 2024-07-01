@@ -29,7 +29,7 @@ defmodule UrFUSwissBot.Commands.BRS.Formatter do
     indicator = if subject.score == 0, do: "🔴 ", else: "•"
 
     """
-    *#{title}*2
+    *#{title}*
     #{indicator} #{score} / #{mark}
     """
   end
