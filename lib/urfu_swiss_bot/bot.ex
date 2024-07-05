@@ -14,6 +14,7 @@ defmodule UrFUSwissBot.Bot do
   command "start"
   command "menu", description: "Вызвать меню"
   command "brs", description: "Вызвать БРС"
+  command "privacy", description: "Политика обработки персональных данных"
   command "reply_feedback"
   command "stats"
 
@@ -33,6 +34,18 @@ defmodule UrFUSwissBot.Bot do
           Cnt.t()
         ) :: Cnt.t()
   def handle(update, context)
+
+  ###############################################
+  # Privacy
+  ###############################################
+
+  def handle({:command, :privacy, _message}, context) do
+    answer(
+      context,
+      "[Политика обработки персональных данных](https://raw.githubusercontent.com/txssu/urfu_swiss_bot/main/POLICY.md)",
+      parse_mode: "MarkdownV2"
+    )
+  end
 
   ###############################################
   # Recover after deleting
